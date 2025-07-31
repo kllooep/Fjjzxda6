@@ -1,0 +1,62 @@
+local spamLabel = Instance.new("TextLabel")
+	spamLabel.Text = "سبام أسماء"
+	spamLabel.Size = UDim2.new(0, 260, 0, 30)
+	spamLabel.Position = UDim2.new(0, 10, 0, 100)
+	spamLabel.BackgroundTransparency = 1
+	spamLabel.TextColor3 = Color3.new(1,1,1)
+	spamLabel.Font = Enum.Font.SourceSansBold
+	spamLabel.TextSize = 18
+	spamLabel.Parent = contentFrame
+
+	-- سبام أسماء (3)
+	for i=1,3 do
+		local yPos = 135 + (i-1)*40
+
+		local textBox = Instance.new("TextBox")
+		textBox.PlaceholderText = "سبام "..i
+		textBox.Size = UDim2.new(0, 150, 0, 30)
+		textBox.Position = UDim2.new(0, 10, 0, yPos)
+		textBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+		textBox.TextColor3 = Color3.new(1,1,1)
+		textBox.Font = Enum.Font.SourceSansBold
+		textBox.TextSize = 16
+		textBox.Parent = contentFrame
+
+		local toggle = Instance.new("TextButton")
+		toggle.Text = spamToggles[i] and "ON" or "OFF"
+		toggle.Size = UDim2.new(0, 50, 0, 30)
+		toggle.Position = UDim2.new(0, 170, 0, yPos)
+		toggle.BackgroundColor3 = spamToggles[i] and Color3.fromRGB(0,170,0) or Color3.fromRGB(0,0,0)
+		toggle.TextColor3 = Color3.new(1,1,1)
+		toggle.Font = Enum.Font.SourceSansBold
+		toggle.TextSize = 16
+		toggle.Parent = contentFrame
+
+		local speedBox = Instance.new("TextBox")
+		speedBox.Text = "0.4"
+		speedBox.Size = UDim2.new(0, 40, 0, 30)
+		speedBox.Position = UDim2.new(0, 230, 0, yPos)
+		speedBox.BackgroundColor3 = Color3.fromRGB(20,20,20)
+		speedBox.TextColor3 = Color3.new(1,1,1)
+		speedBox.Font = Enum.Font.SourceSansBold
+		speedBox.TextSize = 14
+		speedBox.Parent = contentFrame
+
+		toggle.MouseButton1Click:Connect(function()
+			spamToggles[i] = not spamToggles[i]
+			toggle.Text = spamToggles[i] and "ON" or "OFF"
+			toggle.BackgroundColor3 = spamToggles[i] and Color3.fromRGB(0,170,0) or Color3.fromRGB(0,0,0)
+			if spamToggles[i] then
+				task.spawn(function()
+					while spamToggles[i] do
+						local nameText = textBox.Text
+						local speed = tonumber(speedBox.Text) or 0.4
+						if nameText and nameText~="" then
+							game.ReplicatedStorage.RE["1RPNam1eTex1t"]:FireServer("RolePlayName", nameText)
+						end
+						task.wait(speed)
+					end
+				end)
+			end
+		end)
+	end
