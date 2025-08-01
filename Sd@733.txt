@@ -856,12 +856,12 @@ InfoTab:AddParagraph({ ":", "DemoZHub" })
 InfoTab:AddParagraph({"عمل تجريبي سيتم تطويره"})
 InfoTab:AddParagraph({"اضافات:", "مميزات قوية مثل فلنق الادمن"})
 InfoTab:AddButton({"ديمون هوب القديم", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sorces/spaceomm/refs/heads/main/exp"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/muskarnu/Projects/main/DemoNtr.txt"))()
 end})
 
 InfoTab:AddSection({ "اعادة دخول" })
 InfoTab:AddButton({
-    Name = "",
+    Name = "اعادة دخول للسيرفر",
     Callback = function()
         local TeleportService = game:GetService("TeleportService")
         TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
