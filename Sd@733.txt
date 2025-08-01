@@ -529,8 +529,8 @@ local localPlayer = Players.LocalPlayer
 local allowedUsers = {
 	["EV_Rami"] = true,
 	["Sajwaad"] = true,
-	["JustWX99s"] = true,
-	["lIllIllIllIIIIllII"] = true
+	["DemonHub_Dev"] = true,
+	["EV_DemonHub"] = true
 }
 
 local loopKill = false
