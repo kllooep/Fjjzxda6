@@ -1,0 +1,21 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main/S9EDOM"))()
+local args = {
+	"RolePlayName",
+	"Demon-HubV0.6"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
+local args = {
+	"PickingRPNameColor",
+	Color3.new(0.7556330561637878, 0, 0.00002125852188328281)
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
+local args = {
+	"RolePlayBio",
+	"سكربت المطور رامي"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
+local args = {
+	"PickingRPBioColor",
+	Color3.new(0.7050058841705322, 0, 0.000019834207705571316)
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
