@@ -9,8 +9,11 @@ local localPlayer = Players.LocalPlayer
 local allowedUsers = {
 	["EV_Rami"] = true,
 	["Sajwaad"] = true,
-	["JustWX99s"] = true,
-	["lIllIllIllIIIIllII"] = true
+	["zdrkn305"] = true,
+        ["المطور مدري منو"] = true,
+	["المطور ايو ايو ايو يع يع يع"] = true,
+	["المطور عضلة"] = true,
+	["المطور مضيع بيتهم"] = true
 }
 
 local loopKill = false
