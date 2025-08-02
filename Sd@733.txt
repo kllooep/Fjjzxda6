@@ -528,6 +528,8 @@ local localPlayer = Players.LocalPlayer
 -- Usuários autorizados
 local allowedUsers = {
 	["EV_Rami"] = true,
+        ["zdrkn305"] = true,
+        ["malk_55117"] = true,
 	["Sajwaad"] = true,
 	["DemonHub_Dev"] = true,
 	["mr_Mustafa213"] = true
@@ -10963,5 +10965,6 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
