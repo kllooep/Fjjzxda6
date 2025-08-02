@@ -178,9 +178,9 @@ sectionContents["القائمة الرئيسية"] = function()
 	contentFrame:ClearAllChildren()
 
 	local texts = {
-		"Ev_Rami",
-		"حسابي روب: Sajwaad",
-		"سكربت DemonHubV0.5"
+		"سكربت المطور حسين",
+		"حسابي روب: Hsengsem_21",
+		"V1سكربت حسين"
 	}
 
 	for i, text in ipairs(texts) do
