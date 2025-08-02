@@ -1395,6 +1395,13 @@ end)
 
     end
 })
+TrollTab:AddButton({
+    Name = "تجميد لاعبoff/on",
+    Description = "تجميد لاعب فقطoff/on",
+    Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/DezomXHub/DemozX/main/freezing.txt"))()
+    end
+})
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -10965,6 +10972,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
