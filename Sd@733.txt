@@ -833,7 +833,7 @@ workspace.FallenPartsDestroyHeight = -math.huge
 
 local Window = Libary:MakeWindow({
     Title = "👹DemoZHub - فريق",
-    SubTitle = "by: مطورين Developers (Sajwaad, GHIM_HUB, Ev_Rami,جحيم)",
+    SubTitle = "by: مطورين Developers (Sajwaad, GHIM_HUB, EV_Rami)",
     LoadText = "DemoZHub Developers",
     Flags = "DemoZ_Brookhaven"
 })
@@ -852,7 +852,7 @@ InfoTab:AddDiscordInvite({
     Invite = "https://t.me/R_amI11",
 })
 InfoTab:AddSection({ "معلومات السكربت" })
-InfoTab:AddParagraph({ "المالك / المطورين:", "Rami (TikTok:".q.kn, ghim_hub,"})
+InfoTab:AddParagraph({ "المالك / المطورين:", "Rami (TikTok: .q.kn," })
 InfoTab:AddParagraph({ "فريق:", "Rami, GHIM_HUB" })
 InfoTab:AddParagraph({ ":", "DemoZHub" })
 InfoTab:AddParagraph({"عمل تجريبي سيتم تطويره"})
@@ -10972,6 +10972,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
