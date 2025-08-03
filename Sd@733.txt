@@ -532,6 +532,7 @@ local allowedUsers = {
         ["malk_55117"] = true,
 	["Sajwaad"] = true,
 	["DemonHub_Dev"] = true,
+        ["Hwrejplq"] = true,
         ["Zarba_751"] = true,
 	["mr_Mustafa213"] = true
 }
@@ -10973,6 +10974,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
