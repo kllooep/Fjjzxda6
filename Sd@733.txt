@@ -20,15 +20,15 @@ local LoadingConfig = {
 }
 
 local LoadingElements = {
-    "Iniciando sistema...",
-    "Carregando interface...",
-    "Conectando servidores...",
-    "Verificando permissões...",
-    "Carregando scripts...",
-    "Otimizando performance...",
-    "Aplicando configurações...",
-    "Finalizando carregamento...",
-    "Pronto para usar!"
+    "يتم تجهيز الموارد...",
+    "بدء تحميل السكربت...",
+    "تجهيز واجهة السكربت...",
+    "السكربت العربي الاقوى...",
+    "الاكمال قريب...",
+    "على وشك الانتهاء...",
+    "تم الانتهاء...",
+    "تشغيل السكربت...",
+    "هنيئا لكم!"
 }
 
 local Particles = {}
@@ -10974,6 +10974,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
