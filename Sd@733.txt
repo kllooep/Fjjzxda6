@@ -279,7 +279,7 @@ local function CreateLoadingScreen()
     SubtitleLabel.BackgroundTransparency = 1
     SubtitleLabel.Size = UDim2.new(1, 0, 0, 40)
     SubtitleLabel.Position = UDim2.new(0, 0, 0, 90)
-    SubtitleLabel.Text = "Carregando experiência premium..."
+    SubtitleLabel.Text = "افضل إعادة تصميم عربي"
     SubtitleLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
     SubtitleLabel.TextScaled = true
     SubtitleLabel.Font = Enum.Font.Gotham
@@ -10974,6 +10974,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
