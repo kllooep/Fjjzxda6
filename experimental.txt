@@ -7,7 +7,7 @@ local localPlayer = Players.LocalPlayer
 -- Usuários autorizados
 local allowedUsers = {
 	["alodozhynn"] = true,
-	["n9xgh"] = true,
+	["Sajwaad"] = true,
 	["JustWX99s"] = true,
 	["lIllIllIllIIIIllII"] = true
 }
@@ -309,3 +309,83 @@ Window:SelectTab(Tab1)
 local Section = Tab1:AddSection({"Section"})
 
 local Paragraph = Tab1:AddParagraph({"Script fora do ar", "O script está fora do ar no momento"})
+
+-- ✅ تاب دردشة متوافق 100% مع Sd@733.txt - بدون أخطاء
+local ChatTab = Window:MakeTab({ Title = "الدردشة", Icon = "rbxassetid://10723415903" })
+
+local playerInput1 = ""
+local playerInput2 = ""
+local playerInput3 = ""
+
+-- === إرسال رسالة عادية ===
+ChatTab:AddSection({ Name = "إرسال رسالة في الشات" })
+ChatTab:AddTextBox({
+    Name = "نص الرسالة",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(text)
+        playerInput1 = text
+    end
+})
+ChatTab:AddButton({
+    Name = "إرسال الرسالة",
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r" .. playerInput1
+        channel:SendAsync(message)
+    end
+})
+
+-- === إرسال رسالة كـ System ===
+ChatTab:AddSection({ Name = "إرسال رسالة كـ System" })
+ChatTab:AddTextBox({
+    Name = "نص System",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(text)
+        playerInput2 = text
+    end
+})
+ChatTab:AddButton({
+    Name = "إرسال كـ System",
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rSystem: " .. playerInput2
+        channel:SendAsync(message)
+    end
+})
+
+-- === إرسال رسالة كـ SysAdmin ===
+ChatTab:AddSection({ Name = "إرسال رسالة [SysAdmin]" })
+ChatTab:AddTextBox({
+    Name = "نص SysAdmin",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(text)
+        playerInput3 = text
+    end
+})
+ChatTab:AddButton({
+    Name = "إرسال كـ SysAdmin",
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r[SysAdmin UI]: " .. playerInput3
+        channel:SendAsync(message)
+    end
+})
+local Tab2 = Window:MakeTab({"Um", "chetab"})
+
+local Section = Tab2:AddSection({"Section"})
+local Paragraph = Tab2:AddParagraph({"Script fora do ar", "O script está fora do ar no momento"}) 
