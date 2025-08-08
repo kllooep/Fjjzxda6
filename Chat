@@ -1,88 +1,75 @@
-local TabChat = Window:MakeTab({"Chat", "10723415903"})
+-- ✅ تاب دردشة متوافق 100% مع Sd@733.txt - بدون أخطاء
+local ChatTab = Window:MakeTab({ Title = "الدردشة", Icon = "rbxassetid://10723415903" })
 
--- SeÃ§Ã£o: Enviar uma mensagem normal
 local playerInput1 = ""
+local playerInput2 = ""
+local playerInput3 = ""
 
-TabChat:AddSection({Name = "Enviar uma Mensagem no Chat"})
-
-TabChat:AddTextBox({
-    Name = "Mensagem Chat",
+-- === إرسال رسالة عادية ===
+ChatTab:AddSection({ Name = "إرسال رسالة في الشات" })
+ChatTab:AddTextBox({
+    Name = "نص الرسالة",
     Default = "",
     TextDisappear = false,
     Callback = function(text)
         playerInput1 = text
     end
 })
-
-TabChat:AddButton({
-    Name = "Enviar",
+ChatTab:AddButton({
+    Name = "إرسال الرسالة",
     Callback = function()
         local TextChatService = game:GetService("TextChatService")
-        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-            local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r" .. playerInput1
-            TextChatService.TextChannels.RBXGeneral:SendAsync(message)
-        else
-            game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "Not Supported",
-                Text = "Este jogo usa o chat antigo do Roblox. Esse recurso sÃ³ funciona no chat novo."
-            })
-        end
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r" .. playerInput1
+        channel:SendAsync(message)
     end
 })
 
--- SeÃ§Ã£o: Enviar mensagem com prefixo System
-local playerInput2 = ""
-
-TabChat:AddSection({Name = "Enviar Uma Mensagem usando System"})
-
-TabChat:AddTextBox({
-    Name = "mensagem System",
+-- === إرسال رسالة كـ System ===
+ChatTab:AddSection({ Name = "إرسال رسالة كـ System" })
+ChatTab:AddTextBox({
+    Name = "نص System",
     Default = "",
     TextDisappear = false,
     Callback = function(text)
         playerInput2 = text
     end
 })
-
-TabChat:AddButton({
-    Name = "Enviar ",
+ChatTab:AddButton({
+    Name = "إرسال كـ System",
     Callback = function()
         local TextChatService = game:GetService("TextChatService")
-        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-            local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rSystem: " .. playerInput2
-            TextChatService.TextChannels.RBXGeneral:SendAsync(message)
-        else
-            game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "Not Supported",
-                Text = "Este jogo usa o chat antigo do Roblox. Esse recurso sÃ³ funciona no chat novo."
-            })
-        end
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rSystem: " .. playerInput2
+        channel:SendAsync(message)
     end
 })
 
-TabChat:AddSection({Name = "ENVIA MENSAGEM [SysAdmin]:"})
-
-TabChat:AddTextBox({
-    Name = "Hub Mensad",
+-- === إرسال رسالة كـ SysAdmin ===
+ChatTab:AddSection({ Name = "إرسال رسالة [SysAdmin]" })
+ChatTab:AddTextBox({
+    Name = "نص SysAdmin",
     Default = "",
     TextDisappear = false,
     Callback = function(text)
-        playerInput1 = text
+        playerInput3 = text
     end
 })
-
-TabChat:AddButton({
-    Name = "Enviar",
+ChatTab:AddButton({
+    Name = "إرسال كـ SysAdmin",
     Callback = function()
         local TextChatService = game:GetService("TextChatService")
-        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-            local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r[SysAdmin UI]: " .. playerInput1
-            TextChatService.TextChannels.RBXGeneral:SendAsync(message)
-        else
-            game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "Not Supported",
-                Text = "Este jogo usa o chat antigo do Roblox. Esse recurso sÃ³ funciona no chat novo."
-            })
-        end
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r[SysAdmin UI]: " .. playerInput3
+        channel:SendAsync(message)
     end
 })
