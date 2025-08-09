@@ -872,67 +872,7 @@ InfoTab:AddButton({
     end
 })
 
--- إنشاء التاب
-local NameTab = Window:MakeTab({
-    Name = "NameTab",
-    Icon = "rbxassetid://10723415903", -- أيقونة افتراضية
-})
 
--- متغيرات
-local names = {"", "", ""}
-local execSpeed = 1
-local toggleActive = false
-
--- إنشاء TextBox للأسماء الثلاثة
-for i = 1, 3 do
-    NameTab:AddTextBox({
-        Name = "أدخل الاسم " .. i,
-        Default = "",
-        TextDisappear = false,
-        Callback = function(value)
-            names[i] = value
-        end
-    })
-end
-
--- Slider لتحديد السرعة
-NameTab:AddSlider({
-    Name = "سرعة التنفيذ",
-    Min = 1,
-    Max = 3,
-    Default = 1,
-    Increment = 1,
-    ValueName = "x",
-    Callback = function(value)
-        execSpeed = value
-    end
-})
-
--- Toggle للتشغيل
-NameTab:AddToggle({
-    Name = "تشغيل الكود",
-    Default = false,
-    Callback = function(state)
-        toggleActive = state
-        if toggleActive then
-            task.spawn(function()
-                while toggleActive do
-                    for _, name in ipairs(names) do
-                        if not toggleActive then break end
-                        if name ~= "" then
-                            local args = {
-                                "RolePlayName",
-                                name
-                            }
-                            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
-                            task.wait((4 - execSpeed) * 0.5) -- التوقف حسب السرعة
-                        end
-                    end
-                end
-            end)
-        end
-    end
-})
 
 local autoTab = Window:MakeTab({ Title = " (معطل)الحدث الجديد", Icon = "rbxassetid://10734983868" })
 
@@ -11036,6 +10976,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
