@@ -1513,6 +1513,33 @@ TrollTab:AddToggle({
     end
 })
 
+local playerInput1 = ""
+local playerInput2 = ""
+local playerInput3 = ""
+
+-- === إرسال رسالة عادية ===
+TrollTab:AddSection({ Name = "EXTRA(New)ارسال رسالة في الشات" })
+TrollTab:AddTextBox({
+    Name = "نص الرسالة",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(text)
+        playerInput1 = text
+    end
+})
+TrollTab:AddButton({
+    Name = "إرسال الرسالة",
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r" .. playerInput1
+        channel:SendAsync(message)
+    end
+}) 
+
 TrollTab:AddSection({ "تدبيل طيارات" })
 TrollTab:AddButton({
     Name = "تدبيل طيارات عل سبون",
@@ -10974,6 +11001,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
