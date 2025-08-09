@@ -1,12 +1,12 @@
 -- ✅ تاب دردشة متوافق 100% مع Sd@733.txt - بدون أخطاء
-local ChatTab = Window:MakeTab({ Title = "الدردشة", Icon = "rbxassetid://10723415903" })
+local ChatTab = Window:MakeTab({ Title = "[EXTRA]شات مميز", Icon = "rbxassetid://10723415903" })
 
 local playerInput1 = ""
 local playerInput2 = ""
 local playerInput3 = ""
 
 -- === إرسال رسالة عادية ===
-ChatTab:AddSection({ Name = "إرسال رسالة في الشات" })
+ChatTab:AddSection({ Name = "إرسال رسالة تعدلها بكيفك" })
 ChatTab:AddTextBox({
     Name = "نص الرسالة",
     Default = "",
@@ -23,15 +23,15 @@ ChatTab:AddButton({
         local channel = TextChatService.TextChannels.RBXGeneral
         if not channel then return end
 
-        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r" .. playerInput1
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r" .. playerInput1
         channel:SendAsync(message)
     end
 })
 
 -- === إرسال رسالة كـ System ===
-ChatTab:AddSection({ Name = "إرسال رسالة كـ System" })
+ChatTab:AddSection({ Name = "إرسال رسالة صاحب الماب" })
 ChatTab:AddTextBox({
-    Name = "نص System",
+    Name = "اكتب الرسالة",
     Default = "",
     TextDisappear = false,
     Callback = function(text)
@@ -39,22 +39,22 @@ ChatTab:AddTextBox({
     end
 })
 ChatTab:AddButton({
-    Name = "إرسال كـ System",
+    Name = "إرسال الرسالة",
     Callback = function()
         local TextChatService = game:GetService("TextChatService")
         if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
         local channel = TextChatService.TextChannels.RBXGeneral
         if not channel then return end
 
-        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rSystem: " .. playerInput2
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r[صاحب الماب]: " .. playerInput2
         channel:SendAsync(message)
     end
 })
 
 -- === إرسال رسالة كـ SysAdmin ===
-ChatTab:AddSection({ Name = "إرسال رسالة [SysAdmin]" })
+ChatTab:AddSection({ Name = "[XVIP]إرسال رسالة" })
 ChatTab:AddTextBox({
-    Name = "نص SysAdmin",
+    Name = "اكتب الرسالة",
     Default = "",
     TextDisappear = false,
     Callback = function(text)
@@ -62,14 +62,14 @@ ChatTab:AddTextBox({
     end
 })
 ChatTab:AddButton({
-    Name = "إرسال كـ SysAdmin",
+    Name = "إرسال الرسالة",
     Callback = function()
         local TextChatService = game:GetService("TextChatService")
         if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
         local channel = TextChatService.TextChannels.RBXGeneral
         if not channel then return end
 
-        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r[SysAdmin UI]: " .. playerInput3
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r[XVIP]: " .. playerInput3
         channel:SendAsync(message)
     end
 })
