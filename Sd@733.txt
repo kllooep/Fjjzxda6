@@ -878,6 +878,82 @@ local autoTab = Window:MakeTab({ Title = " (معطل)الحدث الجديد", I
 autoTab:AddSection({ "قسم فارغ" })
 autoTab:AddParagraph({""})
 
+-- ✅ تاب دردشة متوافق 100% مع Sd@733.txt - بدون أخطاء
+local ChatTab = Window:MakeTab({ Title = "[EXTRA]شات مميز", Icon = "rbxassetid://10723415903" })
+
+local playerInput1 = ""
+local playerInput2 = ""
+local playerInput3 = ""
+
+-- === إرسال رسالة عادية ===
+ChatTab:AddSection({ Name = "إرسال رسالة تعدلها بكيفك" })
+ChatTab:AddTextBox({
+    Name = "نص الرسالة",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(text)
+        playerInput1 = text
+    end
+})
+ChatTab:AddButton({
+    Name = "إرسال الرسالة",
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r" .. playerInput1
+        channel:SendAsync(message)
+    end
+})
+
+-- === إرسال رسالة كـ System ===
+ChatTab:AddSection({ Name = "إرسال رسالة صاحب الماب" })
+ChatTab:AddTextBox({
+    Name = "اكتب الرسالة",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(text)
+        playerInput2 = text
+    end
+})
+ChatTab:AddButton({
+    Name = "إرسال الرسالة",
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r[صاحب الماب]: " .. playerInput2
+        channel:SendAsync(message)
+    end
+})
+
+-- === إرسال رسالة كـ SysAdmin ===
+ChatTab:AddSection({ Name = "[XVIP]إرسال رسالة" })
+ChatTab:AddTextBox({
+    Name = "اكتب الرسالة",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(text)
+        playerInput3 = text
+    end
+})
+ChatTab:AddButton({
+    Name = "إرسال الرسالة",
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r[XVIP]: " .. playerInput3
+        channel:SendAsync(message)
+    end
+})
+
 local shadersTab = Window:MakeTab({ Title = "شادر (يظهر بس عندك)", Icon = "rbxassetid://10747382750" })
 
 shadersTab:AddSection({ "جودة" })
@@ -10974,6 +11050,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
