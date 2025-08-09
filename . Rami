@@ -1,8 +1,3 @@
--- إنشاء التاب
-local NameTab = Window:MakeTab({
-    Name = "NameTab",
-    Icon = "rbxassetid://10723415903", -- أيقونة افتراضية
-})
 
 -- متغيرات
 local names = {"", "", ""}
@@ -11,7 +6,7 @@ local toggleActive = false
 
 -- إنشاء TextBox للأسماء الثلاثة
 for i = 1, 3 do
-    NameTab:AddTextBox({
+    Tab:AddTextBox({
         Name = "أدخل الاسم " .. i,
         Default = "",
         TextDisappear = false,
@@ -22,8 +17,8 @@ for i = 1, 3 do
 end
 
 -- Slider لتحديد السرعة
-NameTab:AddSlider({
-    Name = "سرعة التنفيذ",
+Tab:AddSlider({
+    Name = "سرعة السبام",
     Min = 1,
     Max = 3,
     Default = 1,
@@ -35,8 +30,8 @@ NameTab:AddSlider({
 })
 
 -- Toggle للتشغيل
-NameTab:AddToggle({
-    Name = "تشغيل الكود",
+Tab:AddToggle({
+    Name = "تشغيل السبام",
     Default = false,
     Callback = function(state)
         toggleActive = state
