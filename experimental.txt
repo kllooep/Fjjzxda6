@@ -388,4 +388,109 @@ ChatTab:AddButton({
 local Tab2 = Window:MakeTab({"Um", "chetab"})
 
 local Section = Tab2:AddSection({"Section"})
-local Paragraph = Tab2:AddParagraph({"Script fora do ar", "O script está fora do ar no momento"}) 
+local Paragraph = Tab2:AddParagraph({"Script fora do ar", "O script está fora do ar no momento"})
+-- افتراض أنك قمت بإنشاء النافذة والتاب مسبقًا
+local Tab = Window:MakeTab({
+    Title = "الأغراض",
+    Icon = "zap"
+})
+
+-- الزر الأول: أخذ كنبة (كما طلبت)
+Tab:AddButton({
+    Name = "اخذ كنبة",
+    Callback = function()
+        local args = {
+            [1] = "PickingTools",
+            [2] = "Couch"
+        }
+        game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    end
+})
+
+-- الزر الثاني: أداة الانتقال (مُصلحة)
+Tab:AddButton({
+    Name = "أداة الانتقال الفوري",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local UserInputService = game:GetService("UserInputService")
+        local Workspace = game:GetService("Workspace")
+        local LocalPlayer = Players.LocalPlayer
+        local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+        local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+        local Camera = Workspace.CurrentCamera
+
+        -- منع تكرار الأداة
+        if Character:FindFirstChild("TeleportTool") then return end
+
+        -- إنشاء الأداة
+        local Tool = Instance.new("Tool")
+        Tool.Name = "TeleportTool"
+        Tool.Parent = Character
+
+        -- تأثير الشفافية
+        local function SetTransparency(TransValue)
+            for _, Part in pairs(Character:GetDescendants()) do
+                if Part:IsA("BasePart") then
+                    Part.Transparency = TransValue
+                end
+            end
+        end
+
+        -- عند تفعيل الأداة (النقر/اللمس)
+        Tool.Activated:Connect(function()
+            -- جعل اللاعب شفافًا
+            SetTransparency(0.8)
+
+            -- تحديد نوع الإدخال: ماوس أو لمس
+            local InputEvent
+            InputEvent = UserInputService.InputBegan:Connect(function(Input, GameProcessed)
+                if GameProcessed then return end -- تجاهل إذا تم معالجته من UI
+
+                -- التحقق من النقر (ماوس أو لمس)
+                if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                    -- إيقاف الاستماع مؤقتًا لمنع التكرار
+                    InputEvent:Disconnect()
+
+                    -- حساب موقع النقر
+                    local MouseLocation = Input.Position
+                    local RayOrigin = Camera:ViewportPointToRay(MouseLocation.X, MouseLocation.Y)
+
+                    -- إعداد الـ Raycast
+                    local RaycastParams = RaycastParams.new()
+                    RaycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+                    RaycastParams.FilterDescendantsInstances = {Character}
+
+                    -- تنفيذ الـ Raycast
+                    local Result = Workspace:Raycast(RayOrigin.Origin, RayOrigin.Direction * 500, RaycastParams)
+
+                    if Result then
+                        -- الانتقال إلى النقطة المحددة
+                        HumanoidRootPart.CFrame = CFrame.new(Result.Position + Vector3.new(0, 3, 0))
+                    else
+                        -- إذا لم يُصِب سطحًا، انتقل إلى نقطة أمام الكاميرا
+                        local LookAt = Camera.CFrame.Position + Camera.CFrame.LookVector * 10
+                        HumanoidRootPart.CFrame = CFrame.new(LookAt + Vector3.new(0, 3, 0))
+                    end
+
+                    -- إعادة الشفافية
+                    SetTransparency(0)
+
+                    -- إعادة تفعيل الأداة للاستخدام التالي (إذا أردت استخدامها مجددًا)
+                    -- لا ندمّر الأداة، فقط نعيد التفعيل
+                    wait(0.3) -- منع التكرار السريع
+                    InputEvent = UserInputService.InputBegan:Connect(function() end) -- سيتم إعادة الاتصال عند الحاجة
+                end
+            end)
+        end)
+
+        -- تفعيل الأداة تلقائيًا
+        Tool:Activate()
+
+        -- إشعار بسيط
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "أداة الانتقال",
+            Text = "انقر أو المس للانتقال إلى المكان.",
+            Duration = 4
+        })
+    end
+})
