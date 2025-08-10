@@ -5875,6 +5875,114 @@ Tab:AddButton({
     end
 })
 
+Tab:AddButton({
+    Name = "نسخ لاعب عشوائي",
+    Callback = function()
+        local LP = Players.LocalPlayer
+        local LChar = LP.Character
+        if not LChar then return end
+
+        -- Escolher um player aleatÃ³rio (exceto o prÃ³prio)
+        local otherPlayers = {}
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr ~= LP and plr.Character then
+                table.insert(otherPlayers, plr)
+            end
+        end
+        if #otherPlayers == 0 then return end
+
+        local TPlayer = otherPlayers[math.random(1, #otherPlayers)]
+
+        -- Mesmo cÃ³digo de cÃ³pia
+        local LHumanoid = LChar:FindFirstChildOfClass("Humanoid")
+        local THumanoid = TPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if LHumanoid and THumanoid then
+            local LDesc = LHumanoid:GetAppliedDescription()
+            for _, acc in ipairs(LDesc:GetAccessories(true)) do
+                if acc.AssetId and tonumber(acc.AssetId) then
+                    Remotes.Wear:InvokeServer(tonumber(acc.AssetId))
+                    task.wait(0.2)
+                end
+            end
+            if tonumber(LDesc.Shirt) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Shirt))
+                task.wait(0.2)
+            end
+            if tonumber(LDesc.Pants) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Pants))
+                task.wait(0.2)
+            end
+            if tonumber(LDesc.Face) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Face))
+                task.wait(0.2)
+            end
+
+            local PDesc = THumanoid:GetAppliedDescription()
+            local argsBody = {
+                [1] = {
+                    [1] = PDesc.Torso,
+                    [2] = PDesc.RightArm,
+                    [3] = PDesc.LeftArm,
+                    [4] = PDesc.RightLeg,
+                    [5] = PDesc.LeftLeg,
+                    [6] = PDesc.Head
+                }
+            }
+            Remotes.ChangeCharacterBody:InvokeServer(unpack(argsBody))
+            task.wait(0.5)
+
+            if tonumber(PDesc.Shirt) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Shirt))
+                task.wait(0.3)
+            end
+            if tonumber(PDesc.Pants) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Pants))
+                task.wait(0.3)
+            end
+            if tonumber(PDesc.Face) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Face))
+                task.wait(0.3)
+            end
+            for _, v in ipairs(PDesc:GetAccessories(true)) do
+                if v.AssetId and tonumber(v.AssetId) then
+                    Remotes.Wear:InvokeServer(tonumber(v.AssetId))
+                    task.wait(0.3)
+                end
+            end
+
+            local SkinColor = TPlayer.Character:FindFirstChild("Body Colors")
+            if SkinColor then
+                Remotes.ChangeBodyColor:FireServer(tostring(SkinColor.HeadColor))
+                task.wait(0.3)
+            end
+            if tonumber(PDesc.IdleAnimation) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.IdleAnimation))
+                task.wait(0.3)
+            end
+
+            local Bag = TPlayer:FindFirstChild("PlayersBag")
+            if Bag then
+                if Bag:FindFirstChild("RPName") and Bag.RPName.Value ~= "" then
+                    Remotes.RPNameText:FireServer("RolePlayName", Bag.RPName.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPBio") and Bag.RPBio.Value ~= "" then
+                    Remotes.RPNameText:FireServer("RolePlayBio", Bag.RPBio.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPNameColor") then
+                    Remotes.RPNameColor:FireServer("PickingRPNameColor", Bag.RPNameColor.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPBioColor") then
+                    Remotes.RPNameColor:FireServer("PickingRPBioColor", Bag.RPBioColor.Value)
+                    task.wait(0.3)
+                end
+            end
+        end
+    end
+})
+
 -- Definir cores para o efeito RGB
 local colors = {
     Color3.new(1, 0, 0),       -- Vermelho
@@ -8264,6 +8372,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
