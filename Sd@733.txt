@@ -811,7 +811,7 @@ TextChatService.OnIncomingMessage = function(message)
 end
 local args = {
 	"RolePlayName",
-	"DemoZ-Hub V0.4"
+	"DemoZ-Hub V0.5"
 }
 game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
 local args = {
@@ -821,7 +821,7 @@ local args = {
 game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
 local args = {
 	"RolePlayBio",
-	"💥تحديث سبام اسماء رهيب"
+	"☠️Vipتحديث الأسماء+شات"
 }
 game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
 local args = {
@@ -874,11 +874,7 @@ InfoTab:AddButton({
 
 
 
-local autoTab = Window:MakeTab({ Title = " (معطل)الحدث الجديد", Icon = "rbxassetid://10734983868" })
 
-
-autoTab:AddSection({ "قسم فارغ" })
-autoTab:AddParagraph({""})
 
 local shadersTab = Window:MakeTab({ Title = "شادر (يظهر بس عندك)", Icon = "rbxassetid://10747382750" })
 
@@ -5525,6 +5521,81 @@ workspace.CurrentCamera.CameraSubject=game.Players.LocalPlayer.Character:WaitFor
   end
 })
 
+-- ✅ تاب دردشة متوافق 100% مع Sd@733.txt - بدون أخطاء
+local ChatTab = Window:MakeTab({ Title = "[EXTRA]شات مميز", Icon = "rbxassetid://10723415903" })
+
+local playerInput1 = ""
+local playerInput2 = ""
+local playerInput3 = ""
+
+-- === إرسال رسالة عادية ===
+ChatTab:AddSection({ Name = "إرسال رسالة تعدلها بكيفك" })
+ChatTab:AddTextBox({
+    Name = "نص الرسالة",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(text)
+        playerInput1 = text
+    end
+})
+ChatTab:AddButton({
+    Name = "إرسال الرسالة",
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r" .. playerInput1
+        channel:SendAsync(message)
+    end
+})
+
+-- === إرسال رسالة كـ System ===
+ChatTab:AddSection({ Name = "إرسال رسالة صاحب الماب" })
+ChatTab:AddTextBox({
+    Name = "اكتب الرسالة",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(text)
+        playerInput2 = text
+    end
+})
+ChatTab:AddButton({
+    Name = "إرسال الرسالة",
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r[صاحب الماب]: " .. playerInput2
+        channel:SendAsync(message)
+    end
+})
+
+-- === إرسال رسالة كـ SysAdmin ===
+ChatTab:AddSection({ Name = "[XVIP]إرسال رسالة" })
+ChatTab:AddTextBox({
+    Name = "اكتب الرسالة",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(text)
+        playerInput3 = text
+    end
+})
+ChatTab:AddButton({
+    Name = "إرسال الرسالة",
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r[XVIP]: " .. playerInput3
+        channel:SendAsync(message)
+    end
+})
 
 local Tab = Window:MakeTab({"السكن", "rbxassetid://10734952036"})
 
@@ -8069,4 +8140,5 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
