@@ -8310,6 +8310,187 @@ for _, btn in ipairs(teleportButtons) do
     })
 end
 
+
+-- إنشاء تاب "الأغراض"
+local Section1 = Window:MakeTab({
+    Title = "الأغراض",
+    Icon = "box"
+})
+
+-- إنشاء قسم "الأغراض"
+local Section = Section1:AddSection("الأغراض")
+
+-- دالة مساعدة لإرسال طلب أداة
+local function PickTool(ToolName)
+    local args = {
+        [1] = "PickingTools",
+        [2] = ToolName
+    }
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+end
+
+-- دالة مساعدة لحذف كل الأغراض
+local function ClearAllProps()
+    local args = {
+        [1] = "ClearAllProps"
+    }
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Clea1rTool1s"):FireServer(unpack(args))
+end
+
+-- دالة مساعدة لحذف كل الأدوات
+local function ClearAllTools()
+    local args = {
+        [1] = "ClearAllTools"
+    }
+    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Clea1rTool1s"):FireServer(unpack(args))
+end
+
+-- === أزرار الأغراض ===
+Section1:AddButton({
+    Name = "اخذ كنبة",
+    Callback = function()
+        local args = {
+            [1] = "PickingTools",
+            [2] = "Couch"
+        }
+        game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    end
+})
+
+
+
+Section1:AddButton({
+    Name = "اخذ كيس ناري",
+    Callback = function()
+        PickTool("PaperbagFire")
+    end
+})
+
+Section1:AddButton({
+    Name = "اخذ ايباد",
+    Callback = function()
+        PickTool("Ipad")
+    end
+})
+
+Section1:AddButton({
+    Name = "سنايبر",
+    Callback = function()
+        PickTool("Sniper")
+    end
+})
+
+Section1:AddButton({
+    Name = "سيف",
+    Callback = function()
+        PickTool("SwordWood")
+    end
+})
+
+Section1:AddButton({
+    Name = "قوس",
+    Callback = function()
+        PickTool("Bow")
+    end
+})
+
+Section1:AddButton({
+    Name = "Gloukمسدس",
+    Callback = function()
+        PickTool("Glock")
+    end
+})
+
+Section1:AddButton({
+    Name = "اخذ قنبلة",
+    Callback = function()
+        PickTool("Bomb")
+    end
+})
+
+Section1:AddButton({
+    Name = "سنايبر ريفيل",
+    Callback = function()
+        PickTool("Assault")
+    end
+})
+
+Section1:AddButton({
+    Name = "حذف كل الاغراض",
+    Callback = function()
+        ClearAllProps()
+    end
+})
+
+-- === تاب Bank Update ===
+Section1:AddSection("أغراض البنك")
+
+Section1:AddButton({
+    Name = "حقيبة بيتكوين",
+    Callback = function()
+        PickTool("DuffleBagBitcoin")
+    end
+})
+
+Section1:AddButton({
+    Name = "حقيبة الماس",
+    Callback = function()
+        PickTool("DuffleBagDiamonds")
+    end
+})
+
+Section1:AddButton({
+    Name = "حقيبة ذهب",
+    Callback = function()
+        PickTool("DuffleBagGold")
+    end
+})
+
+Section1:AddButton({
+    Name = "بطاقة صفراء",
+    Callback = function()
+        PickTool("BankGateKey")
+    end
+})
+
+Section1:AddButton({
+    Name = "بطاقة بيضاء",
+    Callback = function()
+        PickTool("KeyCardWhite")
+    end
+})
+
+Section1:AddButton({
+    Name = "حذف كل الاغراض",
+    Callback = function()
+        ClearAllTools()
+    end
+})
+
+-- === أدوات إضافية ===
+
+
+-- أداة النقل الفوري (TP Tool)
+Section1:AddButton({
+    Name = "انتقال فوري (يعمل بالنقر)",
+    Callback = function()
+        local Player = game.Players.LocalPlayer
+        local Mouse = Player:GetMouse() -- مطلوب للنقر
+
+        local Tool = Instance.new("Tool")
+        Tool.Name = "Equip to Click TP"
+        Tool.RequiresHandle = false
+        Tool.Parent = Player.Backpack
+
+        Tool.Activated:Connect(function()
+            local Pos = Mouse.Hit.p + Vector3.new(0, 2.5, 0)
+            Player.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(Pos)
+        end)
+    end
+})
+
+
+
 local UniversalTab = Window:MakeTab({"سكربتات متنوعة", "plane"})
 
 -- Seção para Scripts Universais
@@ -8372,6 +8553,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
