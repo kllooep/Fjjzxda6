@@ -8273,32 +8273,32 @@ LocalPlayerTab:AddButton({
     end
 })
 
-local Tab = Window:MakeTab({"Teleportes", "tp"}) -- Nome do ícone: 'portal' em minúsculo para teleporte
+local Tab = Window:MakeTab({"الاماكن", "tp"}) -- Nome do ícone: 'portal' em minúsculo para teleporte
 
 -- Botões de Teleporte
 local teleportButtons = {
-    {"Aos Bastidores", CFrame.new(192, 4, 272)},
-    {"Ao Centro Urbano", CFrame.new(136, 4, 117)},
-    {"À Área do Crime", CFrame.new(-119, -28, 235)},
-    {"À Casa Deserta", CFrame.new(986, 4, 63)},
-    {"Ao Portal da Agência", CFrame.new(672, 4, -296)},
-    {"Ao Esconderijo", CFrame.new(505, -75, 143)},
-    {"À Escola", CFrame.new(-312, 4, 211)},
-    {"Ao Café Brook", CFrame.new(161, 8, 52)},
-    {"Ao Ponto Inicial", CFrame.new(-26, 4, -23)},
-    {"Ao Arco Principal", CFrame.new(-589, 141, -59)},
-    {"Ao Hospital", CFrame.new(-309, 4, 71)},
-    {"À Base da Agência", CFrame.new(179, 4, -464)},
-    {"À Sala Oculta da Oficina", CFrame.new(0, 4, -495)},
-    {"À Sala Secreta 2", CFrame.new(-343, 4, -613)},
-    {"À Ilha Isolada", CFrame.new(-1925, 23, 127)},
-    {"À Praça dos Hotéis", CFrame.new(182, 4, 150)},
-    {"Escalar Montanha 1", CFrame.new(-670, 251, 765)},
-    {"Ao Banco Principal", CFrame.new(2.28, 4.65, 254.58)},
-    {"À Loja de Roupas", CFrame.new(-46.15, 4.65, 253.20)},
-    {"Ao Refúgio", CFrame.new(-88.48, 22.05, 262.34)},
-    {"À Clínica Dentária", CFrame.new(-53.58, 22.15, 265.61)},
-    {"À Cafeteria", CFrame.new(-97.12, 4.65, 254.99)}
+    {"فندق", CFrame.new(192, 4, 272)},
+    {"ساحة المطعم", CFrame.new(136, 4, 117)},
+    {"مقر سري تحت الارض", CFrame.new(-119, -28, 235)},
+    {"بيت مهجور", CFrame.new(986, 4, 63)},
+    {"كهف", CFrame.new(672, 4, -296)},
+    {"تحت الماب", CFrame.new(505, -75, 143)},
+    {"المدرسة", CFrame.new(-312, 4, 211)},
+    {"المطعم", CFrame.new(161, 8, 52)},
+    {"البداية", CFrame.new(-26, 4, -23)},
+    {"فوق الجسر", CFrame.new(-589, 141, -59)},
+    {"مستشفى", CFrame.new(-309, 4, 71)},
+    {"مختبر سري", CFrame.new(179, 4, -464)},
+    {"تحت الماب1", CFrame.new(0, 4, -495)},
+    {"تحت الماب2", CFrame.new(-343, 4, -613)},
+    {"الجزيرة", CFrame.new(-1925, 23, 127)},
+    {"ساحة الفنادق", CFrame.new(182, 4, 150)},
+    {"الجبل الثلجي", CFrame.new(-670, 251, 765)},
+    {"البنك", CFrame.new(2.28, 4.65, 254.58)},
+    {"محل الملابس", CFrame.new(-46.15, 4.65, 253.20)},
+    {"متجر الحيوانات", CFrame.new(-88.48, 22.05, 262.34)},
+    {"العيادة", CFrame.new(-53.58, 22.15, 265.61)},
+    {"الكافتيريا", CFrame.new(-97.12, 4.65, 254.99)}
 }
 
 for _, btn in ipairs(teleportButtons) do
@@ -8372,6 +8372,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
