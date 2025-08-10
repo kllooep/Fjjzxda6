@@ -1,0 +1,243 @@
+local Tab = Window:MakeTab({"لاق للسيرفر", "bomb"})
+
+
+-- Shutdown Custom Section
+local Section = Tab:AddSection({
+    Name = "لاق مؤقت("
+})
+
+local runLag = false
+local lagCoroutine
+
+Tab:AddToggle({
+    Name = "لاق باص",
+    Default = false,
+    Callback = function(Value)
+        runLag = Value
+
+        if runLag then
+            local Players = game:GetService("Players")  
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")  
+            local LocalPlayer = Players.LocalPlayer  
+
+            if not LocalPlayer then  
+                warn("LocalPlayer não encontrado.")  
+                return  
+            end  
+
+            local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()  
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart", 5)  
+            if not humanoidRootPart then  
+                warn("HumanoidRootPart não encontrado.")  
+                return  
+            end  
+
+            local function GetBus()  
+                local vehicles = workspace:FindFirstChild("Vehicles")  
+                if vehicles then  
+                    return vehicles:FindFirstChild(LocalPlayer.Name .. "Car")  
+                end  
+                return nil  
+            end  
+
+            local remoteEvent = ReplicatedStorage:FindFirstChild("RE")  
+            if not remoteEvent then  
+                warn("RemoteEvent 'RE' não encontrado em ReplicatedStorage.")  
+                return  
+            end  
+
+            if not remoteEvent:FindFirstChild("1Ca1r") then  
+                warn("Evento filho '1Ca1r' não encontrado dentro de 'RE'.")  
+                return  
+            end  
+
+            lagCoroutine = coroutine.wrap(function()  
+                while runLag do  
+                    local success, err = pcall(function()  
+                        humanoidRootPart.CFrame = CFrame.new(1118.81, 75.998, -1138.61)  
+                        local bus = GetBus()  
+                        remoteEvent["1Ca1r"]:FireServer("PickingCar", "SchoolBus")  
+                    end)  
+
+                    if not success then  
+                        warn("Erro ao executar lag loop: " .. tostring(err))  
+                        runLag = false  
+                        break  
+                    end  
+
+                    task.wait(0)
+                end  
+            end)  
+            lagCoroutine()
+        end
+    end
+})
+
+-- Lag Laptop Section
+local Section = Tab:AddSection({
+    Name = "لاق بالابتوب"
+})
+
+-- Toggle State for Lag Laptop
+local toggles = { LagLaptop = false }
+
+-- Function to Simulate Normal Click
+local function clickNormally(object)
+    local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
+    if clickDetector then
+        fireclickdetector(clickDetector)
+    end
+end
+
+-- Function to Lag Game with Laptop
+local function lagarJogoLaptop(laptopPath, maxTeleports)
+    if laptopPath then
+        local teleportCount = 0
+        while teleportCount < maxTeleports and toggles.LagLaptop do
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = laptopPath.CFrame
+            clickNormally(laptopPath)
+            teleportCount = teleportCount + 1
+            wait(0.0001)
+        end
+    else
+        warn("Laptop não encontrado.")
+    end
+end
+
+-- Lag Laptop Toggle
+Tab:AddToggle({
+    Name = "لاق بالابتوب",
+    Default = false,
+    Callback = function(state)
+        toggles.LagLaptop = state
+        if state then
+            local laptopPath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_GiveTools"):FindFirstChild("Laptop")
+            if laptopPath then
+                spawn(function()
+                    lagarJogoLaptop(laptopPath, 999999999)
+                end)
+            else
+                warn("Laptop não encontrado.")
+            end
+        else
+            print("Lag com Laptop desativado.")
+        end
+    end
+})
+
+-- Lag Laptop Paragraph
+Tab:AddParagraph({
+    "تشغيل لاق لابتوب",
+    "انتظر حوالي 20 ثانية ليبدأ ثأثير اللاق"
+})
+
+-- Lag Phone Section
+local Section = Tab:AddSection({
+    Name = "لاق بالهاتف"
+})
+
+-- Toggle State for Lag Phone
+toggles.LagPhone = false
+
+-- Function to Lag Game with Phone
+local function lagarJogoPhone(phonePath, maxTeleports)
+    if phonePath then
+        local teleportCount = 0
+        while teleportCount < maxTeleports and toggles.LagPhone do
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = phonePath.CFrame
+            clickNormally(phonePath)
+            teleportCount = teleportCount + 1
+            wait(0.01)
+        end
+    else
+        warn("Telefone não encontrado.")
+    end
+end
+
+-- Lag Phone Toggle
+Tab:AddToggle({
+    Name = "تشغيل اللاق",
+    Default = false,
+    Callback = function(state)
+        toggles.LagPhone = state
+        if state then
+            local phonePath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_CommercialStores"):FindFirstChild("CommercialStorage1"):FindFirstChild("Store"):FindFirstChild("Tools"):FindFirstChild("Iphone")
+            if phonePath then
+                spawn(function()
+                    lagarJogoPhone(phonePath, 999999)
+                end)
+            else
+                warn("Telefone não encontrado.")
+            end
+        else
+            print("Lag com Telefone desativado.")
+        end
+    end
+})
+
+-- Lag Phone Paragraph
+Tab:AddParagraph({
+    "انتظر حوالي 20 ثانية ليبدأ تأثير اللاق"
+})
+
+local Section = Tab:AddSection({
+    Name = "لاق قنابل"
+})
+
+
+local BombActive = false
+
+Tab:AddToggle({
+    Name = "تشغيل لاق القنابل",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            BombActive = true
+
+            local Player = game.Players.LocalPlayer
+            local Character = Player.Character or Player.CharacterAdded:Wait()
+            local RootPart = Character:WaitForChild("HumanoidRootPart")
+            local WorkspaceService = game:GetService("Workspace")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Bomb = WorkspaceService:WaitForChild("WorkspaceCom"):WaitForChild("001_CriminalWeapons"):WaitForChild("GiveTools"):WaitForChild("Bomb")
+
+            task.spawn(function()
+                while BombActive do
+                    if Bomb and RootPart then
+                        RootPart.CFrame = Bomb.CFrame
+                        fireclickdetector(Bomb.ClickDetector) -- Aciona o ClickDetector da bomba
+                        task.wait(0.00001) -- Delay mínimo para evitar travamentos
+                    else
+                        task.wait(0.0001) 
+                    end
+                end
+            end)
+
+            task.spawn(function()
+                while BombActive do
+                    if Bomb and RootPart then
+                        local VirtualInputManager = game:GetService("VirtualInputManager")
+                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, true, game, 0) 
+                        task.wait(1.5)
+                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, false, game, 0) 
+
+                        -- Executa o FireServer com o nome do jogador
+                        local args = {
+                            [1] = "Bomb" .. Player.Name -- Usa o nome do jogador atual
+                        }
+                        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Blo1wBomb1sServe1r"):FireServer(unpack(args))
+                    end
+                    task.wait(1.5) -- Intervalo de 1 segundo para clique e FireServer
+                end
+            end)
+        else
+            -- Desativando a funcionalidade
+            BombActive = false
+        end
+    end
+})
+
+Tab:AddParagraph({
+    "ملاحظات اللاق",
+    "انتظر حوالي35 ليبدأ اللاق"
+})
