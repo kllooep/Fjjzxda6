@@ -390,7 +390,7 @@ local Tab2 = Window:MakeTab({"Um", "chetab"})
 local Section = Tab2:AddSection({"Section"})
 local Paragraph = Tab2:AddParagraph({"Script fora do ar", "O script está fora do ar no momento"})
 
--- إنشاء تاب "الملابس"
+-- ==================== إنشاء تاب "الاكسسوارات" ====================
 local Tab = Window:MakeTab({
     Title = "الاكسسوارات",
     Icon = "shirt"
@@ -403,391 +403,227 @@ local function Wear(ItemId)
 end
 
 -- ==================== 1. قسم: ملابس ====================
-local ClothesSection = Tab:AddSection("ملابس")
+Tab:AddSection({ Name = "ملابس" })
 
-Tab:AddButton({
-    Name = "سترة اسود",
-    Callback = function()
-        Wear(89892588488089)
+local clothesOptions = {
+    "سترة اسود",
+    "سترة زهري كيوت",
+    "لبس كيوت 1",
+    "لبس كيوت 2",
+    "لبس كيوت 3",
+    "لبس كيوت 4",
+    "لبس كيوت 5"
+}
+
+local clothesIds = {
+    89892588488089,
+    99429391843259,
+    84110484978046,
+    75698084918608,
+    79220663432789,
+    78061398976556,
+    93303265717630
+}
+
+local selectedClothes = clothesOptions[1]
+
+Tab:AddDropdown({
+    Name = "اختر ملابس",
+    Options = clothesOptions,
+    Default = selectedClothes,
+    Callback = function(value)
+        selectedClothes = value
     end
 })
 
 Tab:AddButton({
-    Name = "سترة زهري كيوت",
+    Name = "تفعيل الملابس",
     Callback = function()
-        Wear(99429391843259)
-    end
-})
-
--- ==================== 2. قسم: ملابس كيوت ====================
-Tab:AddSection("ملابس كيوت")
-
-Tab:AddButton({
-    Name = "لبس كيوت 1",
-    Callback = function()
-        Wear(84110484978046)
-    end
-})
-
-Tab:AddButton({
-    Name = "لبس كيوت 2",
-    Callback = function()
-        Wear(75698084918608)
-    end
-})
-
-Tab:AddButton({
-    Name = "لبس كيوت 3",
-    Callback = function()
-        Wear(79220663432789)
-    end
-})
-
-Tab:AddButton({
-    Name = "لبس كيوت 4",
-    Callback = function()
-        Wear(78061398976556)
-    end
-})
-
-Tab:AddButton({
-    Name = "لبس كيوت 5",
-    Callback = function()
-        Wear(93303265717630)
+        for i, name in ipairs(clothesOptions) do
+            if name == selectedClothes then
+                Wear(clothesIds[i])
+                break
+            end
+        end
     end
 })
 
 
 
--- ==================== 7. قسم: القفازات ====================
-Tab:AddSection("قفازات")
+-- ==================== 2. قسم: القفازات ====================
+Tab:AddSection({ Name = "قفازات" })
 
-Tab:AddButton({
-    Name = "قفازات يد اسود مخطط",
-    Callback = function()
-        Wear(9239689111)
+local glovesOptions = {
+    "قفازات يد اسود مخطط",
+    "قفازات يد اسود عادي 1",
+    "قفازات يد اسود عادي 2",
+    "قفازات يد اسود عادي 3",
+    "قفازات يد ابيض مزخرف",
+    "قفازات يد زهري",
+    "قفازات يد احمر",
+    "اضافر اسود",
+    "قفازات يد قصير 1",
+    "قفازات يد قصير 2",
+    "قفازات يد قصير 3",
+    "قفازات يد قصير 4",
+    "قفازات يد قصير 5",
+    "قفازات يد قصير 6"
+}
+
+local glovesIds = {
+    9239689111,
+    10789914680,
+    11363898043,
+    10791180072,
+    10871965173,
+    10789939838,
+    12379676852,
+    12825022709,
+    12483105503,
+    12483109504,
+    11613796964,
+    10954568687,
+    11679250718,
+    11182924874
+}
+
+local selectedGloves = glovesOptions[1]
+
+Tab:AddDropdown({
+    Name = "اختر قفازات",
+    Options = glovesOptions,
+    Default = selectedGloves,
+    Callback = function(value)
+        selectedGloves = value
     end
 })
 
 Tab:AddButton({
-    Name = "قفازات يد اسود عادي 1",
+    Name = "تفعيل القفازات",
     Callback = function()
-        Wear(10789914680)
+        for i, name in ipairs(glovesOptions) do
+            if name == selectedGloves then
+                Wear(glovesIds[i])
+                break
+            end
+        end
     end
 })
 
-Tab:AddButton({
-    Name = "قفازات يد اسود عادي 2",
-    Callback = function()
-        Wear(11363898043)
-    end
-})
-
-Tab:AddButton({
-    Name = "قفازات يد اسود عادي 3",
-    Callback = function()
-        Wear(10791180072)
-    end
-})
-
-Tab:AddButton({
-    Name = "قفازات يد ابيض مزخرف",
-    Callback = function()
-        Wear(10871965173)
-    end
-})
-
-Tab:AddButton({
-    Name = "قفازات يد زهري",
-    Callback = function()
-        Wear(10789939838)
-    end
-})
-
-Tab:AddButton({
-    Name = "قفازات يد احمر",
-    Callback = function()
-        Wear(12379676852)
-    end
-})
-
-Tab:AddButton({
-    Name = "اضافر اسود",
-    Callback = function()
-        Wear(12825022709)
-    end
-})
-
-Tab:AddButton({
-    Name = "قفازات يد قصير 1",
-    Callback = function()
-        Wear(12483105503)
-    end
-})
-
-Tab:AddButton({
-    Name = "قفازات يد قصير 2",
-    Callback = function()
-        Wear(12483109504)
-    end
-})
-
-Tab:AddButton({
-    Name = "قفازات يد قصير 3",
-    Callback = function()
-        Wear(11613796964)
-    end
-})
-
-Tab:AddButton({
-    Name = "قفازات يد قصير 4",
-    Callback = function()
-        Wear(10954568687)
-    end
-})
-
-Tab:AddButton({
-    Name = "قفازات يد قصير 5",
-    Callback = function()
-        Wear(11679250718)
-    end
-})
-
-Tab:AddButton({
-    Name = "قفازات يد قصير 6",
-    Callback = function()
-        Wear(11182924874)
-    end
-})
 
 
 -- ==================== 3. قسم: الورد ====================
-Tab:AddSection("الورد")
+Tab:AddSection({ Name = "الورد" })
 
-Tab:AddButton({
-    Name = "ورد احمر وابيض",
-    Callback = function()
-        Wear(1246535644)
+local flowersOptions = {
+    "ورد احمر وابيض",
+    "ورد زهري",
+    "ورد سماوي",
+    "ورد اسود",
+    "ورد ابيض",
+    "ورد احمر",
+    "مسدس ماء لعبة"
+}
+
+local flowersIds = {
+    1246535644,
+    1246547853,
+    12465483807,
+    12465465333,
+    12465472210,
+    12465376206,
+    13135818072
+}
+
+local selectedFlowers = flowersOptions[1]
+
+Tab:AddDropdown({
+    Name = "اختر ورد",
+    Options = flowersOptions,
+    Default = selectedFlowers,
+    Callback = function(value)
+        selectedFlowers = value
     end
 })
 
 Tab:AddButton({
-    Name = "ورد زهري",
+    Name = "تفعيل الورد",
     Callback = function()
-        Wear(1246547853)
+        for i, name in ipairs(flowersOptions) do
+            if name == selectedFlowers then
+                Wear(flowersIds[i])
+                break
+            end
+        end
+    end
+})
+
+
+
+-- ==================== 4. قسم: الأحذية ====================
+Tab:AddSection({ Name = "الأحذية" })
+
+local shoesOptions = {
+    "حذاء الشيطان زهري",
+    "حذاء الشيطان احمر",
+    "حذاء الشيطان ابيض",
+    "حذاء الشيطان اسود",
+    "حذاء طويل اسود",
+    "حذاء طويل ابيض",
+    "حذاء طويل ابيض واحمر",
+    "حذاء القرش الاسود",
+    "حذاء قصير 1",
+    "حذاء قصير 2",
+    "حذاء قصير 3",
+    "حذاء قصير 4",
+    "حذاء قصير 5",
+    "حذاء قصير 6",
+    "حذاء قصير 7",
+    "حذاء قصير 8",
+    "حذاء قصير 9",
+    "حذاء قصير 10"
+}
+
+local shoesIds = {
+    14388006902,
+    14388019333,
+    14387999337,
+    14388004031,
+    11433864064,
+    11111279400,
+    11708887517,
+    13463375063,
+    11856087406,
+    14388001192,
+    12453321203,
+    14338742287,
+    14338742287, -- مكرر (موصوف في الكود الأصلي)
+    12296189693,
+    14338732820,
+    14338735628,
+    14338738380,
+    14338744418
+}
+
+local selectedShoes = shoesOptions[1]
+
+Tab:AddDropdown({
+    Name = "اختر حذاء",
+    Options = shoesOptions,
+    Default = selectedShoes,
+    Callback = function(value)
+        selectedShoes = value
     end
 })
 
 Tab:AddButton({
-    Name = "ورد سماوي",
+    Name = "تفعيل الحذاء",
     Callback = function()
-        Wear(12465483807)
+        for i, name in ipairs(shoesOptions) do
+            if name == selectedShoes then
+                Wear(shoesIds[i])
+                break
+            end
+        end
     end
 })
-
-Tab:AddButton({
-    Name = "ورد اسود",
-    Callback = function()
-        Wear(12465465333)
-    end
-})
-
-Tab:AddButton({
-    Name = "ورد ابيض",
-    Callback = function()
-        Wear(12465472210)
-    end
-})
-
-Tab:AddButton({
-    Name = "ورد احمر",
-    Callback = function()
-        Wear(12465376206)
-    end
-})
-
--- ==================== 4. قسم: مسدس ماء لعبة ==============
-Tab:AddButton({
-    Name = "مسدس ماء لعبة",
-    Callback = function()
-        Wear(13135818072)
-    end
-})
-
--- ==================== 5. قسم: الأشواك ====================
-Tab:AddSection("الأشواك")
-
-Tab:AddButton({
-    Name = "شوك 1",
-    Callback = function()
-        Wear(13463287248)
-    end
-})
-
-Tab:AddButton({
-    Name = "شوك 2",
-    Callback = function()
-        Wear(3463272877)
-    end
-})
-
-Tab:AddButton({
-    Name = "شوك 3",
-    Callback = function()
-        Wear(13463272877)
-    end
-})
-
-Tab:AddButton({
-    Name = "شوك 4",
-    Callback = function()
-        Wear(13463355223)
-    end
-})
-
-Tab:AddButton({
-    Name = "شوك 5",
-    Callback = function()
-        Wear(3463292395)
-    end
-})
-
-Tab:AddButton({
-    Name = "شوك 6",
-    Callback = function()
-        Wear(13463290106)
-    end
-})
-
--- ==================== 6. قسم: الأحذية ====================
-Tab:AddSection("الأحذية")
-
--- أحذية الشيطان
-Tab:AddButton({
-    Name = "حذاء الشيطان زهري",
-    Callback = function()
-        Wear(14388006902)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء الشيطان احمر",
-    Callback = function()
-        Wear(14388019333)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء الشيطان ابيض",
-    Callback = function()
-        Wear(14387999337)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء الشيطان اسود",
-    Callback = function()
-        Wear(14388004031)
-    end
-})
-
--- أحذية طويلة
-Tab:AddButton({
-    Name = "حذاء طويل اسود",
-    Callback = function()
-        Wear(11433864064)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء طويل ابيض",
-    Callback = function()
-        Wear(11111279400)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء طويل ابيض واحمر",
-    Callback = function()
-        Wear(11708887517)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء القرش الاسود",
-    Callback = function()
-        Wear(13463375063)
-    end
-})
-
--- أحذية قصيرة
-Tab:AddButton({
-    Name = "حذاء قصير 1",
-    Callback = function()
-        Wear(11856087406)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء قصير 2",
-    Callback = function()
-        Wear(14388001192)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء قصير 3",
-    Callback = function()
-        Wear(12453321203)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء قصير 4",
-    Callback = function()
-        Wear(14338742287)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء قصير 5",
-    Callback = function()
-        Wear(14338742287) -- نفس الرقم (ربما نسخة)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء قصير 6",
-    Callback = function()
-        Wear(12296189693)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء قصير 7",
-    Callback = function()
-        Wear(14338732820)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء قصير 8",
-    Callback = function()
-        Wear(14338735628)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء قصير 9",
-    Callback = function()
-        Wear(14338738380)
-    end
-})
-
-Tab:AddButton({
-    Name = "حذاء قصير 10",
-    Callback = function()
-        Wear(14338744418)
-    end
-})
-
