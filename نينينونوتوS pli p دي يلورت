@@ -1,0 +1,28 @@
+Tab:AddTextbox({
+    IsMobile = false,
+    IsPC = false,
+    Name = "نص الرسالة",
+    Desc = "ادخل الرسالة هنا",
+    Default = "",
+    TextDisappear = false,  -- يختفي النص عند الإرسال؟ لا
+    Flag = "textboxsave",
+    Callback = function(Value)
+        playerInput1 = Value  -- حفظ النص في المتغير بدل الطباعة
+    end    
+})
+
+Tab:AddButton({
+    IsMobile = false,
+    IsPC = false,
+    Name = "إرسال الرسالة",
+    Desc = "يرسل الرسالة المكتوبة في TextBox",
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then return end
+
+       local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r" .. playerInput1
+        channel:SendAsync(message)
+    end
+})
