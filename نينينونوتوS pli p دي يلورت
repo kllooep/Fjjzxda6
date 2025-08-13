@@ -6272,41 +6272,263 @@ function startAutoUnban()
 end
 
 
-local TabChat = Window:MakeTab({
- IsMobile = false,
- IsPC = false,
-	Name = "[EXTRA]دردشة",
-	Icon = "rbxassetid://4483345998"
+-- إنشاء التبويب
+local TabMusic = Window:MakeTab({
+    Name = "اغاني مجانية",
+    Icon = "rbxassetid://83114982417764" -- يمكنك تغيير الأيقونة
 })
 
+-- قائمة الصوتيات
+local audios = {
+    {Name = "ياميتي كوداساي", ID = 108494476595033},
+    {Name = "صراخ", ID = 5710016194},
+    {Name = "مخيف", ID = 85435253347146},
+    {Name = "صوت عالي", ID = 6855150757},
+    {Name = "تشويش", ID = 120034877160791},
+    {Name = "صراخ 2", ID = 110637995610528},
+    {Name = "ماينكرافت", ID = 116214940486087},
+    {Name = "لعبان نفس", ID = 137177653817621},
+    {Name = "Deitei Um Ave Maria Doido", ID = 128669424001766},
+    {Name = "Mandrake Detected", ID = 9068077052},
+    {Name = "ااااااااع", ID = 80156405968805},
+    {Name = "اااااااه", ID = 9084006093},
+    {Name = "امونق اس", ID = 6651571134},
+    {Name = "سوس", ID = 6701126635},
+    {Name = "Gritao AAAAAAAAA", ID = 5853668794},
+    {Name = "ااااااه", ID = 7056720271},
+    {Name = "سوس٢", ID = 7153419575},
+    {Name = "Sonic.exe", ID = 2496367477},
+    {Name = "Tubers93 1", ID = 270145703},
+    {Name = "Tubers93 2", ID = 18131809532},
+    {Name = "John's Laugh", ID = 130759239},
+    {Name = "Nao sei KKKK", ID = 6549021381},
+    {Name = "Grito", ID = 80156405968805},
+    {Name = "audio estranho", ID = 7705506391},
+    {Name = "اااع", ID = 7772283448},
+    {Name = "Gay, گي", ID = 18786647417},
+    {Name = "Bat Hit", ID = 7129073354},
+    {Name = "Nuclear Siren", ID = 675587093},
+    {Name = "Sem ideia de nome KK", ID = 7520729342},
+    {Name = "Grito 2", ID = 91412024101709},
+    {Name = "Estora tímpano", ID = 268116333},
+    {Name = "[ Content Deleted ]", ID = 106835463235574},
+    {Name = "Toma Jack", ID = 132603645477541},
+    {Name = "Pede ifood pede", ID = 133843750864059},
+    {Name = "I Ghost The down", ID = 84663543883498},
+    {Name = "Compre OnLine Na shoope", ID = 8747441609},
+    {Name = "Uh Que Nojo", ID = 103440368630269},
+    {Name = "Sai dai Lava Prato", ID = 101232400175829},
+    {Name = "Seloko num compensa", ID = 78442476709262},
+    {Name = "(NEW) Chimpanzini Bananini Funk", ID = 137148228908678},
+    {Name = "(NEW) Candyland - Tobu", ID = 118939739460633},
+    {Name = "(NEW) نغمة ترند", ID = 100656590080703},
+    {Name = "(NEW) لا أفهم شيئًا", ID = 7962533987}
+}
 
-TabChat:AddTextbox({
-    IsMobile = false,
-    IsPC = false,
-    Name = "نص الرسالة",
-    Desc = "ادخل الرسالة هنا",
-    Default = "",
-    TextDisappear = false,  -- يختفي النص عند الإرسال؟ لا
-    Flag = "textboxsave",
-    Callback = function(Value)
-        playerInput1 = Value  -- حفظ النص في المتغير بدل الطباعة
-    end    
+-- متغير لتخزين الـ ID المختار
+local selectedAudioID = nil
+
+-- ==================== قسم: اختيار الصوت ====================
+TabMusic:AddSection({
+    Name = "تشغيل الصوت للكل"
 })
 
-TabChat:AddButton({
-    IsMobile = false,
-    IsPC = false,
-    Name = "إرسال الرسالة",
-    Callback = function()
-        local TextChatService = game:GetService("TextChatService")
-        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
-        local channel = TextChatService.TextChannels.RBXGeneral
-        if not channel then return end
-
-       local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r" .. playerInput1
-        channel:SendAsync(message)
+-- مربع إدخال لكتابة ID الصوت
+TabMusic:AddTextbox({
+    Name = "ادخال صوت الموسيقى",
+    Desc = "اكتب ID الصوت",
+    PlaceholderText = "ادخل الـ ID",
+    TextDisappear = true,
+    Callback = function(value)
+        local id = tonumber(value)
+        if id then
+            selectedAudioID = id
+        else
+            warn("الرجاء إدخال رقم صحيح!")
+        end
     end
 })
+
+-- قائمة منسدلة لاختيار الصوت من القائمة
+local audioNames = {}
+for _, audio in ipairs(audios) do
+    table.insert(audioNames, audio.Name)
+end
+
+TabMusic:AddDropdown({
+    Name = "اختار صوت",
+    Desc = "اختيار صوت من القائمة",
+    Options = audioNames,
+    Default = audioNames[1],
+    Flag = "selected_audio",
+    Callback = function(value)
+        for _, audio in ipairs(audios) do
+            if audio.Name == value then
+                selectedAudioID = audio.ID
+                break
+            end
+        end
+    end
+})
+
+-- ==================== قسم: تكرار الصوت ====================
+TabMusic:AddSection({
+    Name = "تكرار أو سبام الصوت"
+})
+
+-- متغير للتحكم في التكرار
+local audioLoop = false
+
+-- وظيفة تشغيل الصوت بشكل متكرر
+local function playLoopedAudio()
+    while audioLoop do
+        if selectedAudioID then
+            local args = {
+                [1] = workspace,
+                [2] = selectedAudioID,
+                [3] = 1
+            }
+            local GunSound = game:GetService("ReplicatedStorage"):FindFirstChild("1Gu1nSound1s", true)
+            if GunSound then
+                GunSound:FireServer(unpack(args))
+            end
+
+            -- تشغيل من الجهة العميلة (لسماعه فورًا)
+            local sound = Instance.new("Sound")
+            sound.SoundId = "rbxassetid://" .. selectedAudioID
+            sound.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+            sound:Play()
+            task.wait(0.5)
+            sound:Destroy()
+        else
+            warn("لم يتم اختيار صوت!")
+        end
+    end
+end
+
+-- زر تبديل لتفعيل/إيقاف التكرار
+TabMusic:AddToggle({
+    Name = "تفعيل اغنية تلقائي",
+    Desc = "سبام اغنية",
+    Default = false,
+    Flag = "audio_loop",
+    Callback = function(value)
+        audioLoop = value
+        if audioLoop and selectedAudioID then
+            task.spawn(playLoopedAudio)
+        end
+    end
+})
+
+-- معلومات
+TabMusic:AddParagraph("Info", "تكرار الصوت (كل اللاعبين يسمعوه)")
+
+-- ==================== قسم: تشغيل مرة واحدة ====================
+TabMusic:AddSection({
+    Name = "تشغيل الصوت (مرة واحدة)"
+})
+
+-- وظيفة تشغيل الصوت لمرة واحدة
+local function playAudio()
+    if selectedAudioID then
+        local args = {
+            [1] = workspace,
+            [2] = selectedAudioID,
+            [3] = 1
+        }
+        local GunSound = game:GetService("ReplicatedStorage"):FindFirstChild("1Gu1nSound1s", true)
+        if GunSound then
+            GunSound:FireServer(unpack(args))
+        end
+
+        local sound = Instance.new("Sound")
+        sound.SoundId = "rbxassetid://" .. selectedAudioID
+        sound.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+        sound:Play()
+        task.delay(5, function() sound:Destroy() end) -- تنظيف بعد 5 ثواني
+    else
+        splib:MakeNotification({
+            Name = "خطأ",
+            Content = "لم يتم اختيار صوت!",
+            Image = "rbxassetid://6026568198",
+            Time = 5
+        })
+    end
+end
+
+-- زر تشغيل الصوت لمرة واحدة
+TabMusic:AddButton({
+    Name = "تشغيل",
+    Desc = "تشغيل الصوت المحدد",
+    Callback = function()
+        playAudio()
+    end
+})
+
+-- ==================== قسم: صوت قوي للجميع ====================
+TabMusic:AddSection({
+    Name = "صوت قوي للجميع"
+})
+
+-- ID ثابت للصوت القوي
+local audioID = 6314880174
+
+-- وظيفة تشغيل الصوت من الجهة العميلة
+local function Audio_All_ClientSide(ID)
+    if type(ID) ~= "number" then
+        warn("ID غير صالح!")
+        return
+    end
+
+    local folder = workspace:FindFirstChild("Audio all client") or Instance.new("Folder")
+    folder.Name = "Audio all client"
+    folder.Parent = workspace
+
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://" .. ID
+    sound.Volume = 1
+    sound.Looped = false
+    sound.Parent = folder
+    sound:Play()
+
+    task.delay(1, function()
+        if sound and sound.Parent then
+            sound:Destroy()
+        end
+    end)
+end
+
+-- وظيفة تشغيل الصوت من الخادم
+local function Audio_All_ServerSide(ID)
+    if type(ID) ~= "number" then return end
+    local event = game:GetService("ReplicatedStorage"):FindFirstChild("1Gu1nSound1s", true)
+    if event then
+        event:FireServer(workspace, ID, 1)
+    end
+end
+
+-- زر تبديل لسبام الصوت القوي
+TabMusic:AddToggle({
+    Name = "صوت يشگ الاذان",
+    Desc = "صوت قوي متكرر",
+    Default = false,
+    Flag = "audio_spam",
+    Callback = function(value)
+        getgenv().Audio_All_loop_fast = value
+        while getgenv().Audio_All_loop_fast do
+            Audio_All_ServerSide(audioID)
+            task.spawn(function()
+                Audio_All_ClientSide(audioID)
+            end)
+            task.wait(0.03)
+        end
+    end
+})
+
+-- معلومات أخيرة
+TabMusic:AddParagraph("Info", "تشغيل صوت قوي للجميع")
+
+
 
 local Tab = Window:MakeTab({"الاماكن", "tp"}) -- Nome do ícone: 'portal' em minúsculo para teleporte
 
