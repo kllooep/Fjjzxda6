@@ -1,3 +1,27 @@
+local splib = loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd0/SP_Hub/refs/heads/main/splibv2"))()
+
+local Window = splib:MakeWindow({
+ Name = "NetroZ  Hub",
+ SubTitle = "By Rami",
+ HidePremium = false,
+ SaveConfig = true,
+ Setting = true,
+ RainbowMainFrame = false,
+ RainbowTitle = false,
+ RainbowSubTitle = false,
+ ToggleIcon = "rbxassetid://83114982417764",
+ ConfigFolder = "SP_Library",
+ CloseCallback = true
+})
+
+local Tab = Window:MakeTab({
+ IsMobile = false,
+ IsPC = false,
+	Name = "Tab 1",
+	Icon = "rbxassetid://4483345998"
+})
+
+
 Tab:AddTextbox({
     IsMobile = false,
     IsPC = false,
@@ -15,7 +39,6 @@ Tab:AddButton({
     IsMobile = false,
     IsPC = false,
     Name = "إرسال الرسالة",
-    Desc = "يرسل الرسالة المكتوبة في TextBox",
     Callback = function()
         local TextChatService = game:GetService("TextChatService")
         if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
