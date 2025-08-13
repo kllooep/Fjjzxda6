@@ -1268,6 +1268,158 @@ local blur = Instance.new("BlurEffect", Lighting)
 blur.Size = 0
 end})
 
+
+-- منع أي تزامن (synchronization issue)
+task.wait(0.1)
+
+-- إنشاء التبويب "شات مميز"
+local ChatTab = Window:MakeTab({
+    Name = "[EXTRA] شات مميز",
+    Icon = "rbxassetid://10723415903",
+    IsPC = false,
+    IsMobile = false
+})
+
+-- تأكد من إنشاء التبويب قبل المتابعة
+if not ChatTab then
+    warn("فشل في إنشاء التبويب 'ChatTab'")
+    return
+end
+
+-- متغيرات لتخزين المدخلات
+local playerInput1 = ""
+local playerInput2 = ""
+local playerInput3 = ""
+
+-- ==================== قسم: إرسال رسالة عادية ====================
+ChatTab:AddSection({
+    Name = "إرسال رسالة تعدلها بكيفك",
+    IsPC = false,
+    IsMobile = false
+})
+
+ChatTab:AddTextbox({
+    Name = "نص الرسالة",
+    Desc = "اكتب الرسالة التي تريد إرسالها",
+    PlaceholderText = "اكتب الرسالة هنا",
+    TextDisappear = false,
+    Flag = "chat_custom_text",
+    Callback = function(text)
+        playerInput1 = tostring(text)
+    end
+})
+
+ChatTab:AddButton({
+    Name = "إرسال الرسالة",
+    Desc = "إرسال رسالة مخصصة",
+    IsPC = false,
+    IsMobile = false,
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then
+            warn("نوع الشات غير مدعوم")
+            return
+        end
+
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then
+            warn("قناة الشات غير موجودة")
+            return
+        end
+
+        local message = string.rep("\r", 300) .. playerInput1
+        pcall(function()
+            channel:SendAsync(message)
+        end)
+    end
+})
+
+-- ==================== قسم: رسالة كـ صاحب الماب ====================
+ChatTab:AddSection({
+    Name = "إرسال رسالة كـ صاحب الماب",
+    IsPC = false,
+    IsMobile = false
+})
+
+ChatTab:AddTextbox({
+    Name = "اكتب الرسالة",
+    Desc = "الرسالة التي تريد إرسالها كـ صاحب الماب",
+    PlaceholderText = "اكتب الرسالة",
+    TextDisappear = false,
+    Flag = "chat_owner_text",
+    Callback = function(text)
+        playerInput2 = tostring(text)
+    end
+})
+
+ChatTab:AddButton({
+    Name = "إرسال الرسالة",
+    Desc = "تظهر كأنها من صاحب الماب",
+    IsPC = false,
+    IsMobile = false,
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then
+            warn("نوع الشات غير مدعوم")
+            return
+        end
+
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then
+            warn("قناة الشات غير موجودة")
+            return
+        end
+
+        local message = string.rep("\r", 300) .. "[صاحب الماب]: " .. playerInput2
+        pcall(function()
+            channel:SendAsync(message)
+        end)
+    end
+})
+
+-- ==================== قسم: رسالة كـ SysAdmin (XVIP) ====================
+ChatTab:AddSection({
+    Name = "[XVIP] إرسال رسالة",
+    IsPC = false,
+    IsMobile = false
+})
+
+ChatTab:AddTextbox({
+    Name = "اكتب الرسالة",
+    Desc = "الرسالة التي تريد إرسالها كـ SysAdmin",
+    PlaceholderText = "اكتب الرسالة",
+    TextDisappear = false,
+    Flag = "chat_xvip_text",
+    Callback = function(text)
+        playerInput3 = tostring(text)
+    end
+})
+
+ChatTab:AddButton({
+    Name = "إرسال الرسالة",
+    Desc = "تظهر كأنها من SysAdmin",
+    IsPC = false,
+    IsMobile = false,
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then
+            warn("نوع الشات غير مدعوم")
+            return
+        end
+
+        local channel = TextChatService.TextChannels.RBXGeneral
+        if not channel then
+            warn("قناة الشات غير موجودة")
+            return
+        end
+
+        local message = string.rep("\r", 300) .. "[XVIP]: " .. playerInput3
+        pcall(function()
+            channel:SendAsync(message)
+        end)
+    end
+})
+
 local TrollTab = Window:MakeTab({ Title = "سكربتات تخريب", Icon = "rbxassetid://13364900349" })
 
 
