@@ -5526,6 +5526,752 @@ workspace.CurrentCamera.CameraSubject=game.Players.LocalPlayer.Character:WaitFor
   end
 })
 
+local Tab = Window:MakeTab({"السكن", "rbxassetid://10734952036"})
+
+Tab:AddSection({ Name = "نسخ السكن" })
+
+
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+
+local Target = nil
+
+-- FunÃ§Ã£o para obter os nomes dos jogadores
+local function GetPlayerNames()
+    local PlayerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        table.insert(PlayerNames, player.Name)
+    end
+    return PlayerNames
+end
+
+-- Dropdown de seleÃ§Ã£o de jogador
+local Dropdown = Tab:AddDropdown({
+    Name = "اختار لاعب",
+    Options = GetPlayerNames(),
+    Default = Target,
+    Callback = function(Value)
+        Target = Value
+    end
+})
+
+-- Atualiza opÃ§Ãµes do dropdown quando alguÃ©m entra ou sai
+local function UpdateDropdown()
+    Dropdown:Refresh(GetPlayerNames(), true)
+end
+
+Players.PlayerAdded:Connect(UpdateDropdown)
+Players.PlayerRemoving:Connect(UpdateDropdown)
+
+Tab:AddButton({
+    Name = "نسخ السكن",
+    Callback = function()
+        if not Target then return end
+
+        local LP = Players.LocalPlayer
+        local LChar = LP.Character
+        local TPlayer = Players:FindFirstChild(Target)
+
+        if TPlayer and TPlayer.Character then
+            local LHumanoid = LChar and LChar:FindFirstChildOfClass("Humanoid")
+            local THumanoid = TPlayer.Character:FindFirstChildOfClass("Humanoid")
+
+            if LHumanoid and THumanoid then
+                -- RESETAR LOCALPLAYER
+                local LDesc = LHumanoid:GetAppliedDescription()
+
+                -- Remover acessÃ³rios, roupas e face atuais
+                for _, acc in ipairs(LDesc:GetAccessories(true)) do
+                    if acc.AssetId and tonumber(acc.AssetId) then
+                        Remotes.Wear:InvokeServer(tonumber(acc.AssetId))
+                        task.wait(0.2)
+                    end
+                end
+
+                if tonumber(LDesc.Shirt) then
+                    Remotes.Wear:InvokeServer(tonumber(LDesc.Shirt))
+                    task.wait(0.2)
+                end
+
+                if tonumber(LDesc.Pants) then
+                    Remotes.Wear:InvokeServer(tonumber(LDesc.Pants))
+                    task.wait(0.2)
+                end
+
+                if tonumber(LDesc.Face) then
+                    Remotes.Wear:InvokeServer(tonumber(LDesc.Face))
+                    task.wait(0.2)
+                end
+
+                -- COPIAR DO JOGADOR ALVO
+                local PDesc = THumanoid:GetAppliedDescription()
+
+                -- Enviar partes do corpo
+                local argsBody = {
+                    [1] = {
+                        [1] = PDesc.Torso,
+                        [2] = PDesc.RightArm,
+                        [3] = PDesc.LeftArm,
+                        [4] = PDesc.RightLeg,
+                        [5] = PDesc.LeftLeg,
+                        [6] = PDesc.Head
+                    }
+                }
+                Remotes.ChangeCharacterBody:InvokeServer(unpack(argsBody))
+                task.wait(0.5)
+
+                if tonumber(PDesc.Shirt) then
+                    Remotes.Wear:InvokeServer(tonumber(PDesc.Shirt))
+                    task.wait(0.3)
+                end
+
+                if tonumber(PDesc.Pants) then
+                    Remotes.Wear:InvokeServer(tonumber(PDesc.Pants))
+                    task.wait(0.3)
+                end
+
+                if tonumber(PDesc.Face) then
+                    Remotes.Wear:InvokeServer(tonumber(PDesc.Face))
+                    task.wait(0.3)
+                end
+
+                for _, v in ipairs(PDesc:GetAccessories(true)) do
+                    if v.AssetId and tonumber(v.AssetId) then
+                        Remotes.Wear:InvokeServer(tonumber(v.AssetId))
+                        task.wait(0.3)
+                    end
+                end
+
+                local SkinColor = TPlayer.Character:FindFirstChild("Body Colors")
+                if SkinColor then
+                    Remotes.ChangeBodyColor:FireServer(tostring(SkinColor.HeadColor))
+                    task.wait(0.3)
+                end
+
+                if tonumber(PDesc.IdleAnimation) then
+                    Remotes.Wear:InvokeServer(tonumber(PDesc.IdleAnimation))
+                    task.wait(0.3)
+                end
+
+                -- Nome, bio e cor
+                local Bag = TPlayer:FindFirstChild("PlayersBag")
+                if Bag then
+                    if Bag:FindFirstChild("RPName") and Bag.RPName.Value ~= "" then
+                        Remotes.RPNameText:FireServer("RolePlayName", Bag.RPName.Value)
+                        task.wait(0.3)
+                    end
+                    if Bag:FindFirstChild("RPBio") and Bag.RPBio.Value ~= "" then
+                        Remotes.RPNameText:FireServer("RolePlayBio", Bag.RPBio.Value)
+                        task.wait(0.3)
+                    end
+                    if Bag:FindFirstChild("RPNameColor") then
+                        Remotes.RPNameColor:FireServer("PickingRPNameColor", Bag.RPNameColor.Value)
+                        task.wait(0.3)
+                    end
+                    if Bag:FindFirstChild("RPBioColor") then
+                        Remotes.RPNameColor:FireServer("PickingRPBioColor", Bag.RPBioColor.Value)
+                        task.wait(0.3)
+                    end
+                end
+            end
+        end
+    end
+})
+
+Tab:AddButton({
+    Name = "نسخ سكن لاعب قريب",
+    Callback = function()
+        local LP = Players.LocalPlayer
+        local LChar = LP.Character
+        if not LChar or not LChar:FindFirstChild("HumanoidRootPart") then return end
+
+        -- Localizar o jogador mais prÃ³ximo
+        local closestPlayer, closestDistance = nil, math.huge
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr ~= LP and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local dist = (LChar.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+                if dist < closestDistance then
+                    closestDistance = dist
+                    closestPlayer = plr
+                end
+            end
+        end
+
+        -- Usar o jogador mais prÃ³ximo como Target
+        if not closestPlayer then return end
+        local TPlayer = closestPlayer
+
+        -- (cÃ³digo de cÃ³pia do avatar igual ao seu original, substituindo "Target" por TPlayer.Name)
+        -- [REUTILIZA A MESMA LÃ“GICA, SÃ“ TROCA A PARTE DO TARGET]
+        local LHumanoid = LChar and LChar:FindFirstChildOfClass("Humanoid")
+        local THumanoid = TPlayer.Character:FindFirstChildOfClass("Humanoid")
+
+        if LHumanoid and THumanoid then
+            local LDesc = LHumanoid:GetAppliedDescription()
+
+            for _, acc in ipairs(LDesc:GetAccessories(true)) do
+                if acc.AssetId and tonumber(acc.AssetId) then
+                    Remotes.Wear:InvokeServer(tonumber(acc.AssetId))
+                    task.wait(0.2)
+                end
+            end
+
+            if tonumber(LDesc.Shirt) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Shirt))
+                task.wait(0.2)
+            end
+
+            if tonumber(LDesc.Pants) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Pants))
+                task.wait(0.2)
+            end
+
+            if tonumber(LDesc.Face) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Face))
+                task.wait(0.2)
+            end
+
+            local PDesc = THumanoid:GetAppliedDescription()
+
+            local argsBody = {
+                [1] = {
+                    [1] = PDesc.Torso,
+                    [2] = PDesc.RightArm,
+                    [3] = PDesc.LeftArm,
+                    [4] = PDesc.RightLeg,
+                    [5] = PDesc.LeftLeg,
+                    [6] = PDesc.Head
+                }
+            }
+            Remotes.ChangeCharacterBody:InvokeServer(unpack(argsBody))
+            task.wait(0.5)
+
+            if tonumber(PDesc.Shirt) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Shirt))
+                task.wait(0.3)
+            end
+
+            if tonumber(PDesc.Pants) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Pants))
+                task.wait(0.3)
+            end
+
+            if tonumber(PDesc.Face) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Face))
+                task.wait(0.3)
+            end
+
+            for _, v in ipairs(PDesc:GetAccessories(true)) do
+                if v.AssetId and tonumber(v.AssetId) then
+                    Remotes.Wear:InvokeServer(tonumber(v.AssetId))
+                    task.wait(0.3)
+                end
+            end
+
+            local SkinColor = TPlayer.Character:FindFirstChild("Body Colors")
+            if SkinColor then
+                Remotes.ChangeBodyColor:FireServer(tostring(SkinColor.HeadColor))
+                task.wait(0.3)
+            end
+
+            if tonumber(PDesc.IdleAnimation) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.IdleAnimation))
+                task.wait(0.3)
+            end
+
+            local Bag = TPlayer:FindFirstChild("PlayersBag")
+            if Bag then
+                if Bag:FindFirstChild("RPName") and Bag.RPName.Value ~= "" then
+                    Remotes.RPNameText:FireServer("RolePlayName", Bag.RPName.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPBio") and Bag.RPBio.Value ~= "" then
+                    Remotes.RPNameText:FireServer("RolePlayBio", Bag.RPBio.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPNameColor") then
+                    Remotes.RPNameColor:FireServer("PickingRPNameColor", Bag.RPNameColor.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPBioColor") then
+                    Remotes.RPNameColor:FireServer("PickingRPBioColor", Bag.RPBioColor.Value)
+                    task.wait(0.3)
+                end
+            end
+        end
+    end
+})
+
+Tab:AddButton({
+    Name = "نسخ لاعب عشوائي",
+    Callback = function()
+        local LP = Players.LocalPlayer
+        local LChar = LP.Character
+        if not LChar then return end
+
+        -- Escolher um player aleatÃ³rio (exceto o prÃ³prio)
+        local otherPlayers = {}
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr ~= LP and plr.Character then
+                table.insert(otherPlayers, plr)
+            end
+        end
+        if #otherPlayers == 0 then return end
+
+        local TPlayer = otherPlayers[math.random(1, #otherPlayers)]
+
+        -- Mesmo cÃ³digo de cÃ³pia
+        local LHumanoid = LChar:FindFirstChildOfClass("Humanoid")
+        local THumanoid = TPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if LHumanoid and THumanoid then
+            local LDesc = LHumanoid:GetAppliedDescription()
+            for _, acc in ipairs(LDesc:GetAccessories(true)) do
+                if acc.AssetId and tonumber(acc.AssetId) then
+                    Remotes.Wear:InvokeServer(tonumber(acc.AssetId))
+                    task.wait(0.2)
+                end
+            end
+            if tonumber(LDesc.Shirt) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Shirt))
+                task.wait(0.2)
+            end
+            if tonumber(LDesc.Pants) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Pants))
+                task.wait(0.2)
+            end
+            if tonumber(LDesc.Face) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Face))
+                task.wait(0.2)
+            end
+
+            local PDesc = THumanoid:GetAppliedDescription()
+            local argsBody = {
+                [1] = {
+                    [1] = PDesc.Torso,
+                    [2] = PDesc.RightArm,
+                    [3] = PDesc.LeftArm,
+                    [4] = PDesc.RightLeg,
+                    [5] = PDesc.LeftLeg,
+                    [6] = PDesc.Head
+                }
+            }
+            Remotes.ChangeCharacterBody:InvokeServer(unpack(argsBody))
+            task.wait(0.5)
+
+            if tonumber(PDesc.Shirt) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Shirt))
+                task.wait(0.3)
+            end
+            if tonumber(PDesc.Pants) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Pants))
+                task.wait(0.3)
+            end
+            if tonumber(PDesc.Face) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Face))
+                task.wait(0.3)
+            end
+            for _, v in ipairs(PDesc:GetAccessories(true)) do
+                if v.AssetId and tonumber(v.AssetId) then
+                    Remotes.Wear:InvokeServer(tonumber(v.AssetId))
+                    task.wait(0.3)
+                end
+            end
+
+            local SkinColor = TPlayer.Character:FindFirstChild("Body Colors")
+            if SkinColor then
+                Remotes.ChangeBodyColor:FireServer(tostring(SkinColor.HeadColor))
+                task.wait(0.3)
+            end
+            if tonumber(PDesc.IdleAnimation) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.IdleAnimation))
+                task.wait(0.3)
+            end
+
+            local Bag = TPlayer:FindFirstChild("PlayersBag")
+            if Bag then
+                if Bag:FindFirstChild("RPName") and Bag.RPName.Value ~= "" then
+                    Remotes.RPNameText:FireServer("RolePlayName", Bag.RPName.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPBio") and Bag.RPBio.Value ~= "" then
+                    Remotes.RPNameText:FireServer("RolePlayBio", Bag.RPBio.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPNameColor") then
+                    Remotes.RPNameColor:FireServer("PickingRPNameColor", Bag.RPNameColor.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPBioColor") then
+                    Remotes.RPNameColor:FireServer("PickingRPBioColor", Bag.RPBioColor.Value)
+                    task.wait(0.3)
+                end
+            end
+        end
+    end
+})
+
+-- Definir cores para o efeito RGB
+local colors = {
+    Color3.new(1, 0, 0),       -- Vermelho
+    Color3.new(0, 1, 0),       -- Verde
+    Color3.new(0, 0, 1),       -- Azul
+    Color3.new(1, 1, 0),       -- Amarelo
+    Color3.new(0, 1, 1),       -- Ciano
+    Color3.new(1, 0, 1)        -- Magenta
+}
+
+-- Variável para controlar o estado do toggle House RGB
+local isHouseRGBActive = false
+
+-- Função para alterar a cor da casa
+local function changeColor()
+    local replicatedStorage = game:GetService("ReplicatedStorage")
+    local remoteEvent = replicatedStorage:FindFirstChild("RE") and replicatedStorage.RE:FindFirstChild("1Player1sHous1e")
+    
+    if not remoteEvent then
+        warn("RemoteEvent '1Player1sHous1e' não encontrado.")
+        return
+    end
+
+    while isHouseRGBActive do
+        for _, color in ipairs(colors) do
+            if not isHouseRGBActive then return end
+            local args = {
+                [1] = "ColorPickHouse",
+                [2] = color
+            }
+            pcall(function()
+                remoteEvent:FireServer(unpack(args))
+            end)
+            task.wait(0.8)
+        end
+    end
+end
+
+local function toggleHouseRGB(state)
+    isHouseRGBActive = state
+    if isHouseRGBActive then
+        print("House RGB Activated")
+        spawn(changeColor)
+    else
+        print("House RGB Deactivated")
+    end
+end
+
+-- Variáveis globais
+local isUnbanActive = false
+local HouseTab = Window:MakeTab({"بيت", "home"})
+local SelectHouse = nil
+local NoclipDoor = nil
+
+-- Função para obter lista de casas
+local function getHouseList()
+    local Tabela = {}
+    local lots = workspace:FindFirstChild("001_Lots")
+    if lots then
+        for _, House in ipairs(lots:GetChildren()) do
+            if House.Name ~= "For Sale" and House:IsA("Model") then
+                table.insert(Tabela, House.Name)
+            end
+        end
+    end
+    return Tabela
+end
+
+-- Dropdown para selecionar casas
+pcall(function()
+    HouseTab:AddDropdown({
+        Name = "اختار بيت",
+        Options = getHouseList(),
+        Default = "...",
+        Callback = function(Value)
+            SelectHouse = Value
+            if NoclipDoor then
+                NoclipDoor:Set(false)
+            end
+            print("Casa selecionada: " .. tostring(Value))
+        end
+    })
+end)
+
+-- Função para atualizar a lista de casas
+local function DropdownHouseUpdate()
+    local Tabela = getHouseList()
+    print("DropdownHouseUpdate called. Houses found:", #Tabela)
+    pcall(function()
+        HouseTab:ClearDropdown("Selecione a Casa") -- Tentar limpar dropdown, se suportado
+        HouseTab:AddDropdown({
+            Name = "اختيار بيت",
+            Options = Tabela,
+            Default = "...",
+            Callback = function(Value)
+                SelectHouse = Value
+                if NoclipDoor then
+                    NoclipDoor:Set(false)
+                end
+            end
+        })
+    end)
+end
+
+-- Inicializar dropdown
+pcall(DropdownHouseUpdate)
+
+-- Botão para atualizar lista de casas
+pcall(function()
+    HouseTab:AddButton({
+        Name = "تحديث قائمة البيوت",
+        Callback = function()
+            print("Atualizar Lista de Casas button clicked.")
+            pcall(DropdownHouseUpdate)
+        end
+    })
+end)
+
+-- Botão para teleportar para casa
+pcall(function()
+    HouseTab:AddButton({
+        Name = "انتقال للبيت",
+        Callback = function()
+            local House = workspace["001_Lots"]:FindFirstChild(tostring(SelectHouse))
+            if House and game.Players.LocalPlayer.Character then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(House.WorldPivot.Position)
+            else
+                print("Casa não encontrada: " .. tostring(SelectHouse))
+            end
+        end
+    })
+end)
+
+-- Botão para teleportar para cofre
+pcall(function()
+    HouseTab:AddButton({
+        Name = "انتقال للخزنة",
+        Callback = function()
+            local House = workspace["001_Lots"]:FindFirstChild(tostring(SelectHouse))
+            if House and House:FindFirstChild("HousePickedByPlayer") and game.Players.LocalPlayer.Character then
+                local safe = House.HousePickedByPlayer.HouseModel:FindFirstChild("001_Safe")
+                if safe then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(safe.WorldPivot.Position)
+                else
+                    print("Cofre não encontrado na casa: " .. tostring(SelectHouse))
+                end
+            else
+                print("Casa não encontrada: " .. tostring(SelectHouse))
+            end
+        end
+    })
+end)
+
+-- Toggle para atravessar porta
+pcall(function()
+    NoclipDoor = HouseTab:AddToggle({
+        Name = "اختراق الباب",
+        Description = "",
+        Default = false,
+        Callback = function(Value)
+            pcall(function()
+                local House = workspace["001_Lots"]:FindFirstChild(tostring(SelectHouse))
+                if House and House:FindFirstChild("HousePickedByPlayer") then
+                    local housepickedbyplayer = House.HousePickedByPlayer
+                    local doors = housepickedbyplayer.HouseModel:FindFirstChild("001_HouseDoors")
+                    if doors and doors:FindFirstChild("HouseDoorFront") then
+                        for _, Base in ipairs(doors.HouseDoorFront:GetChildren()) do
+                            if Base:IsA("BasePart") then
+                                Base.CanCollide = not Value
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    })
+end)
+
+-- Toggle para tocar campainha
+pcall(function()
+    HouseTab:AddToggle({
+        Name = "شغل الجرس",
+        Description = "",
+        Default = false,
+        Callback = function(Value)
+            getgenv().ChaosHubAutoSpawnDoorbellValue = Value
+            spawn(function()
+                while getgenv().ChaosHubAutoSpawnDoorbellValue do
+                    local House = workspace["001_Lots"]:FindFirstChild(tostring(SelectHouse))
+                    if House and House:FindFirstChild("HousePickedByPlayer") then
+                        local doorbell = House.HousePickedByPlayer.HouseModel:FindFirstChild("001_DoorBell")
+                        if doorbell and doorbell:FindFirstChild("TouchBell") then
+                            pcall(function()
+                                fireclickdetector(doorbell.TouchBell.ClickDetector)
+                            end)
+                        end
+                    end
+                    task.wait(0.5)
+                end
+            end)
+        end
+    })
+end)
+
+-- Toggle para bater na porta
+pcall(function()
+    HouseTab:AddToggle({
+        Name = "طرق الباب",
+        Description = "",
+        Default = false,
+        Callback = function(Value)
+            getgenv().ChaosHubAutoSpawnDoorValue = Value
+            spawn(function()
+                while getgenv().ChaosHubAutoSpawnDoorValue do
+                    local House = workspace["001_Lots"]:FindFirstChild(tostring(SelectHouse))
+                    if House and House:FindFirstChild("HousePickedByPlayer") then
+                        local doors = House.HousePickedByPlayer.HouseModel:FindFirstChild("001_HouseDoors")
+                        if doors and doors:FindFirstChild("HouseDoorFront") and doors.HouseDoorFront:FindFirstChild("Knock") then
+                            pcall(function()
+                                fireclickdetector(doors.HouseDoorFront.Knock.TouchBell.ClickDetector)
+                            end)
+                        end
+                    end
+                    task.wait(0.5)
+                end
+            end)
+        end
+    })
+end)
+pcall(function()
+    HouseTab:AddSection({ Name = "انتقال للبيوت" })
+end)
+
+-- Lista de casas para teletransporte
+local casas = {
+    ["بيت 1"] = Vector3.new(260.29, 4.37, 209.32),
+    ["Casa 2"] = Vector3.new(234.49, 4.37, 228.00),
+    ["Casa 3"] = Vector3.new(262.79, 21.37, 210.84),
+    ["Casa 4"] = Vector3.new(229.60, 21.37, 225.40),
+    ["Casa 5"] = Vector3.new(173.44, 21.37, 228.11),
+    ["Casa 6"] = Vector3.new(-43, 21, -137),
+    ["Casa 7"] = Vector3.new(-40, 36, -137),
+    ["Casa 11"] = Vector3.new(-21, 40, 436),
+    ["Casa 12"] = Vector3.new(155, 37, 433),
+    ["Casa 13"] = Vector3.new(255, 35, 431),
+    ["Casa 14"] = Vector3.new(254, 38, 394),
+    ["Casa 15"] = Vector3.new(148, 39, 387),
+    ["Casa 16"] = Vector3.new(-17, 42, 395),
+    ["Casa 17"] = Vector3.new(-189, 37, -247),
+    ["Casa 18"] = Vector3.new(-354, 37, -244),
+    ["Casa 19"] = Vector3.new(-456, 36, -245),
+    ["Casa 20"] = Vector3.new(-453, 38, -295),
+    ["Casa 21"] = Vector3.new(-356, 38, -294),
+    ["Casa 22"] = Vector3.new(-187, 37, -295),
+    ["Casa 23"] = Vector3.new(-410, 68, -447),
+    ["Casa 24"] = Vector3.new(-348, 69, -496),
+    ["Casa 28"] = Vector3.new(-103, 12, 1087),
+    ["Casa 29"] = Vector3.new(-730, 6, 808),
+    ["Casa 30"] = Vector3.new(-245, 7, 822),
+    ["Casa 31"] = Vector3.new(639, 76, -361),
+    ["Casa 32"] = Vector3.new(-908, 6, -361),
+    ["Casa 33"] = Vector3.new(-111, 70, -417),
+    ["Casa 34"] = Vector3.new(230, 38, 569),
+    ["Casa 35"] = Vector3.new(-30, 13, 2209)
+}
+
+-- Criar lista de nomes de casas ordenada
+local casasNomes = {}
+for nome, _ in pairs(casas) do
+    table.insert(casasNomes, nome)
+end
+
+table.sort(casasNomes, function(a, b)
+    local numA = tonumber(a:match("%d+")) or 0
+    local numB = tonumber(b:match("%d+")) or 0
+    return numA < numB
+end)
+
+-- Dropdown para teletransporte
+pcall(function()
+    HouseTab:AddDropdown({
+        Name = "اختيار بيت",
+        Options = casasNomes,
+        Callback = function(casaSelecionada)
+            local player = game.Players.LocalPlayer
+            if player and player.Character then
+                player.Character.HumanoidRootPart.CFrame = CFrame.new(casas[casaSelecionada])
+            end
+        end
+    })
+end)
+
+-- Label após dropdown
+pcall(function()
+    HouseTab:AddLabel("انتقال للبيوت")
+end)
+
+-- Seção para Auto Unban
+pcall(function()
+    HouseTab:AddSection({ Name = "مضاد باند" })
+end)
+
+-- Toggle para Auto Unban
+pcall(function()
+    HouseTab:AddToggle({
+        Name = "مضاد باند",
+        Default = false,
+        Callback = function(state)
+            isUnbanActive = state
+            if isUnbanActive then
+                print("Auto Unban Activated")
+                spawn(startAutoUnban)
+            else
+                print("Auto Unban Deactivated")
+            end
+        end
+    })
+end)
+
+-- Label após Auto Unban
+pcall(function()
+    HouseTab:AddLabel("Te desbane automaticamente das Casas")
+end)
+
+-- Seção para Casa RGB
+pcall(function()
+    HouseTab:AddSection({ Name = "تلوين بيت" })
+end)
+
+-- Toggle para Casa RGB
+pcall(function()
+    HouseTab:AddToggle({
+        Name = "تلوين البيت",
+        Default = false,
+        Callback = function(state)
+            toggleHouseRGB(state)
+        end
+    })
+end)
+
+-- Label após Casa RGB
+pcall(function()
+    HouseTab:AddLabel("جعل منزلك ملون")
+end)
+
+-- Função para Auto Unban
+function startAutoUnban()
+    while isUnbanActive do
+        pcall(function()
+            for _, v in pairs(game:GetService("Workspace"):WaitForChild("001_Lots"):GetDescendants()) do
+                if v.Name:match("^BannedBlock%d+$") then
+                    v:Destroy()
+                end
+            end
+        end)
+        task.wait(1)
+    end
+end
+
+
 local TabChat = Window:MakeTab({
  IsMobile = false,
  IsPC = false,
