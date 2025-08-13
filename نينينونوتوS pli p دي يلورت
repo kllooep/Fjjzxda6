@@ -6528,6 +6528,241 @@ TabMusic:AddToggle({
 -- معلومات أخيرة
 TabMusic:AddParagraph("Info", "تشغيل صوت قوي للجميع")
 
+-- إنشاء التبويب باسم Tablag
+local Tablag = Window:MakeTab({
+    Name = "لاق للسيرفر",
+    Icon = "rbxassetid://83114982417764" -- يمكنك تغيير الأيقونة
+})
+
+-- ==================== قسم: لاق باص ====================
+Tablag:AddSection({
+    Name = "لاق مؤقت (باص)"
+})
+
+local runLag = false
+local lagCoroutine
+
+Tablag:AddToggle({
+    Name = "لاق باص",
+    Default = false,
+    Flag = "lag_bus",
+    Callback = function(Value)
+        runLag = Value
+
+        if runLag then
+            local Players = game:GetService("Players")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local LocalPlayer = Players.LocalPlayer
+
+            if not LocalPlayer then
+                warn("LocalPlayer غير موجود!")
+                runLag = false
+                return
+            end
+
+            local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart", 5)
+            if not humanoidRootPart then
+                warn("HumanoidRootPart غير موجود!")
+                runLag = false
+                return
+            end
+
+            local function GetBus()
+                local vehicles = workspace:FindFirstChild("Vehicles")
+                if vehicles then
+                    return vehicles:FindFirstChild(LocalPlayer.Name .. "Car")
+                end
+                return nil
+            end
+
+            local remoteEvent = ReplicatedStorage:FindFirstChild("RE")
+            if not remoteEvent then
+                warn("RemoteEvent 'RE' غير موجود!")
+                runLag = false
+                return
+            end
+
+            if not remoteEvent:FindFirstChild("1Ca1r") then
+                warn("الحدث '1Ca1r' غير موجود داخل 'RE'!")
+                runLag = false
+                return
+            end
+
+            lagCoroutine = coroutine.wrap(function()
+                while runLag do
+                    local success, err = pcall(function()
+                        humanoidRootPart.CFrame = CFrame.new(1118.81, 75.998, -1138.61)
+                        local bus = GetBus()
+                        if bus then
+                            remoteEvent["1Ca1r"]:FireServer("PickingCar", "SchoolBus")
+                        end
+                    end)
+
+                    if not success then
+                        warn("خطأ في تنفيذ لاق الباص: " .. tostring(err))
+                        runLag = false
+                    end
+
+                    task.wait(0)
+                end
+            end)
+            lagCoroutine()
+        end
+    end
+})
+
+-- ==================== قسم: لاق بالابتوب ====================
+Tablag:AddSection({
+    Name = "لاق بالابتوب"
+})
+
+local toggles = { LagLaptop = false }
+
+-- دالة النقر العادي
+local function clickNormally(object)
+    local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
+    if clickDetector then
+        fireclickdetector(clickDetector)
+    end
+end
+
+-- دالة لاق الابتوب
+local function lagarJogoLaptop(laptopPath, maxTeleports)
+    if laptopPath then
+        local teleportCount = 0
+        while teleportCount < maxTeleports and toggles.LagLaptop do
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = laptopPath.CFrame
+            clickNormally(laptopPath)
+            teleportCount = teleportCount + 1
+            task.wait(0.0001)
+        end
+    else
+        warn("الابتوب غير موجود!")
+    end
+end
+
+Tablag:AddToggle({
+    Name = "لاق بالابتوب",
+    Default = false,
+    Flag = "lag_laptop",
+    Callback = function(state)
+        toggles.LagLaptop = state
+        if state then
+            local laptopPath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_GiveTools"):FindFirstChild("Laptop")
+            if laptopPath then
+                task.spawn(function()
+                    lagarJogoLaptop(laptopPath, 999999999)
+                end)
+            else
+                warn("الابتوب غير موجود!")
+            end
+        else
+            print("تم إيقاف لاق الابتوب")
+        end
+    end
+})
+
+Tablag:AddParagraph("تشغيل لاق لابتوب", "انتظر حوالي 20 ثانية ليبدأ تأثير اللاق")
+
+-- ==================== قسم: لاق بالهاتف ====================
+Tablag:AddSection({
+    Name = "لاق بالهاتف"
+})
+
+toggles.LagPhone = false
+
+-- دالة لاق الهاتف
+local function lagarJogoPhone(phonePath, maxTeleports)
+    if phonePath then
+        local teleportCount = 0
+        while teleportCount < maxTeleports and toggles.LagPhone do
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = phonePath.CFrame
+            clickNormally(phonePath)
+            teleportCount = teleportCount + 1
+            task.wait(0.01)
+        end
+    else
+        warn("الهاتف غير موجود!")
+    end
+end
+
+Tablag:AddToggle({
+    Name = "تشغيل اللاق",
+    Default = false,
+    Flag = "lag_phone",
+    Callback = function(state)
+        toggles.LagPhone = state
+        if state then
+            local phonePath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_CommercialStores"):FindFirstChild("CommercialStorage1"):FindFirstChild("Store"):FindFirstChild("Tools"):FindFirstChild("Iphone")
+            if phonePath then
+                task.spawn(function()
+                    lagarJogoPhone(phonePath, 999999)
+                end)
+            else
+                warn("الهاتف غير موجود!")
+            end
+        else
+            print("تم إيقاف لاق الهاتف")
+        end
+    end
+})
+
+Tablag:AddParagraph("تشغيل لاق الهاتف", "انتظر حوالي 20 ثانية ليبدأ تأثير اللاق")
+
+-- ==================== قسم: لاق قنابل ====================
+Tablag:AddSection({
+    Name = "لاق قنابل"
+})
+
+local BombActive = false
+
+Tablag:AddToggle({
+    Name = "تشغيل لاق القنابل",
+    Default = false,
+    Flag = "lag_bomb",
+    Callback = function(Value)
+        BombActive = Value
+
+        if BombActive then
+            local Player = game.Players.LocalPlayer
+            local Character = Player.Character or Player.CharacterAdded:Wait()
+            local RootPart = Character:WaitForChild("HumanoidRootPart")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Bomb = workspace:WaitForChild("WorkspaceCom"):WaitForChild("001_CriminalWeapons"):WaitForChild("GiveTools"):WaitForChild("Bomb")
+
+            -- المهمة الأولى: التلبيس إلى مكان القنبلة
+            task.spawn(function()
+                while BombActive and Bomb and RootPart do
+                    RootPart.CFrame = Bomb.CFrame
+                    fireclickdetector(Bomb.ClickDetector)
+                    task.wait(0.00001)
+                end
+            end)
+
+            -- المهمة الثانية: النقر وتفجير القنبلة
+            task.spawn(function()
+                while BombActive do
+                    if Bomb and RootPart then
+                        local VirtualInputManager = game:GetService("VirtualInputManager")
+                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, true, game, 0)
+                        task.wait(1.5)
+                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, false, game, 0)
+
+                        local args = { [1] = "Bomb" .. Player.Name }
+                        local BombServer = ReplicatedStorage:FindFirstChild("RE"):FindFirstChild("1Blo1wBomb1sServe1r")
+                        if BombServer then
+                            BombServer:FireServer(unpack(args))
+                        end
+                    end
+                    task.wait(1.5)
+                end
+            end)
+        end
+    end
+})
+
+Tablag:AddParagraph("ملاحظات اللاق", "انتظر حوالي 35 ثانية ليبدأ تأثير اللاق")
 
 
 local Tab = Window:MakeTab({"الاماكن", "tp"}) -- Nome do ícone: 'portal' em minúsculo para teleporte
@@ -6810,4 +7045,3 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
-
