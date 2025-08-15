@@ -829,29 +829,35 @@ local args = {
 	Color3.new(0.7050058841705322, 0, 0.000019834207705571316)
 }
 game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
+
+-- ==================== 1. تحميل مكتبة splibv2 ====================
 local splib = loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd0/SP_Hub/refs/heads/main/splibv2"))()
 
+-- التأكد من أن المكتبة حُملت
+if not splib then
+    warn("فشل في تحميل مكتبة splibv2")
+    return
+end
+
+-- ==================== 2. إنشاء النافذة ====================
 local Window = splib:MakeWindow({
- Name = "NetroZ  Hub",
- SubTitle = "By Rami",
- HidePremium = false,
- SaveConfig = true,
- Setting = true,
- RainbowMainFrame = false,
- RainbowTitle = false,
- RainbowSubTitle = false,
- ToggleIcon = "rbxassetid://83114982417764",
- ConfigFolder = "SP_Library",
- CloseCallback = true
+    Name = "Rami Hub",
+    SubTitle = "by Rami",
+    HidePremium = false,
+    SaveConfig = true,
+    Setting = true,
+    RainbowMainFrame = false,
+    RainbowTitle = false,
+    RainbowSubTitle = false,
+    ToggleIcon = "rbxassetid://83114982417764",
+    ConfigFolder = "SP_Library",
+    CloseCallback = function()
+        print("تم إغلاق الواجهة")
+    end
 })
 
-local Tab = Window:MakeTab({
- IsMobile = false,
- IsPC = false,
-	Name = "Tab 1",
-	Icon = "rbxassetid://4483345998"
-})
-
+-- منع التزامن
+task.wait(0.1)
 
 local InfoTab = Window:MakeTab({ 
 IsMobile = false,
@@ -877,13 +883,15 @@ InfoTab:AddButton({
     end
 })
 
--- ✅ تاب "الرؤوس و الأرجل" - متوافق مع Redz V5
+-- ==================== 3. إنشاء التبويب "الرؤوس والأجسام" ====================
 local HeadBodyTab = Window:MakeTab({
-    Title = "الرؤوس و الأرجل",
-    Icon = "rbxassetid://119290839281477" -- يمكنك تغيير الأيقونة
+    Name = "الرؤوس و الاجسام",
+    Icon = "rbxassetid://4483345998",
+    IsPC = false,
+    IsMobile = false
 })
 
--- === دالة آمنة لاستدعاء الريموت ===
+-- ==================== دالة آمنة لاستدعاء الريموت ====================
 local function SafeInvoke(remotePath, args)
     pcall(function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -892,14 +900,11 @@ local function SafeInvoke(remotePath, args)
     end)
 end
 
--- === متغيرات لتخزين التحديدات ===
-local SelectedHead = nil
-local SelectedBody = nil
+-- ==================== 4. قسم: الرؤوس ====================
+HeadBodyTab:AddSection({
+    Name = "الرؤوس"
+})
 
--- ==================== 1. قسم: الرؤوس ====================
-HeadBodyTab:AddSection({ Name = "الرؤوس" })
-
--- قائمة الرؤوس
 local HeadList = {
     "رأس روبـوت",
     "رأس بـنـت كـيـوت",
@@ -908,7 +913,6 @@ local HeadList = {
     "رأس عـيـون زرقـاء"
 }
 
--- معرفات الرؤوس
 local HeadIds = {
     ["رأس روبـوت"] = 3210773801,
     ["رأس بـنـت كـيـوت"] = 140991,
@@ -917,17 +921,17 @@ local HeadIds = {
     ["رأس عـيـون زرقـاء"] = 16580493236
 }
 
--- القائمة المنسدلة لاختيار الرأس
+local SelectedHead = HeadList[1]
+
 HeadBodyTab:AddDropdown({
     Name = "اختر رأسًا",
     Options = HeadList,
-    Default = HeadList[1],
+    Default = SelectedHead,
     Callback = function(value)
         SelectedHead = value
     end
 })
 
--- زر تفعيل الرأس
 HeadBodyTab:AddButton({
     Name = "تفعيل الرأس",
     Callback = function()
@@ -936,12 +940,11 @@ HeadBodyTab:AddButton({
     end
 })
 
+-- ==================== 5. قسم: الأجسام ====================
+HeadBodyTab:AddSection({
+    Name = "الأجسام"
+})
 
-
--- ==================== 2. قسم: الأجسام ====================
-HeadBodyTab:AddSection({ Name = "الأجسام" })
-
--- قائمة الأجسام
 local BodyList = {
     "رجـل مـقـطـوعـة لـلـبـنـات",
     "جـسـم ولـد كـيـوت",
@@ -970,23 +973,20 @@ local BodyList = {
     "جـسـم قـزم الـمـربـع"
 }
 
--- بيانات كل جسم
 local BodyData = {
     ["رجـل مـقـطـوعـة لـلـبـنـات"] = {96491916349570, 76683091425509, 75159926897589, 139607718, 1, 1},
     ["جـسـم ولـد كـيـوت"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
     ["جـسـم ولـد رول"] = {27112025, 27112039, 27112052, 3230472745, 3230470862, 1},
     ["جـسـم ولـد مـعـضـل"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
-
-    ["جـسـم بـنـت 1"] = {18839824113, 18839824209, 18839824132, 1, 1, 1},
-    ["جـسـم بـنـت 2"] = {18839824113, 18839824209, 18839824132, 18839824178, 18839824209, 1},
-    ["جـسـم بـنـت 3"] = {18839824113, 18839824209, 18839824132, 18839824178, 18839824209, 1},
-    ["جـسـم بـنـت 4"] = {18839824113, 18839824209, 18839824132, 18839824178, 18839824209, 1},
-    "جـسـم بـنـت 5" = {18839824113, 18839824209, 18839824132, 111571034664628, 1, 1},
-    ["جـسـم بـنـت 6"] = {18839824113, 18839824209, 18839824132, 1, 1, 1},
-    ["جـسـم بـنـت 7"] = {18839824113, 18839824209, 18839824132, 18839824178, 18839824209, 1},
-    ["جـسـم بـنـت 8"] = {18839824113, 18839824209, 18839824132, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 1"] = {96491916349570, 76683091425509, 75159926897589, 1, 1, 1},
+    ["جـسـم بـنـت 2"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 3"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 4"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 5"] = {96491916349570, 76683091425509, 75159926897589, 111571034664628, 1, 1},
+    ["جـسـم بـنـت 6"] = {96491916349570, 76683091425509, 75159926897589, 1, 1, 1},
+    ["جـسـم بـنـت 7"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 8"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
     ["جـسـم بـنـت 9"] = {14861800638, 14861800626, 14861801452, 14861800627, 14861801454, 1},
-
     ["جـسـم ولـد 1"] = {17754346388, 1, 1, 1, 1, 1},
     ["جـسـم ولـد 2"] = {17754346388, 1, 1, 1, 1, 1},
     ["جـسـم ولـد 3"] = {17754346388, 1, 1, 1, 1, 1},
@@ -998,25 +998,265 @@ local BodyData = {
     ["جـسـم ولـد 9"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
     ["جـسـم ولـد 10"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
     ["جـسـم ولـد 11"] = {120973199097564, 118345433416023, 112849465115864, 78321005147549, 106586789635639, 1},
-
     ["جـسـم قـزم الـمـربـع"] = {126267841602936, 77530451194918, 123471958406889, 117042768644173, 131948590344338, 1}
 }
 
--- القائمة المنسدلة لاختيار الجسم
+local SelectedBody = BodyList[1]
+
 HeadBodyTab:AddDropdown({
     Name = "اختر جسمًا",
     Options = BodyList,
-    Default = BodyList[1],
+    Default = SelectedBody,
     Callback = function(value)
         SelectedBody = value
     end
 })
 
--- زر تفعيل الجسم
 HeadBodyTab:AddButton({
     Name = "تفعيل الجسم",
     Callback = function()
         if not SelectedBody then return end
         SafeInvoke({"Remotes", "ChangeCharacterBody"}, { BodyData[SelectedBody] })
+    end
+})
+
+local AccessoriesTab = Window:MakeTab({
+    Title = "الاكسسوارات",
+    Icon = "shirt"
+})
+
+-- دالة مساعدة لارتداء عنصر
+local function Wear(ItemId)
+    local args = { [1] = ItemId }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("Wear", 9e9):InvokeServer(unpack(args))
+end
+
+-- ==================== 1. قسم: ملابس ====================
+AccessoriesTab:AddSection({ Name = "ملابس" })
+
+local clothesOptions = {
+    "سترة اسود",
+    "سترة زهري كيوت",
+    "لبس كيوت 1",
+    "لبس كيوت 2",
+    "لبس كيوت 3",
+    "لبس كيوت 4",
+    "لبس كيوت 5"
+}
+
+local clothesIds = {
+    89892588488089,
+    99429391843259,
+    84110484978046,
+    75698084918608,
+    79220663432789,
+    78061398976556,
+    93303265717630
+}
+
+local selectedClothes = clothesOptions[1]
+
+AccessoriesTab:AddDropdown({
+    Name = "اختر ملابس",
+    Options = clothesOptions,
+    Default = selectedClothes,
+    Callback = function(value)
+        selectedClothes = value
+    end
+})
+
+AccessoriesTab:AddButton({
+    Name = "تفعيل الملابس",
+    Callback = function()
+        for i, name in ipairs(clothesOptions) do
+            if name == selectedClothes then
+                Wear(clothesIds[i])
+                break
+            end
+        end
+    end
+})
+
+
+
+-- ==================== 2. قسم: القفازات ====================
+AccessoriesTab:AddSection({ Name = "قفازات" })
+
+local glovesOptions = {
+    "قفازات يد اسود مخطط",
+    "قفازات يد اسود عادي 1",
+    "قفازات يد اسود عادي 2",
+    "قفازات يد اسود عادي 3",
+    "قفازات يد ابيض مزخرف",
+    "قفازات يد زهري",
+    "قفازات يد احمر",
+    "اضافر اسود",
+    "قفازات يد قصير 1",
+    "قفازات يد قصير 2",
+    "قفازات يد قصير 3",
+    "قفازات يد قصير 4",
+    "قفازات يد قصير 5",
+    "قفازات يد قصير 6"
+}
+
+local glovesIds = {
+    9239689111,
+    10789914680,
+    11363898043,
+    10791180072,
+    10871965173,
+    10789939838,
+    12379676852,
+    12825022709,
+    12483105503,
+    12483109504,
+    11613796964,
+    10954568687,
+    11679250718,
+    11182924874
+}
+
+local selectedGloves = glovesOptions[1]
+
+AccessoriesTab:AddDropdown({
+    Name = "اختر قفازات",
+    Options = glovesOptions,
+    Default = selectedGloves,
+    Callback = function(value)
+        selectedGloves = value
+    end
+})
+
+AccessoriesTab:AddButton({
+    Name = "تفعيل القفازات",
+    Callback = function()
+        for i, name in ipairs(glovesOptions) do
+            if name == selectedGloves then
+                Wear(glovesIds[i])
+                break
+            end
+        end
+    end
+})
+
+
+
+-- ==================== 3. قسم: الورد ====================
+AccessoriesTab:AddSection({ 
+Name = "الورد" 
+})
+
+local flowersOptions = {
+    "ورد احمر وابيض",
+    "ورد زهري",
+    "ورد سماوي",
+    "ورد اسود",
+    "ورد ابيض",
+    "ورد احمر",
+    "مسدس ماء لعبة"
+}
+
+local flowersIds = {
+    1246535644,
+    1246547853,
+    12465483807,
+    12465465333,
+    12465472210,
+    12465376206,
+    13135818072
+}
+
+local selectedFlowers = flowersOptions[1]
+
+AccessoriesTab:AddDropdown({
+    Name = "اختر ورد",
+    Options = flowersOptions,
+    Default = selectedFlowers,
+    Callback = function(value)
+        selectedFlowers = value
+    end
+})
+
+AccessoriesTab:AddButton({
+    Name = "تفعيل الورد",
+    Callback = function()
+        for i, name in ipairs(flowersOptions) do
+            if name == selectedFlowers then
+                Wear(flowersIds[i])
+                break
+            end
+        end
+    end
+})
+
+
+
+-- ==================== 4. قسم: الأحذية ====================
+AccessoriesTab:AddSection({ 
+Name = "الأحذية" 
+})
+
+local shoesOptions = {
+    "حذاء الشيطان زهري",
+    "حذاء الشيطان احمر",
+    "حذاء الشيطان ابيض",
+    "حذاء الشيطان اسود",
+    "حذاء طويل اسود",
+    "حذاء طويل ابيض",
+    "حذاء طويل ابيض واحمر",
+    "حذاء القرش الاسود",
+    "حذاء قصير 1",
+    "حذاء قصير 2",
+    "حذاء قصير 3",
+    "حذاء قصير 4",
+    "حذاء قصير 5",
+    "حذاء قصير 6",
+    "حذاء قصير 7",
+    "حذاء قصير 8",
+    "حذاء قصير 9",
+    "حذاء قصير 10"
+}
+
+local shoesIds = {
+    14388006902,
+    14388019333,
+    14387999337,
+    14388004031,
+    11433864064,
+    11111279400,
+    11708887517,
+    13463375063,
+    11856087406,
+    14388001192,
+    12453321203,
+    14338742287,
+    14338742287,
+    12296189693,
+    14338732820,
+    14338735628,
+    14338738380,
+    14338744418
+}
+
+local selectedShoes = shoesOptions[1]
+
+AccessoriesTab:AddDropdown({
+    Name = "اختر حذاء",
+    Options = shoesOptions,
+    Default = selectedShoes,
+    Callback = function(value)
+        selectedShoes = value
+    end
+})
+
+AccessoriesTab:AddButton({
+    Name = "تفعيل الحذاء",
+    Callback = function()
+        for i, name in ipairs(shoesOptions) do
+            if name == selectedShoes then
+                Wear(shoesIds[i])
+                break
+            end
+        end
     end
 })
