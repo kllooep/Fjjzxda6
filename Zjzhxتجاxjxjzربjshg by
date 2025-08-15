@@ -144,7 +144,7 @@ end
 
 -- === زر الهجوم الفردي ===
 FreezTab:AddButton({
-    Name = "هاجم اللاعب المختار",
+    Name = "تجميد اللاعب مرة واحدة🥵",
     Callback = function()
         if not selectedPlayerName then
             print("❌ لم يتم اختيار لاعب!")
@@ -161,7 +161,7 @@ FreezTab:AddButton({
                 fireAtPart(hrp)
                 task.wait(0.05)
             end
-            print("✅ تم تنفيذ الهجوم على " .. selectedPlayerName)
+            print("✅ تم تنفيذ التجميد على " .. selectedPlayerName)
         end
     end
 })
@@ -169,7 +169,7 @@ FreezTab:AddButton({
 local continuousAttackActive = false
 
 FreezTab:AddToggle({
-    Name = "الهجوم المستمر على اللاعب",
+    Name = "تجميد اللاعب تلقائيا🥶",
     Default = false,
     Callback = function(state)
         continuousAttackActive = state
