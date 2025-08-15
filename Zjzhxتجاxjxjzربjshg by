@@ -300,6 +300,131 @@ FreezTab:AddToggle({
     end
 })
 
+-- === المتغيرات الأساسية ===
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local mouse = LocalPlayer:GetMouse()
+
+-- الوصول إلى الحدث المسؤول عن الهجوم
+local RE = ReplicatedStorage:WaitForChild("RE")
+local FireEvent = RE:FindFirstChild("1Gu1n")
+
+if not FireEvent then
+    warn("تحذير: الحدث 1Gu1n غير موجود!")
+end
+
+-- === دالة الهجوم على جزء معين ===
+local function fireAtPart(targetPart)
+    if not targetPart or not FireEvent then return end
+
+    local args = {
+        targetPart,                    -- TargetPart
+        targetPart,                    -- HitPart
+        Vector3.new(1e14, 1e14, 1e14), -- Direction
+        targetPart.Position,
+        nil, nil, 0, 0, { false },
+        {
+            25,
+            Vector3.new(100, 100, 100),
+            BrickColor.new(29),
+            0.25,
+            Enum.Material.SmoothPlastic,
+            0.25
+        },
+        true,
+        false
+    }
+
+    pcall(function()
+        FireEvent:FireServer(unpack(args))
+    end)
+end
+
+-- === Toggle: هجوم فردي على النقر (One Click Kill) ===
+FreezTab:AddToggle({
+    Name = "هجوم بالضغط (Toggle)",
+    Description = "عند التفعيل، الضغط على لاعب = هجوم فوري",
+    Default = false,
+    Callback = function(state)
+        if state then
+            -- تفعيل الاستماع للنقر
+            getgenv().ClickConnection = mouse.Button1Down:Connect(function()
+                local targetPart = mouse.Target
+                if targetPart then
+                    local character = targetPart:FindFirstAncestorWhichIsA("Model")
+                    local player = Players:GetPlayerFromCharacter(character)
+                    if player and player ~= LocalPlayer then
+                        local hrp = character:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            fireAtPart(hrp)
+                            print("تم الهجوم على: " .. player.Name)
+                        end
+                    end
+                end
+            end)
+        else
+            -- إيقاف الاستماع
+            if getgenv().ClickConnection then
+                getgenv().ClickConnection:Disconnect()
+                getgenv().ClickConnection = nil
+            end
+        end
+    end
+})
+
+-- === زر: إعطاء أداة للهجوم المستمر ===
+FreezTab:AddButton({
+    Name = "أداة الهجوم المستمر",
+    Callback = function()
+        -- إزالة أي أداة قديمة
+        local oldTool = LocalPlayer.Backpack:FindFirstChild("AttackTool")
+        if oldTool then
+            oldTool:Destroy()
+        end
+
+        -- إنشاء الأداة
+        local tool = Instance.new("Tool")
+        tool.Name = "AttackTool"
+        tool.RequiresHandle = false
+        tool.CanBeDropped = false
+        tool.Parent = LocalPlayer.Backpack
+
+        local connection = nil
+
+        -- عند تجهيز الأداة
+        tool.Equipped:Connect(function()
+            connection = mouse.Button1Down:Connect(function()
+                local targetPart = mouse.Target
+                if targetPart then
+                    local character = targetPart:FindFirstAncestorWhichIsA("Model")
+                    local player = Players:GetPlayerFromCharacter(character)
+                    if player and player ~= LocalPlayer then
+                        local hrp = character:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            -- هجوم مستمر طالما الزر مضغوط
+                            while mouse:IsLeftButtonDown() do
+                                fireAtPart(hrp)
+                                task.wait(0.05) -- سرعة الهجوم
+                            end
+                        end
+                    end
+                end
+            end)
+        end)
+
+        -- عند نزع الأداة
+        tool.Unequipped:Connect(function()
+            if connection then
+                connection:Disconnect()
+                connection = nil
+            end
+        end)
+
+        print("تم إعطاؤك أداة الهجوم المستمر!")
+    end
+})
+
 -- ✅ تاب دردشة متوافق 100% مع Sd@733.txt - بدون أخطاء
 local ChatTab = Window:MakeTab({ Title = "الدردشة", Icon = "rbxassetid://10723415903" })
 
