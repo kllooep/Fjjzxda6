@@ -205,91 +205,76 @@ FreezTab:AddToggle({
 FreezTab:AddSection({ 
 Name = "Extraتجميدات" 
 })
-
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Player = Players.LocalPlayer
 
 local RE = ReplicatedStorage:WaitForChild("RE")
-local ClearEvent = RE:FindFirstChild("1Clea1rTool1s")
-local ToolEvent = RE:FindFirstChild("1Too1l")
-local FireEvent = RE:FindFirstChild("1Gu1n")
+local FireEvent = RE:FindFirstChild("1Gu1n") -- الحدث المسؤول عن الهجوم
+
+if not FireEvent then
+    warn("الحدث 1Gu1n غير موجود!")
+end
 
 local attackEnabled = false
 
-local function clearAllTools()
-    if ClearEvent then
-        ClearEvent:FireServer("ClearAllTools")
-    end
-end
-
-local function getAssault()
-    if ToolEvent then
-        ToolEvent:InvokeServer("PickingTools", "Assault")
-    end
-end
-
-local function hasAssault()
-    return Player.Backpack:FindFirstChild("Assault") ~= nil
-end
-
+-- دالة الهجوم على جزء معين (مثل HumanoidRootPart)
 local function fireAtPart(targetPart)
-    local gunScript = Player.Backpack:FindFirstChild("Assault")
-        and Player.Backpack.Assault:FindFirstChild("GunScript_Local")
-
-    if not gunScript or not targetPart then return end
+    if not targetPart or not FireEvent then return end
 
     local args = {
-        targetPart,
-        targetPart,
-        Vector3.new(1e14, 1e14, 1e14),
-        targetPart.Position,
-        gunScript:FindFirstChild("MuzzleEffect"),
-        gunScript:FindFirstChild("HitEffect"),
-        0,
-        0,
-        { false },
+        targetPart,                    -- TargetPart
+        targetPart,                    -- HitPart
+        Vector3.new(1e14, 1e14, 1e14), -- Direction
+        targetPart.Position,           -- Position
+        nil,                           -- MuzzleEffect (لا حاجة)
+        nil,                           -- HitEffect
+        0,                             -- ShotType
+        0,                             -- DamageType
+        { false },                     -- IsHeadshot
         {
-            25,
-            Vector3.new(100, 100, 100),
-            BrickColor.new(29),
-            0.25,
-            Enum.Material.SmoothPlastic,
-            0.25
+            25,                        -- Damage
+            Vector3.new(100, 100, 100), -- Force
+            BrickColor.new(29),        -- Color
+            0.25,                      -- BulletHoleSize
+            Enum.Material.SmoothPlastic, -- Material
+            0.25                       -- SparkSize
         },
-        true,
-        false
+        true,                          -- CanPenetrate
+        false                          -- IsSilent
     }
 
-    FireEvent:FireServer(unpack(args))
+    pcall(function()
+        FireEvent:FireServer(unpack(args))
+    end)
 end
 
-local function startAssaultLoop()
+-- دالة بدء الهجوم (بدون سلاح)
+local function startAttackLoop()
     task.spawn(function()
         while attackEnabled do
-            clearAllTools()
-            getAssault()
-
-            repeat
-                task.wait(0.2)
-            until hasAssault() or not attackEnabled
-
-            for i = 1, 3 do
-                for _, player in ipairs(Players:GetPlayers()) do
-                    if not attackEnabled then return end
-                    if player ~= Player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                        fireAtPart(player.Character.HumanoidRootPart)
-                        task.wait(0.1)
+            -- الهجوم على كل لاعب نشط
+            for _, targetPlayer in ipairs(Players:GetPlayers()) do
+                if not attackEnabled then break end
+                if targetPlayer ~= Player and targetPlayer.Character then
+                    local hrp = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+                    if hrp then
+                        -- 3 طلقات سريعة على كل لاعب
+                        for i = 1, 3 do
+                            if not attackEnabled then break end
+                            fireAtPart(hrp)
+                            task.wait(0.05) -- فاصل بين الطلقات
+                        end
                     end
                 end
             end
 
-            task.wait(1)
+            task.wait(1) -- فاصل بين الجولات
         end
     end)
 end
 
--- الزر داخل التبويب
+-- إضافة التوغل إلى التبويب
 FreezTab:AddToggle({
     Name = "V2(تجميد اللاعبين)",
     Description = "تجميد كل اللاعبين🥶",
@@ -298,7 +283,7 @@ FreezTab:AddToggle({
         attackEnabled = state
 
         if attackEnabled then
-            -- يرسل رسالة بالشات مرة واحدة عند التشغيل
+            -- إرسال رسالة في الشات (مرة واحدة عند التفعيل)
             local chatService = game:GetService("TextChatService")
             if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
                 local channel = chatService.TextChannels:FindFirstChild("RBXGeneral")
@@ -309,7 +294,8 @@ FreezTab:AddToggle({
                 print("Nadaa")
             end
 
-            startAssaultLoop()
+            -- بدء الهجوم المباشر
+            startAttackLoop()
         end
     end
 })
