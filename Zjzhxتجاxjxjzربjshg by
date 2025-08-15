@@ -373,7 +373,124 @@ FreezTab:AddToggle({
     end
 })
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
+-- المرجع للأحداث
+local RE = ReplicatedStorage:WaitForChild("RE")
+local ClearEvent = RE:FindFirstChild("1Clea1rTool1s")
+local ToolEvent = RE:FindFirstChild("1Too1l")
+local FireEvent = RE:FindFirstChild("1Gu1n")
+
+-- المتغيرات
+local attacking = false
+local targetPlayer = nil
+
+-- دوال مساعدة
+local function clearAllTools()
+	if ClearEvent then
+		ClearEvent:FireServer("ClearAllTools")
+	end
+end
+
+local function getAssault()
+	if ToolEvent then
+		ToolEvent:InvokeServer("PickingTools", "Assault")
+	end
+end
+
+local function hasAssault()
+	return LocalPlayer.Backpack:FindFirstChild("Assault") ~= nil
+end
+
+local function fireAtPart(targetPart)
+	local gunScript = LocalPlayer.Backpack:FindFirstChild("Assault")
+		and LocalPlayer.Backpack.Assault:FindFirstChild("GunScript_Local")
+
+	if not gunScript or not targetPart then return end
+
+	local args = {
+		targetPart,
+		targetPart,
+		Vector3.new(1e14, 1e14, 1e14),
+		targetPart.Position,
+		gunScript:FindFirstChild("MuzzleEffect"),
+		gunScript:FindFirstChild("HitEffect"),
+		0,
+		0,
+		{ false },
+		{
+			25,
+			Vector3.new(100, 100, 100),
+			BrickColor.new(29),
+			0.25,
+			Enum.Material.SmoothPlastic,
+			0.25
+		},
+		true,
+		false
+	}
+
+	FireEvent:FireServer(unpack(args))
+end
+
+local mouse = LocalPlayer:GetMouse()
+
+local function attackLoop()
+	while attacking and targetPlayer do
+		if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+			for i = 1, 3 do
+				fireAtPart(targetPlayer.Character.HumanoidRootPart)
+				task.wait(0.2)
+			end
+		end
+		task.wait(2)
+	end
+end
+
+-- زر الهجوم في مكتبة Redz V5
+FreezTab:AddButton({
+	Name = "Auto Attack",
+	Description = "الهجوم التلقائي على اللاعب الذي تنقر عليه",
+	Callback = function()
+		-- تجهيز الأداة
+		local tool = LocalPlayer.Backpack:FindFirstChild("GhimXRamiتجميد الناس")
+		if not tool then
+			tool = Instance.new("Tool")
+			tool.Name = "Ramiتجميد تلقائي"
+			tool.RequiresHandle = false
+			tool.CanBeDropped = false
+			tool.Parent = LocalPlayer.Backpack
+		end
+
+		clearAllTools()
+		getAssault()
+		repeat task.wait(0.2) until hasAssault()
+
+		-- عند النقر على لاعب يبدأ الهجوم
+		mouse.Button1Down:Connect(function()
+			if not tool.Parent then return end
+			local target = mouse.Target
+			if target and target.Parent then
+				local player = Players:GetPlayerFromCharacter(target.Parent)
+				if player then
+					targetPlayer = player
+					if not attacking then
+						attacking = true
+						task.spawn(attackLoop)
+					end
+				end
+			end
+		end)
+
+		-- عند نزع الأداة توقف الهجوم
+		tool.Unequipped:Connect(function()
+			attacking = false
+			targetPlayer = nil
+		end)
+	end
+})
 
 -- ✅ تاب دردشة متوافق 100% مع Sd@733.txt - بدون أخطاء
 local ChatTab = Window:MakeTab({ Title = "الدردشة", Icon = "rbxassetid://10723415903" })
