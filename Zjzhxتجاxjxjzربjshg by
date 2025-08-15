@@ -11,13 +11,186 @@ Button = { Image = "rbxassetid://71014873973869", BackgroundTransparency = 0 },
 Corner = { CornerRadius = UDim.new(35, 1) },
 })
 
-local Tab1 = Window:MakeTab({"Um", "cherry"})
+local FreezTab = Window:MakeTab({"Um", "cherry"})
 
-Window:SelectTab(Tab1)
 
-local Section = Tab1:AddSection({"Section"})
+-- === الخدمات والمتغيرات الأساسية ===
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local cam = workspace.CurrentCamera
 
-local Paragraph = Tab1:AddParagraph({"Script fora do ar", "O script está fora do ar no momento"})
+-- === الوصول إلى الحدث المسؤول عن الهجوم ===
+local RE = ReplicatedStorage:WaitForChild("RE")
+local FireEvent = RE:FindFirstChild("1Gu1n")
+
+if not FireEvent then
+    warn("تحذير: الحدث 1Gu1n غير موجود!")
+end
+
+-- === المتغيرات ===
+local selectedPlayerName = nil
+getgenv().Target = nil
+
+-- === دالة لتحديث قائمة اللاعبين ===
+local function getPlayerList()
+    local playerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            table.insert(playerNames, player.Name)
+        end
+    end
+    table.sort(playerNames)
+    return playerNames
+end
+
+-- === إضافة القسم ===
+local PlayerSection = FreezTab:AddSection({ Name = "اختيار اللاعب" })
+
+-- === Dropdown لاختيار اللاعب ===
+local killDropdown = FreezTab:AddDropdown({
+    Name = "اختيار لاعب",
+    Options = getPlayerList(),
+    Default = "",
+    Callback = function(value)
+        selectedPlayerName = value
+        getgenv().Target = value
+        print("تم اختيار اللاعب: " .. tostring(value or "لا شيء"))
+    end
+})
+
+-- === زر تحديث قائمة اللاعبين ===
+FreezTab:AddButton({
+    Name = "تحديث قائمة اللاعبين",
+    Callback = function()
+        local newPlayers = getPlayerList()
+        if killDropdown then
+            killDropdown:Set(newPlayers)
+            print("تم تحديث القائمة: " .. table.concat(newPlayers, ", "))
+        end
+        -- إعادة تعيين الاختيار إذا كان اللاعب المختار قد خرج
+        if selectedPlayerName and not Players:FindFirstChild(selectedPlayerName) then
+            selectedPlayerName = nil
+            getgenv().Target = nil
+            killDropdown:SetValue("")
+        end
+    end
+})
+
+-- === زر الانتقال للاعب ===
+FreezTab:AddButton({
+    Name = "انتقال للاعب",
+    Callback = function()
+        if not selectedPlayerName then
+            print("❌ لم يتم اختيار لاعب!")
+            return
+        end
+        local target = Players:FindFirstChild(selectedPlayerName)
+        if not target or not target.Character then
+            print("❌ اللاعب غير موجود أو لا توجد شخصية")
+            return
+        end
+        local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            hrp.CFrame = target.Character.HumanoidRootPart.CFrame
+        end
+    end
+})
+
+-- === Toggle التجسس على اللاعب ===
+FreezTab:AddToggle({
+    Name = "تجسس على اللاعب",
+    Default = false,
+    Callback = function(value)
+        if value then
+            getgenv().CameraConnection = RunService.Heartbeat:Connect(function()
+                if selectedPlayerName then
+                    local target = Players:FindFirstChild(selectedPlayerName)
+                    if target and target.Character and target.Character:FindFirstChild("Humanoid") then
+                        cam.CameraSubject = target.Character.Humanoid
+                    end
+                end
+            end)
+        else
+            if getgenv().CameraConnection then
+                getgenv().CameraConnection:Disconnect()
+                getgenv().CameraConnection = nil
+            end
+            -- إعادة الكاميرا للشخصية
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                cam.CameraSubject = LocalPlayer.Character.Humanoid
+            end
+        end
+    end
+})
+
+-- === دالة الهجوم (مستخدمة من الكود السابق) ===
+local function fireAtPart(targetPart)
+    if not targetPart or not FireEvent then return end
+    local args = {
+        targetPart,
+        targetPart,
+        Vector3.new(1e14, 1e14, 1e14),
+        targetPart.Position,
+        nil, nil, 0, 0, { false },
+        { 25, Vector3.new(100, 100, 100), BrickColor.new(29), 0.25, Enum.Material.SmoothPlastic, 0.25 },
+        true, false
+    }
+    pcall(function()
+        FireEvent:FireServer(unpack(args))
+    end)
+end
+
+-- === زر الهجوم الفردي ===
+FreezTab:AddButton({
+    Name = "هاجم اللاعب المختار",
+    Callback = function()
+        if not selectedPlayerName then
+            print("❌ لم يتم اختيار لاعب!")
+            return
+        end
+        local target = Players:FindFirstChild(selectedPlayerName)
+        if not target or not target.Character then
+            print("❌ اللاعب غير موجود")
+            return
+        end
+        local hrp = target.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            for i = 1, 3 do
+                fireAtPart(hrp)
+                task.wait(0.05)
+            end
+            print("✅ تم تنفيذ الهجوم على " .. selectedPlayerName)
+        end
+    end
+})
+
+-- === Toggle الهجوم المستمر ===
+FreezTab:AddToggle({
+    Name = "الهجوم المستمر على اللاعب",
+    Default = false,
+    Callback = function(state)
+        if state then
+            task.spawn(function()
+                while state and state == true do
+                    if not selectedPlayerName then
+                        task.wait(0.5)
+                        continue
+                    end
+                    local target = Players:FindFirstChild(selectedPlayerName)
+                    if target and target.Character then
+                        local hrp = target.Character:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            fireAtPart(hrp)
+                        end
+                    end
+                    task.wait(0.05)
+                end
+            end)
+        end
+    end
+})
 
 -- ✅ تاب دردشة متوافق 100% مع Sd@733.txt - بدون أخطاء
 local ChatTab = Window:MakeTab({ Title = "الدردشة", Icon = "rbxassetid://10723415903" })
