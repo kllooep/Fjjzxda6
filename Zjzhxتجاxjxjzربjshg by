@@ -166,18 +166,27 @@ FreezTab:AddButton({
     end
 })
 
--- === Toggle الهجوم المستمر ===
+local continuousAttackActive = false
+
 FreezTab:AddToggle({
     Name = "الهجوم المستمر على اللاعب",
     Default = false,
     Callback = function(state)
+        continuousAttackActive = state
+
         if state then
             task.spawn(function()
-                while state and state == true do
+                while true do
+                    -- التوقف الفوري إذا تم إيقاف التوغل
+                    if not continuousAttackActive then
+                        break
+                    end
+
                     if not selectedPlayerName then
                         task.wait(0.5)
                         continue
                     end
+
                     local target = Players:FindFirstChild(selectedPlayerName)
                     if target and target.Character then
                         local hrp = target.Character:FindFirstChild("HumanoidRootPart")
@@ -185,13 +194,13 @@ FreezTab:AddToggle({
                             fireAtPart(hrp)
                         end
                     end
+
                     task.wait(0.05)
                 end
             end)
         end
     end
 })
-
 -- ✅ تاب دردشة متوافق 100% مع Sd@733.txt - بدون أخطاء
 local ChatTab = Window:MakeTab({ Title = "الدردشة", Icon = "rbxassetid://10723415903" })
 
