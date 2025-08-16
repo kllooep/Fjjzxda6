@@ -1,0 +1,886 @@
+local CarTab = Window:MakeTab({"السيارة", "car"})
+
+-- Colors for RGB
+local colors = {
+    Color3.new(1, 0, 0),     -- Red
+    Color3.new(0, 1, 0),     -- Green
+    Color3.new(0, 0, 1),     -- Blue
+    Color3.new(1, 1, 0),     -- Yellow
+    Color3.new(1, 0, 1),     -- Magenta
+    Color3.new(0, 1, 1),     -- Cyan
+    Color3.new(0.5, 0, 0.5), -- Purple
+    Color3.new(1, 0.5, 0)    -- Orange
+}
+
+-- Replicated Storage Service
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local remoteEvent = replicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r")
+
+-- RGB Color Change Logic
+local isColorChanging = false
+local colorChangeCoroutine = nil
+
+local function changeCarColor()
+    while isColorChanging do
+        for _, color in ipairs(colors) do
+            if not isColorChanging then return end
+            local args = {
+                [1] = "PickingCarColor",
+                [2] = color
+            }
+            remoteEvent:FireServer(unpack(args))
+            wait(1)
+        end
+    end
+end
+
+CarTab:AddButton({
+    Name = "حذف كل السيارات",
+    Callback = function()
+        local ofnawufn = false
+
+if ofnawufn == true then
+    return
+end
+ofnawufn = true
+
+local cawwfer = "MilitaryBoatFree" -- Alterado para MilitaryBoatFree
+local oldcfffff = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1754, -2, 58) -- Coordenadas atualizadas
+wait(0.3)
+
+local args = {
+    [1] = "PickingBoat", -- Alterado para PickingBoat
+    [2] = cawwfer
+}
+
+game:GetService("ReplicatedStorage").RE:FindFirstChild("1Ca1r"):FireServer(unpack(args))
+wait(1)
+
+local wrinfjn
+for _, errb in pairs(game.workspace.Vehicles[game.Players.LocalPlayer.Name.."Car"]:GetDescendants()) do
+    if errb:IsA("VehicleSeat") then
+        wrinfjn = errb
+    end
+end
+
+repeat
+    if game.Players.LocalPlayer.Character.Humanoid.Health == 0 then return end
+    if game.Players.LocalPlayer.Character.Humanoid.Sit == true then
+        if not game.Players.LocalPlayer.Character.Humanoid.SeatPart == wrinfjn then
+            game.Players.LocalPlayer.Character.Humanoid.Sit = false
+        end
+    end
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = wrinfjn.CFrame
+    task.wait()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = wrinfjn.CFrame + Vector3.new(0,1,0)
+    task.wait()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = wrinfjn.CFrame + Vector3.new(0,-1,0)
+    task.wait()
+until game.Players.LocalPlayer.Character.Humanoid.SeatPart == wrinfjn
+
+for _, wifn in pairs(game.workspace.Vehicles[game.Players.LocalPlayer.Name.."Car"]:GetDescendants()) do
+    if wifn.Name == "PhysicalWheel" then
+        wifn:Destroy()
+    end
+end
+
+local FLINGED = Instance.new("BodyThrust", game.workspace.Vehicles[game.Players.LocalPlayer.Name.."Car"].Chassis.Mass) 
+FLINGED.Force = Vector3.new(50000, 0, 50000) 
+FLINGED.Name = "SUNTERIUM HUB FLING"
+FLINGED.Location = game.workspace.Vehicles[game.Players.LocalPlayer.Name.."Car"].Chassis.Mass.Position
+
+for _, wvwvwasc in pairs(game.workspace.Vehicles:GetChildren()) do
+    for _, ascegr in pairs(wvwvwasc:GetDescendants()) do
+        if ascegr.Name == "VehicleSeat" then
+            local targetcar = ascegr
+            local tet = Instance.new("BodyVelocity", game.workspace.Vehicles[game.Players.LocalPlayer.Name.."Car"].Chassis.Mass)
+            tet.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+            tet.P = 1250
+            tet.Velocity = Vector3.new(0,0,0)
+            tet.Name = "#mOVOOEPF$#@F$#GERE..>V<<<<EW<V<<W"
+            for m=1,25 do
+                local pos = {x=0, y=0, z=0}
+                pos.x = targetcar.Position.X
+                pos.y = targetcar.Position.Y
+                pos.z = targetcar.Position.Z
+                pos.x = pos.x + targetcar.Velocity.X / 2
+                pos.y = pos.y + targetcar.Velocity.Y / 2
+                pos.z = pos.z + targetcar.Velocity.Z / 2
+                if pos.y <= -200 then
+                    game.workspace.Vehicles[game.Players.LocalPlayer.Name.."Car"].Chassis.Mass.CFrame = CFrame.new(0,1000,0)
+                else
+                    game.workspace.Vehicles[game.Players.LocalPlayer.Name.."Car"].Chassis.Mass.CFrame = CFrame.new(Vector3.new(pos.x,pos.y,pos.z))
+                    task.wait()
+                    game.workspace.Vehicles[game.Players.LocalPlayer.Name.."Car"].Chassis.Mass.CFrame = CFrame.new(Vector3.new(pos.x,pos.y,pos.z)) + Vector3.new(0,-2,0)
+                    task.wait()
+                    game.workspace.Vehicles[game.Players.LocalPlayer.Name.."Car"].Chassis.Mass.CFrame = CFrame.new(Vector3.new(pos.x,pos.y,pos.z)) * CFrame.new(0,0,2)
+                    task.wait()
+                    game.workspace.Vehicles[
+game.Players.LocalPlayer.Name.."Car"].Chassis.Mass.CFrame = CFrame.new(Vector3.new(pos.x,pos.y,pos.z)) * CFrame.new(2,0,0)
+                    task.wait()
+                end
+                task.wait()
+            end
+        end
+    end
+end
+
+task.wait()
+local args = {
+    [1] = "DeleteAllVehicles"
+}
+
+game:GetService("ReplicatedStorage").RE:FindFirstChild("1Ca1r"):FireServer(unpack(args))
+game.Players.LocalPlayer.Character.Humanoid.Sit = false
+wait()
+local tet = Instance.new("BodyVelocity", game.Players.LocalPlayer.Character.HumanoidRootPart)
+tet.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+tet.P = 1250
+tet.Velocity = Vector3.new(0,0,0)
+tet.Name = "#mOVOOEPF$#@F$#GERE..>V<<<<EW<V<<W"
+wait(0.1)
+for m=1,2 do 
+    task.wait()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = oldcfffff
+end
+wait(1)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = oldcfffff
+wait()
+game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChild("#mOVOOEPF$#@F$#GERE..>V<<<<EW<V<<W"):Destroy()
+wait(0.2)
+ofnawufn = false
+    end
+})
+
+CarTab:AddParagraph({"معلومات:", "اضغط أكثر من مرة لضمان العمل"})
+
+
+CarTab:AddButton({
+    Name = "سحب كل السيارات",
+    Callback = function()
+        for _, v in next, workspace.Vehicles:GetChildren() do
+            v:SetPrimaryPartCFrame(game.Players.LocalPlayer.Character:GetPrimaryPartCFrame())
+        end
+    end
+})
+
+CarTab:AddParagraph({"Informação:", "Puxa todos os carros do servidor até você"})
+
+-- Speed V1 Section
+local SpeedSection = CarTab:AddSection({"سرعة V1"})
+
+local Speed = 50
+local Turbo = 50
+
+local function ChangeCarSpeedAndTurbo(speedValue, turboValue)
+    local player = game.Players.LocalPlayer
+    local car = workspace.Vehicles:FindFirstChild(player.Name .. "Car")
+
+    if car then
+        local body = car:FindFirstChild("Body").VehicleSeat
+        if body then
+            body.TopSpeed.Value = speedValue
+            body.Turbo.Value = turboValue
+            wait(0.1)
+            redzlib:MakeNotification({
+                Name = "Original by Mafia Hub",
+                Content = "Done, You can Move Now!",
+                Time = 5
+            })
+        else
+            redzlib:MakeNotification({
+                Name = "Error",
+                Content = "Sit in car first!",
+                Time = 5
+            })
+        end
+    else
+        redzlib:MakeNotification({
+            Name = "Error",
+            Content = "Put a Car First!",
+            Time = 5
+        })
+    end
+end
+
+CarTab:AddTextBox({
+    Name = "السرعة",
+    PlaceholderText = "50",
+    Callback = function(value)
+        local newSpeed = tonumber(value)
+        if newSpeed then
+            Speed = newSpeed
+        end
+    end
+})
+
+CarTab:AddTextBox({
+    Name = "تيربو",
+    PlaceholderText = "50",
+    Callback = function(value)
+        local newTurbo = tonumber(value)
+        if newTurbo then
+            Turbo = newTurbo
+        end
+    end
+})
+
+CarTab:AddTextBox({
+    Name = "تفحيط",
+    PlaceholderText = "50",
+    Callback = function(value)
+        local args = {
+            [1] = "DriftingNumber",
+            [2] = value
+        }
+        game:GetService("ReplicatedStorage").RE:FindFirstChild("1Player1sCa1r"):FireServer(unpack(args))
+    end
+})
+
+CarTab:AddButton({
+    Name = "تفعيل تيربو وتفحيط",
+    Callback = function()
+        ChangeCarSpeedAndTurbo(Speed, Turbo)
+    end
+})
+
+-- Turbo V2 Section
+local TurboSection = CarTab:AddSection({"تيربوV2"})
+
+CarTab:AddButton({
+    Name = "تيربوV2 [Melhor]",
+    Callback = function()
+     local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+
+local voando = false
+local velocidade = 30
+
+local telaGui = Instance.new("ScreenGui", player.PlayerGui)
+
+local function criarBotaoImagem(nome, posicao, idImagem, rotacao, acao)
+    local botao = Instance.new("ImageButton", telaGui)
+    botao.Size = UDim2.new(0, 60, 0, 60)
+    botao.Position = posicao
+    botao.BackgroundTransparency = 1
+    botao.Image = "rbxassetid://" .. idImagem
+    botao.Rotation = rotacao
+    botao.MouseButton1Down:Connect(acao)
+    return botao
+end
+
+local botaoFrente = criarBotaoImagem("BotaoFrente", UDim2.new(0, 10, 0.35, 0), "18478249606", 0, function()
+    voando = true
+    while voando do
+        if humanoidRootPart then
+            humanoidRootPart.Velocity = humanoidRootPart.CFrame.LookVector * velocidade
+        end
+        task.wait()
+    end
+end)
+
+local botaoTras = criarBotaoImagem("BotaoTras", UDim2.new(0, 10, 0.5, 0), "18478249606", 180, function()
+    voando = true
+    while voando do
+        if humanoidRootPart then
+            humanoidRootPart.Velocity = -humanoidRootPart.CFrame.LookVector * velocidade
+        end
+        task.wait()
+    end
+end)
+
+local botaoEsquerda = criarBotaoImagem("BotaoEsquerda", UDim2.new(1, -210, 0.3, 0), "18478249606", -90, function()
+    voando = true
+    while voando do
+        if humanoidRootPart then
+            humanoidRootPart.Velocity = -humanoidRootPart.CFrame.RightVector * velocidade
+        end
+        task.wait()
+    end
+end)
+
+local botaoDireita = criarBotaoImagem("BotaoDireita", UDim2.new(1, -140, 0.3, 0), "18478249606", 90, function()
+    voando = true
+    while voando do
+        if humanoidRootPart then
+            humanoidRootPart.Velocity = humanoidRootPart.CFrame.RightVector * velocidade
+        end
+        task.wait()
+    end
+end)
+
+local function pararVoo()
+    voando = false
+    if humanoidRootPart then
+        humanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+    end
+end
+
+botaoFrente.MouseButton1Up:Connect(pararVoo)
+botaoTras.MouseButton1Up:Connect(pararVoo)
+botaoEsquerda.MouseButton1Up:Connect(pararVoo)
+botaoDireita.MouseButton1Up:Connect(pararVoo)
+
+local botaoTurbo = Instance.new("ImageButton", telaGui)
+botaoTurbo.Size = UDim2.new(0, 60, 0, 60)
+botaoTurbo.Position = UDim2.new(1, -130, 0, 10)
+botaoTurbo.BackgroundTransparency = 1
+botaoTurbo.Image = "rbxassetid://97607579386418"
+botaoTurbo.MouseButton1Down:Connect(function()
+    velocidade = 300
+end)
+
+-- Botão de minimizar (com "+" ou "-" dependendo do estado)
+local botaoMinimizar = Instance.new("TextButton", telaGui)
+botaoMinimizar.Size = UDim2.new(0, 60, 0, 60)
+botaoMinimizar.Position = UDim2.new(0, 10, 0, 10)  -- Alterado para o canto superior esquerdo
+botaoMinimizar.BackgroundTransparency = 1
+botaoMinimizar.Text = "-"  -- Inicia com o símbolo de "-"
+botaoMinimizar.TextSize = 40
+botaoMinimizar.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+local botoes = {botaoFrente, botaoTras, botaoEsquerda, botaoDireita, botaoTurbo}
+
+local minimizado = false
+
+local function alternarBotoes()
+    minimizado = not minimizado
+    for _, botao in ipairs(botoes) do
+        botao.Visible = not minimizado
+    end
+    -- Alterar o texto do botão de minimizar
+    if minimizado then
+        botaoMinimizar.Text = "+"
+    else
+        botaoMinimizar.Text = "-"
+    end
+end
+
+botaoMinimizar.MouseButton1Down:Connect(alternarBotoes)    
+    end
+})
+
+CarTab:AddParagraph({"Informação:", "Ambos os turbos não precisam de Gamepass"})
+
+-- Music Section
+local MusicSection = CarTab:AddSection({"Music for Cars, Houses"})
+
+local musicIds = {
+    "71373562243752", "138129019858244", "138480372357526", "122199933878670",
+    "74187181906707", "82793916573031", "107421761958790", "91394092603440",
+    "113198957973421", "81452315991527", "93786060174790", "74752089069476",
+    "131592235762789", "132081774507495", "124394293950763", "83381647646350",
+    "16190782181", "1841682637", "3148329638", "124928367733395",
+    "106317184644394", "100247055114504", "107035638005233", "109351649716900",
+    "84751398517083", "125259969174449", "89269071829332", "88094479399489",
+    "72440232513341", "92893359226454", "111281710445018", "98677515506006",
+    "105882833374061", "104541292443133", "105832154444494", "84733736048142",
+    "94718473830640", "130324826943718", "123039027577735", "113312785512702",
+    "139161205970637", "113768944849093", "135667903253566", "81335392002580",
+    "77428091165211", "14145624031", "8080255618", "8654835474",
+    "13530439502", "18841894272", "90323407842935", "136932193331774",
+    "113504863495384", "1836175030", "79998949362539", "109188610023287",
+    "134939857094956", "132245626038510", "124567809277408", "72591334498716",
+    "76578817848504", "17422156627", "81902909302285", "130449561461006",
+    "110519234838026", "106434295960535", "86271123924168", "85481949732828",
+    "106476166672589", "87968531262747", "73966367524216", "137962454483542",
+    "98371771055411", "111668097052966", "140095882383991", "122873874738223",
+    "105461615542794"
+}
+
+local function playCarMusic(musicId)
+    if musicId and musicId ~= "" then
+        local carArgs = {
+            [1] = "PickingCarMusicText",
+            [2] = musicId
+        }
+        game:GetService("ReplicatedStorage").RE:FindFirstChild("1Player1sCa1r"):FireServer(unpack(carArgs))
+    end
+end
+
+local function playScooterMusic(musicId)
+    if musicId and musicId ~= "" then
+        local scooterArgs = {
+            [1] = "PickingScooterMusicText",
+            [2] = musicId
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack(scooterArgs))
+    end
+end
+
+local function playHouseMusic(musicId)
+    if musicId and musicId ~= "" then
+        local houseArgs = {
+            [1] = "PickHouseMusicText",
+            [2] = musicId
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Player1sHous1e"):FireServer(unpack(houseArgs))
+    end
+end
+
+CarTab:AddTextBox({
+    Name = "Music ID (Gamepass Required)",
+    PlaceholderText = "Enter Music ID",
+    Callback = function(value)
+        playCarMusic(value)
+        playScooterMusic(value)
+        playHouseMusic(value)
+    end
+})
+
+CarTab:AddDropdown({
+    Name = "اختار موسيقى (Gamepass Required)",
+    Options = musicIds,
+    Callback = function(value)
+        playCarMusic(value)
+        playScooterMusic(value)
+        playHouseMusic(value)
+    end
+})
+
+CarTab:AddParagraph({"Note", "O script de música funciona em todos os carros e casas"})
+
+-- Car RGB Section
+local RGBSection = CarTab:AddSection({"تلوين السيارة"})
+
+CarTab:AddToggle({
+    Name = "سيارة ملونة",
+    Default = false,
+    Callback = function(state)
+        isColorChanging = state
+        if isColorChanging then
+            colorChangeCoroutine = coroutine.create(changeCarColor)
+            coroutine.resume(colorChangeCoroutine)
+        end
+    end
+})
+
+CarTab:AddParagraph({"ملاحظة", "الإكثار عليه باند"})
+
+-- Spam Horn Section
+local HornSection = CarTab:AddSection({"سبام هورن"})
+
+local spamming = false
+local args = {"Horn"}
+
+local function spamHorn()
+    while spamming do
+        remoteEvent:FireServer(unpack(args))
+        wait(0.1)
+    end
+end
+
+CarTab:AddToggle({
+    Name = "سبام هورن",
+    Default = false,
+    Callback = function(value)
+        spamming = value
+        if spamming then
+            spawn(spamHorn)
+        end
+    end
+})
+
+-- Fly Car Section
+local FlySection = CarTab:AddSection({"طيران سيارة"})
+
+CarTab:AddButton({
+    Name = "طيران سيارة",
+    Callback = function()
+        --by Luscaa
+-- Version: 4.1
+
+-- Instances:
+local Flymguiv2 = Instance.new("ScreenGui")
+local Drag = Instance.new("Frame")
+local FlyFrame = Instance.new("Frame")
+local ddnsfbfwewefe = Instance.new("TextButton")
+local Speed = Instance.new("TextBox")
+local Fly = Instance.new("TextButton")
+local Speeed = Instance.new("TextLabel")
+local Stat = Instance.new("TextLabel")
+local Stat2 = Instance.new("TextLabel")
+local Unfly = Instance.new("TextButton")
+local Vfly = Instance.new("TextLabel")
+local Close = Instance.new("TextButton")
+local Minimize = Instance.new("TextButton")
+local Flyon = Instance.new("Frame")
+local W = Instance.new("TextButton")
+local S = Instance.new("TextButton")
+
+--Properties:
+
+Flymguiv2.Name = "طيران سيار من صنع رامي"
+Flymguiv2.Parent = game.CoreGui
+Flymguiv2.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Drag.Name = "Drag"
+Drag.Parent = Flymguiv2
+Drag.Active = true
+Drag.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
+Drag.BorderSizePixel = 0
+Drag.Draggable = true
+Drag.Position = UDim2.new(0.482438415, 0, 0.454874992, 0)
+Drag.Size = UDim2.new(0, 237, 0, 27)
+
+FlyFrame.Name = "FlyFrame"
+FlyFrame.Parent = Drag
+FlyFrame.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+FlyFrame.BorderSizePixel = 0
+FlyFrame.Draggable = true
+FlyFrame.Position = UDim2.new(-0.00200000009, 0, 0.989000022, 0)
+FlyFrame.Size = UDim2.new(0, 237, 0, 139)
+
+ddnsfbfwewefe.Name = "ddnsfbfwewefe"
+ddnsfbfwewefe.Parent = FlyFrame
+ddnsfbfwewefe.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
+ddnsfbfwewefe.BorderSizePixel = 0
+ddnsfbfwewefe.Position = UDim2.new(-0.000210968778, 0, -0.00395679474, 0)
+ddnsfbfwewefe.Size = UDim2.new(0, 237, 0, 27)
+ddnsfbfwewefe.Font = Enum.Font.SourceSans
+ddnsfbfwewefe.Text = "by Lusquinha_067"
+ddnsfbfwewefe.TextColor3 = Color3.fromRGB(255, 255, 255)
+ddnsfbfwewefe.TextScaled = true
+ddnsfbfwewefe.TextSize = 14.000
+ddnsfbfwewefe.TextWrapped = true
+
+Speed.Name = "Speed"
+Speed.Parent = FlyFrame
+Speed.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
+Speed.BorderColor3 = Color3.fromRGB(0, 0, 191)
+Speed.BorderSizePixel = 0
+Speed.Position = UDim2.new(0.445025861, 0, 0.402877688, 0)
+Speed.Size = UDim2.new(0, 111, 0, 33)
+Speed.Font = Enum.Font.SourceSans
+Speed.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+Speed.Text = "50"
+Speed.TextColor3 = Color3.fromRGB(255, 255, 255)
+Speed.TextScaled = true
+Speed.TextSize = 14.000
+Speed.TextWrapped = true
+
+Fly.Name = "Fly"
+Fly.Parent = FlyFrame
+Fly.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
+Fly.BorderSizePixel = 0
+Fly.Position = UDim2.new(0.0759493634, 0, 0.705797076, 0)
+Fly.Size = UDim2.new(0, 199, 0, 32)
+Fly.Font = Enum.Font.SourceSans
+Fly.Text = "Enable"
+Fly.TextColor3 = Color3.fromRGB(255, 255, 255)
+Fly.TextScaled = true
+Fly.TextSize = 14.000
+Fly.TextWrapped = true
+Fly.MouseButton1Click:Connect(function()
+	local HumanoidRP = game.Players.LocalPlayer.Character.HumanoidRootPart
+	Fly.Visible = false
+	Stat2.Text = "On"
+	Stat2.TextColor3 = Color3.fromRGB(0, 255, 0)
+	Unfly.Visible = true
+	Flyon.Visible = true
+	local BV = Instance.new("BodyVelocity",HumanoidRP)
+	local BG = Instance.new("BodyGyro",HumanoidRP)
+	BV.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+	game:GetService('RunService').RenderStepped:connect(function()
+	BG.MaxTorque = Vector3.new(math.huge,math.huge,math.huge)
+	BG.D = 5000
+	BG.P = 100000
+	BG.CFrame = game.Workspace.CurrentCamera.CFrame
+	end)
+end)
+
+Speeed.Name = "Speeed"
+Speeed.Parent = FlyFrame
+Speeed.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+Speeed.BorderSizePixel = 0
+Speeed.Position = UDim2.new(0.0759493634, 0, 0.402877688, 0)
+Speeed.Size = UDim2.new(0, 87, 0, 32)
+Speeed.ZIndex = 0
+Speeed.Font = Enum.Font.SourceSans
+Speeed.Text = "Speed:"
+Speeed.TextColor3 = Color3.fromRGB(255, 255, 255)
+Speeed.TextScaled = true
+Speeed.TextSize = 14.000
+Speeed.TextWrapped = true
+
+Stat.Name = "Stat"
+Stat.Parent = FlyFrame
+Stat.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+Stat.BorderSizePixel = 0
+Stat.Position = UDim2.new(0.299983799, 0, 0.239817441, 0)
+Stat.Size = UDim2.new(0, 85, 0, 15)
+Stat.Font = Enum.Font.SourceSans
+Stat.Text = "Status:"
+Stat.TextColor3 = Color3.fromRGB(255, 255, 255)
+Stat.TextScaled = true
+Stat.TextSize = 14.000
+Stat.TextWrapped = true
+
+Stat2.Name = "Stat2"
+Stat2.Parent = FlyFrame
+Stat2.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+Stat2.BorderSizePixel = 0
+Stat2.Position = UDim2.new(0.546535194, 0, 0.239817441, 0)
+Stat2.Size = UDim2.new(0, 27, 0, 15)
+Stat2.Font = Enum.Font.SourceSans
+Stat2.Text = "Off"
+Stat2.TextColor3 = Color3.fromRGB(255, 0, 0)
+Stat2.TextScaled = true
+Stat2.TextSize = 14.000
+Stat2.TextWrapped = true
+
+Unfly.Name = "Unfly"
+Unfly.Parent = FlyFrame
+Unfly.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
+Unfly.BorderSizePixel = 0
+Unfly.Position = UDim2.new(0.0759493634, 0, 0.705797076, 0)
+Unfly.Size = UDim2.new(0, 199, 0, 32)
+Unfly.Visible = false
+Unfly.Font = Enum.Font.SourceSans
+Unfly.Text = "Disable"
+Unfly.TextColor3 = Color3.fromRGB(255, 255, 255)
+Unfly.TextScaled = true
+Unfly.TextSize = 14.000
+Unfly.TextWrapped = true
+Unfly.MouseButton1Click:Connect(function()
+	local HumanoidRP = game.Players.LocalPlayer.Character.HumanoidRootPart
+	Fly.Visible = true
+	Stat2.Text = "Off"
+	Stat2.TextColor3 = Color3.fromRGB(255, 0, 0)
+	wait()
+	Unfly.Visible = false
+	Flyon.Visible = false
+	HumanoidRP:FindFirstChildOfClass("BodyVelocity"):Destroy()
+	HumanoidRP:FindFirstChildOfClass("BodyGyro"):Destroy()
+end)
+
+Vfly.Name = "Vfly"
+Vfly.Parent = Drag
+Vfly.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
+Vfly.BorderSizePixel = 0
+Vfly.Size = UDim2.new(0, 57, 0, 27)
+Vfly.Font = Enum.Font.SourceSans
+Vfly.Text = "Car fly"
+Vfly.TextColor3 = Color3.fromRGB(255, 255, 255)
+Vfly.TextScaled = true
+Vfly.TextSize = 14.000
+Vfly.TextWrapped = true
+
+Close.Name = "Close"
+Close.Parent = Drag
+Close.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
+Close.BorderSizePixel = 0
+Close.Position = UDim2.new(0.875, 0, 0, 0)
+Close.Size = UDim2.new(0, 27, 0, 27)
+Close.Font = Enum.Font.SourceSans
+Close.Text = "X"
+Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+Close.TextScaled = true
+Close.TextSize = 14.000
+Close.TextWrapped = true
+Close.MouseButton1Click:Connect(function()
+	Flymguiv2:Destroy()
+end)
+
+Minimize.Name = "Minimize"
+Minimize.Parent = Drag
+Minimize.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
+Minimize.BorderSizePixel = 0
+Minimize.Position = UDim2.new(0.75, 0, 0, 0)
+Minimize.Size = UDim2.new(0, 27, 0, 27)
+Minimize.Font = Enum.Font.SourceSans
+Minimize.Text = "-"
+Minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
+Minimize.TextScaled = true
+Minimize.TextSize = 14.000
+Minimize.TextWrapped = true
+function Mini()
+	if Minimize.Text == "-" then
+		Minimize.Text = "+"
+		FlyFrame.Visible = false
+	elseif Minimize.Text == "+" then
+		Minimize.Text = "-"
+		FlyFrame.Visible = true
+	end
+end
+Minimize.MouseButton1Click:Connect(Mini)
+
+Flyon.Name = "Fly on"
+Flyon.Parent = Flymguiv2
+Flyon.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Flyon.BorderSizePixel = 0
+Flyon.Position = UDim2.new(0.117647067, 0, 0.550284624, 0)
+Flyon.Size = UDim2.new(0.148000002, 0, 0.314999998, 0)
+Flyon.Visible = false
+Flyon.Active = true
+Flyon.Draggable = true
+
+W.Name = "W"
+W.Parent = Flyon
+W.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
+W.BorderSizePixel = 0
+W.Position = UDim2.new(0.134719521, 0, 0.0152013302, 0)
+W.Size = UDim2.new(0.708999991, 0, 0.499000013, 0)
+W.Font = Enum.Font.SourceSans
+W.Text = "^"
+W.TextColor3 = Color3.fromRGB(255, 255, 255)
+W.TextScaled = true
+W.TextSize = 14.000
+W.TextWrapped = true
+W.TouchLongPress:Connect(function()
+	local HumanoidRP = game.Players.LocalPlayer.Character.HumanoidRootPart
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * 0
+end)
+
+W.MouseButton1Click:Connect(function()
+	local HumanoidRP = game.Players.LocalPlayer.Character.HumanoidRootPart
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * 0
+end)
+
+S.Name = "S"
+S.Parent = Flyon
+S.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
+S.BorderSizePixel = 0
+S.Position = UDim2.new(0.134000003, 0, 0.479999989, 0)
+S.Rotation = 180.000
+S.Size = UDim2.new(0.708999991, 0, 0.499000013, 0)
+S.Font = Enum.Font.SourceSans
+S.Text = "^"
+S.TextColor3 = Color3.fromRGB(255, 255, 255)
+S.TextScaled = true
+S.TextSize = 14.000
+S.TextWrapped = true
+S.TouchLongPress:Connect(function()
+	local HumanoidRP = game.Players.LocalPlayer.Character.HumanoidRootPart
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * 0
+end)
+
+S.MouseButton1Click:Connect(function()
+	local HumanoidRP = game.Players.LocalPlayer.Character.HumanoidRootPart
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * -Speed.Text
+	wait(.1)
+	HumanoidRP.BodyVelocity.Velocity = game.Workspace.CurrentCamera.CFrame.LookVector * 0
+end)
+    end
+})
+
+CarTab:AddParagraph({"Note", "هذا الزر يطير السيارة"})
+
+-- Spam Cars Section
+local SpamCarSection = CarTab:AddSection({"سبام سيارات"})
+
+local carList = {
+    "SchoolBus", "SmartCar", "FarmTruck", "Cadillac", "Excavator",
+    "Jeep", "NascarTruck", "TowTruck", "Snowplow", "MilitaryTruck",
+    "Tank", "Limo", "FireTruck"
+}
+
+local spamCarsActive = false
+
+local function spawnCar(carName)
+    local args = {
+        [1] = "PickingCar",
+        [2] = carName
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Ca1r"):FireServer(unpack(args))
+end
+
+CarTab:AddToggle({
+    Name = "سبام سيارات",
+    Default = false,
+    Callback = function(state)
+        spamCarsActive = state
+        if spamCarsActive then
+            task.spawn(function()
+                while spamCarsActive do
+                    for _, carName in ipairs(carList) do
+                        if not spamCarsActive then break end
+                        spawnCar(carName)
+                        wait(0.4)
+                    end
+                end
+            end)
+        end
+    end
+})
+
+CarTab:AddParagraph({"معلومة:", "يرسبن سيارات تتغير متنوعة"})
