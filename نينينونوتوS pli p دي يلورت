@@ -1268,6 +1268,491 @@ local blur = Instance.new("BlurEffect", Lighting)
 blur.Size = 0
 end})
 
+
+local FreezTab = Window:MakeTab({
+Name = "Superتجميدات",
+Icon = "Zap"
+})
+
+
+-- === الخدمات والمتغيرات الأساسية ===
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local cam = workspace.CurrentCamera
+
+-- === الوصول إلى الحدث المسؤول عن الهجوم ===
+local RE = ReplicatedStorage:WaitForChild("RE")
+local FireEvent = RE:FindFirstChild("1Gu1n")
+
+if not FireEvent then
+    warn("تحذير: الحدث 1Gu1n غير موجود!")
+end
+
+-- === المتغيرات ===
+local selectedPlayerName = nil
+getgenv().Target = nil
+
+-- === دالة لتحديث قائمة اللاعبين ===
+local function getPlayerList()
+    local playerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            table.insert(playerNames, player.Name)
+        end
+    end
+    table.sort(playerNames)
+    return playerNames
+end
+
+-- === إضافة القسم ===
+local PlayerSection = FreezTab:AddSection({ Name = "اختيار اللاعب" })
+
+-- === Dropdown لاختيار اللاعب ===
+local killDropdown = FreezTab:AddDropdown({
+    Name = "اختيار لاعب",
+    Options = getPlayerList(),
+    Default = "",
+    Callback = function(value)
+        selectedPlayerName = value
+        getgenv().Target = value
+        print("تم اختيار اللاعب: " .. tostring(value or "لا شيء"))
+    end
+})
+
+-- === زر تحديث قائمة اللاعبين ===
+FreezTab:AddButton({
+    Name = "تحديث قائمة اللاعبين",
+    Callback = function()
+        local newPlayers = getPlayerList()
+        if killDropdown then
+            killDropdown:Set(newPlayers)
+            print("تم تحديث القائمة: " .. table.concat(newPlayers, ", "))
+        end
+        -- إعادة تعيين الاختيار إذا كان اللاعب المختار قد خرج
+        if selectedPlayerName and not Players:FindFirstChild(selectedPlayerName) then
+            selectedPlayerName = nil
+            getgenv().Target = nil
+            killDropdown:SetValue("")
+        end
+    end
+})
+
+-- === زر الانتقال للاعب ===
+FreezTab:AddButton({
+    Name = "انتقال للاعب",
+    Callback = function()
+        if not selectedPlayerName then
+            print("❌ لم يتم اختيار لاعب!")
+            return
+        end
+        local target = Players:FindFirstChild(selectedPlayerName)
+        if not target or not target.Character then
+            print("❌ اللاعب غير موجود أو لا توجد شخصية")
+            return
+        end
+        local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            hrp.CFrame = target.Character.HumanoidRootPart.CFrame
+        end
+    end
+})
+
+-- === Toggle التجسس على اللاعب ===
+FreezTab:AddToggle({
+    Name = "تجسس على اللاعب",
+    Default = false,
+    Callback = function(value)
+        if value then
+            getgenv().CameraConnection = RunService.Heartbeat:Connect(function()
+                if selectedPlayerName then
+                    local target = Players:FindFirstChild(selectedPlayerName)
+                    if target and target.Character and target.Character:FindFirstChild("Humanoid") then
+                        cam.CameraSubject = target.Character.Humanoid
+                    end
+                end
+            end)
+        else
+            if getgenv().CameraConnection then
+                getgenv().CameraConnection:Disconnect()
+                getgenv().CameraConnection = nil
+            end
+            -- إعادة الكاميرا للشخصية
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                cam.CameraSubject = LocalPlayer.Character.Humanoid
+            end
+        end
+    end
+})
+
+-- === دالة الهجوم (مستخدمة من الكود السابق) ===
+local function fireAtPart(targetPart)
+    if not targetPart or not FireEvent then return end
+    local args = {
+        targetPart,
+        targetPart,
+        Vector3.new(1e14, 1e14, 1e14),
+        targetPart.Position,
+        nil, nil, 0, 0, { false },
+        { 25, Vector3.new(100, 100, 100), BrickColor.new(29), 0.25, Enum.Material.SmoothPlastic, 0.25 },
+        true, false
+    }
+    pcall(function()
+        FireEvent:FireServer(unpack(args))
+    end)
+end
+
+-- === زر الهجوم الفردي ===
+FreezTab:AddButton({
+    Name = "تجميد اللاعب مرة واحدة🥵",
+    Callback = function()
+        if not selectedPlayerName then
+            print("❌ لم يتم اختيار لاعب!")
+            return
+        end
+        local target = Players:FindFirstChild(selectedPlayerName)
+        if not target or not target.Character then
+            print("❌ اللاعب غير موجود")
+            return
+        end
+        local hrp = target.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            for i = 1, 3 do
+                fireAtPart(hrp)
+                task.wait(0.05)
+            end
+            print("✅ تم تنفيذ التجميد على " .. selectedPlayerName)
+        end
+    end
+})
+
+local continuousAttackActive = false
+
+FreezTab:AddToggle({
+    Name = "تجميد اللاعب تلقائيا🥶",
+    Default = false,
+    Callback = function(state)
+        continuousAttackActive = state
+
+        if state then
+            task.spawn(function()
+                while true do
+                    -- التوقف الفوري إذا تم إيقاف التوغل
+                    if not continuousAttackActive then
+                        break
+                    end
+
+                    if not selectedPlayerName then
+                        task.wait(0.5)
+                        continue
+                    end
+
+                    local target = Players:FindFirstChild(selectedPlayerName)
+                    if target and target.Character then
+                        local hrp = target.Character:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            fireAtPart(hrp)
+                        end
+                    end
+
+                    task.wait(0.05)
+                end
+            end)
+        end
+    end
+})
+
+FreezTab:AddSection({ 
+Name = "Extraتجميدات" 
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Player = Players.LocalPlayer
+
+local RE = ReplicatedStorage:WaitForChild("RE")
+local FireEvent = RE:FindFirstChild("1Gu1n") -- الحدث المسؤول عن الهجوم
+
+if not FireEvent then
+    warn("الحدث 1Gu1n غير موجود!")
+end
+
+local attackEnabled = false
+
+-- دالة الهجوم على جزء معين (مثل HumanoidRootPart)
+local function fireAtPart(targetPart)
+    if not targetPart or not FireEvent then return end
+
+    local args = {
+        targetPart,                    -- TargetPart
+        targetPart,                    -- HitPart
+        Vector3.new(1e14, 1e14, 1e14), -- Direction
+        targetPart.Position,           -- Position
+        nil,                           -- MuzzleEffect (لا حاجة)
+        nil,                           -- HitEffect
+        0,                             -- ShotType
+        0,                             -- DamageType
+        { false },                     -- IsHeadshot
+        {
+            25,                        -- Damage
+            Vector3.new(100, 100, 100), -- Force
+            BrickColor.new(29),        -- Color
+            0.25,                      -- BulletHoleSize
+            Enum.Material.SmoothPlastic, -- Material
+            0.25                       -- SparkSize
+        },
+        true,                          -- CanPenetrate
+        false                          -- IsSilent
+    }
+
+    pcall(function()
+        FireEvent:FireServer(unpack(args))
+    end)
+end
+
+-- دالة بدء الهجوم (بدون سلاح)
+local function startAttackLoop()
+    task.spawn(function()
+        while attackEnabled do
+            -- الهجوم على كل لاعب نشط
+            for _, targetPlayer in ipairs(Players:GetPlayers()) do
+                if not attackEnabled then break end
+                if targetPlayer ~= Player and targetPlayer.Character then
+                    local hrp = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+                    if hrp then
+                        -- 3 طلقات سريعة على كل لاعب
+                        for i = 1, 3 do
+                            if not attackEnabled then break end
+                            fireAtPart(hrp)
+                            task.wait(0.05) -- فاصل بين الطلقات
+                        end
+                    end
+                end
+            end
+
+            task.wait(1) -- فاصل بين الجولات
+        end
+    end)
+end
+
+-- إضافة التوغل إلى التبويب
+FreezTab:AddToggle({
+    Name = "V2(تجميد اللاعبين)",
+    Description = "تجميد كل اللاعبين🥶",
+    Default = false,
+    Callback = function(state)
+        attackEnabled = state
+
+        if attackEnabled then
+            -- إرسال رسالة في الشات (مرة واحدة عند التفعيل)
+            local chatService = game:GetService("TextChatService")
+            if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
+                local channel = chatService.TextChannels:FindFirstChild("RBXGeneral")
+                if channel then
+                    channel:SendAsync("hi\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rServer: Hacked[🥶DemoZHub]")
+                end
+            else
+                print("Nadaa")
+            end
+
+            -- بدء الهجوم المباشر
+            startAttackLoop()
+        end
+    end
+})
+
+-- === المتغيرات الأساسية ===
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local mouse = LocalPlayer:GetMouse()
+
+-- الوصول إلى الحدث المسؤول عن الهجوم
+local RE = ReplicatedStorage:WaitForChild("RE")
+local FireEvent = RE:FindFirstChild("1Gu1n")
+
+if not FireEvent then
+    warn("تحذير: الحدث 1Gu1n غير موجود!")
+end
+
+-- === دالة الهجوم على جزء معين ===
+local function fireAtPart(targetPart)
+    if not targetPart or not FireEvent then return end
+
+    local args = {
+        targetPart,                    -- TargetPart
+        targetPart,                    -- HitPart
+        Vector3.new(1e14, 1e14, 1e14), -- Direction
+        targetPart.Position,
+        nil, nil, 0, 0, { false },
+        {
+            25,
+            Vector3.new(100, 100, 100),
+            BrickColor.new(29),
+            0.25,
+            Enum.Material.SmoothPlastic,
+            0.25
+        },
+        true,
+        false
+    }
+
+    pcall(function()
+        FireEvent:FireServer(unpack(args))
+    end)
+end
+
+-- === Toggle: هجوم فردي على النقر (One Click Kill) ===
+FreezTab:AddToggle({
+    Name = "Clickتجميد لاعب بنقرة",
+    Description = "تجميد اللاعب مرة واحدة عند النقرة",
+    Default = false,
+    Callback = function(state)
+        if state then
+            -- تفعيل الاستماع للنقر
+            getgenv().ClickConnection = mouse.Button1Down:Connect(function()
+                local targetPart = mouse.Target
+                if targetPart then
+                    local character = targetPart:FindFirstAncestorWhichIsA("Model")
+                    local player = Players:GetPlayerFromCharacter(character)
+                    if player and player ~= LocalPlayer then
+                        local hrp = character:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            fireAtPart(hrp)
+                            print("تم الهجوم على: " .. player.Name)
+                        end
+                    end
+                end
+            end)
+        else
+            -- إيقاف الاستماع
+            if getgenv().ClickConnection then
+                getgenv().ClickConnection:Disconnect()
+                getgenv().ClickConnection = nil
+            end
+        end
+    end
+})
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- المرجع للأحداث
+local RE = ReplicatedStorage:WaitForChild("RE")
+local ClearEvent = RE:FindFirstChild("1Clea1rTool1s")
+local ToolEvent = RE:FindFirstChild("1Too1l")
+local FireEvent = RE:FindFirstChild("1Gu1n")
+
+-- المتغيرات
+local attacking = false
+local targetPlayer = nil
+
+-- دوال مساعدة
+local function clearAllTools()
+	if ClearEvent then
+		ClearEvent:FireServer("ClearAllTools")
+	end
+end
+
+local function getAssault()
+	if ToolEvent then
+		ToolEvent:InvokeServer("PickingTools", "Assault")
+	end
+end
+
+local function hasAssault()
+	return LocalPlayer.Backpack:FindFirstChild("Assault") ~= nil
+end
+
+local function fireAtPart(targetPart)
+	local gunScript = LocalPlayer.Backpack:FindFirstChild("Assault")
+		and LocalPlayer.Backpack.Assault:FindFirstChild("GunScript_Local")
+
+	if not gunScript or not targetPart then return end
+
+	local args = {
+		targetPart,
+		targetPart,
+		Vector3.new(1e14, 1e14, 1e14),
+		targetPart.Position,
+		gunScript:FindFirstChild("MuzzleEffect"),
+		gunScript:FindFirstChild("HitEffect"),
+		0,
+		0,
+		{ false },
+		{
+			25,
+			Vector3.new(100, 100, 100),
+			BrickColor.new(29),
+			0.25,
+			Enum.Material.SmoothPlastic,
+			0.25
+		},
+		true,
+		false
+	}
+
+	FireEvent:FireServer(unpack(args))
+end
+
+local mouse = LocalPlayer:GetMouse()
+
+local function attackLoop()
+	while attacking and targetPlayer do
+		if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+			for i = 1, 3 do
+				fireAtPart(targetPlayer.Character.HumanoidRootPart)
+				task.wait(0.2)
+			end
+		end
+		task.wait(2)
+	end
+end
+
+-- زر الهجوم في مكتبة Redz V5
+FreezTab:AddButton({
+	Name = "اداة تجميد تلقائي",
+	Description = "امسك الاداة واضغط على لاعب وسيتجمد تلقائيا وعند فك الاداة يتوقف",
+	Callback = function()
+		-- تجهيز الأداة
+		local tool = LocalPlayer.Backpack:FindFirstChild("GhimXRamiتجميد الناس")
+		if not tool then
+			tool = Instance.new("Tool")
+			tool.Name = "Ramiتجميد تلقائي"
+			tool.RequiresHandle = false
+			tool.CanBeDropped = false
+			tool.Parent = LocalPlayer.Backpack
+		end
+
+		clearAllTools()
+		getAssault()
+		repeat task.wait(0.2) until hasAssault()
+
+		-- عند النقر على لاعب يبدأ الهجوم
+		mouse.Button1Down:Connect(function()
+			if not tool.Parent then return end
+			local target = mouse.Target
+			if target and target.Parent then
+				local player = Players:GetPlayerFromCharacter(target.Parent)
+				if player then
+					targetPlayer = player
+					if not attacking then
+						attacking = true
+						task.spawn(attackLoop)
+					end
+				end
+			end
+		end)
+
+		-- عند نزع الأداة توقف الهجوم
+		tool.Unequipped:Connect(function()
+			attacking = false
+			targetPlayer = nil
+		end)
+	end
+})
+
 local TrollTab = Window:MakeTab({ Title = "سكربتات تخريب", Icon = "rbxassetid://13364900349" })
 
 
