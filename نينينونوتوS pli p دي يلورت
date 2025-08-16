@@ -6554,6 +6554,383 @@ Tab:AddButton({
     end
 })
 
+-- ✅ تاب "الاكسسوارات" - مُصلح ومتوافق مع Sd@733 (1).txt
+local AccessoriesTab = Window:MakeTab({
+    Title = "الاكسسوارات",
+    Icon = "shirt"
+})
+
+-- دالة مساعدة لارتداء عنصر
+local function Wear(ItemId)
+    local args = { [1] = ItemId }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("Wear", 9e9):InvokeServer(unpack(args))
+end
+
+-- ==================== 1. قسم: ملابس ====================
+AccessoriesTab:AddSection({ Name = "ملابس" })
+
+local clothesOptions = {
+    "سترة اسود",
+    "سترة زهري كيوت",
+    "لبس كيوت 1",
+    "لبس كيوت 2",
+    "لبس كيوت 3",
+    "لبس كيوت 4",
+    "لبس كيوت 5"
+}
+
+local clothesIds = {
+    89892588488089,
+    99429391843259,
+    84110484978046,
+    75698084918608,
+    79220663432789,
+    78061398976556,
+    93303265717630
+}
+
+local selectedClothes = clothesOptions[1]
+
+AccessoriesTab:AddDropdown({
+    Name = "اختر ملابس",
+    Options = clothesOptions,
+    Default = selectedClothes,
+    Callback = function(value)
+        selectedClothes = value
+    end
+})
+
+AccessoriesTab:AddButton({
+    Name = "تفعيل الملابس",
+    Callback = function()
+        for i, name in ipairs(clothesOptions) do
+            if name == selectedClothes then
+                Wear(clothesIds[i])
+                break
+            end
+        end
+    end
+})
+
+
+
+-- ==================== 2. قسم: القفازات ====================
+AccessoriesTab:AddSection({ Name = "قفازات" })
+
+local glovesOptions = {
+    "قفازات يد اسود مخطط",
+    "قفازات يد اسود عادي 1",
+    "قفازات يد اسود عادي 2",
+    "قفازات يد اسود عادي 3",
+    "قفازات يد ابيض مزخرف",
+    "قفازات يد زهري",
+    "قفازات يد احمر",
+    "اضافر اسود",
+    "قفازات يد قصير 1",
+    "قفازات يد قصير 2",
+    "قفازات يد قصير 3",
+    "قفازات يد قصير 4",
+    "قفازات يد قصير 5",
+    "قفازات يد قصير 6"
+}
+
+local glovesIds = {
+    9239689111,
+    10789914680,
+    11363898043,
+    10791180072,
+    10871965173,
+    10789939838,
+    12379676852,
+    12825022709,
+    12483105503,
+    12483109504,
+    11613796964,
+    10954568687,
+    11679250718,
+    11182924874
+}
+
+local selectedGloves = glovesOptions[1]
+
+AccessoriesTab:AddDropdown({
+    Name = "اختر قفازات",
+    Options = glovesOptions,
+    Default = selectedGloves,
+    Callback = function(value)
+        selectedGloves = value
+    end
+})
+
+AccessoriesTab:AddButton({
+    Name = "تفعيل القفازات",
+    Callback = function()
+        for i, name in ipairs(glovesOptions) do
+            if name == selectedGloves then
+                Wear(glovesIds[i])
+                break
+            end
+        end
+    end
+})
+
+
+
+-- ==================== 3. قسم: الورد ====================
+AccessoriesTab:AddSection({ Name = "الورد" })
+
+local flowersOptions = {
+    "ورد احمر وابيض",
+    "ورد زهري",
+    "ورد سماوي",
+    "ورد اسود",
+    "ورد ابيض",
+    "ورد احمر",
+    "مسدس ماء لعبة"
+}
+
+local flowersIds = {
+    1246535644,
+    1246547853,
+    12465483807,
+    12465465333,
+    12465472210,
+    12465376206,
+    13135818072
+}
+
+local selectedFlowers = flowersOptions[1]
+
+AccessoriesTab:AddDropdown({
+    Name = "اختر ورد",
+    Options = flowersOptions,
+    Default = selectedFlowers,
+    Callback = function(value)
+        selectedFlowers = value
+    end
+})
+
+AccessoriesTab:AddButton({
+    Name = "تفعيل الورد",
+    Callback = function()
+        for i, name in ipairs(flowersOptions) do
+            if name == selectedFlowers then
+                Wear(flowersIds[i])
+                break
+            end
+        end
+    end
+})
+
+
+
+-- ==================== 4. قسم: الأحذية ====================
+AccessoriesTab:AddSection({ Name = "الأحذية" })
+
+local shoesOptions = {
+    "حذاء الشيطان زهري",
+    "حذاء الشيطان احمر",
+    "حذاء الشيطان ابيض",
+    "حذاء الشيطان اسود",
+    "حذاء طويل اسود",
+    "حذاء طويل ابيض",
+    "حذاء طويل ابيض واحمر",
+    "حذاء القرش الاسود",
+    "حذاء قصير 1",
+    "حذاء قصير 2",
+    "حذاء قصير 3",
+    "حذاء قصير 4",
+    "حذاء قصير 5",
+    "حذاء قصير 6",
+    "حذاء قصير 7",
+    "حذاء قصير 8",
+    "حذاء قصير 9",
+    "حذاء قصير 10"
+}
+
+local shoesIds = {
+    14388006902,
+    14388019333,
+    14387999337,
+    14388004031,
+    11433864064,
+    11111279400,
+    11708887517,
+    13463375063,
+    11856087406,
+    14388001192,
+    12453321203,
+    14338742287,
+    14338742287,
+    12296189693,
+    14338732820,
+    14338735628,
+    14338738380,
+    14338744418
+}
+
+local selectedShoes = shoesOptions[1]
+
+AccessoriesTab:AddDropdown({
+    Name = "اختر حذاء",
+    Options = shoesOptions,
+    Default = selectedShoes,
+    Callback = function(value)
+        selectedShoes = value
+    end
+})
+
+AccessoriesTab:AddButton({
+    Name = "تفعيل الحذاء",
+    Callback = function()
+        for i, name in ipairs(shoesOptions) do
+            if name == selectedShoes then
+                Wear(shoesIds[i])
+                break
+            end
+        end
+    end
+})
+
+
+-- منع التزامن
+task.wait(0.1)
+
+-- ==================== 4. تبويب: الرؤوس والأجسام ====================
+local HeadBodyTab = Window:MakeTab({
+    Name = "الرؤوس و الاجسام",
+    Icon = "rbxassetid://4483345998"
+})
+
+-- دالة آمنة لاستدعاء الريموت
+local function SafeInvoke(remotePath, args)
+    pcall(function()
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local Remote = ReplicatedStorage:WaitForChild(remotePath[1], 10):WaitForChild(remotePath[2], 10)
+        Remote:InvokeServer(unpack(args))
+    end)
+end
+
+-- قسم: الرؤوس
+HeadBodyTab:AddSection({
+    Name = "الرؤوس"
+})
+
+local HeadList = {
+    "رأس روبـوت",
+    "رأس بـنـت كـيـوت",
+    "رأس مـخـفـي",
+    "رأس كـوبـي| رول",
+    "رأس عـيـون زرقـاء"
+}
+
+local HeadIds = {
+    ["رأس روبـوت"] = 3210773801,
+    ["رأس بـنـت كـيـوت"] = 140991,
+    ["رأس مـخـفـي"] = 134082579,
+    ["رأس كـوبـي| رول"] = 746767604,
+    ["رأس عـيـون زرقـاء"] = 16580493236
+}
+
+local SelectedHead = HeadList[1]
+
+HeadBodyTab:AddDropdown({
+    Name = "اختر رأسًا",
+    Options = HeadList,
+    Default = SelectedHead,
+    Callback = function(value)
+        SelectedHead = value
+    end
+})
+
+HeadBodyTab:AddButton({
+    Name = "تفعيل الرأس",
+    Callback = function()
+        if not SelectedHead then return end
+        SafeInvoke({"Remotes", "Wear"}, { HeadIds[SelectedHead] })
+    end
+})
+
+-- قسم: الأجسام
+HeadBodyTab:AddSection({
+    Name = "الأجسام"
+})
+
+local BodyList = {
+    "رجـل مـقـطـوعـة لـلـبـنـات",
+    "جـسـم ولـد كـيـوت",
+    "جـسـم ولـد رول",
+    "جـسـم ولـد مـعـضـل",
+    "جـسـم بـنـت 1",
+    "جـسـم بـنـت 2",
+    "جـسـم بـنـت 3",
+    "جـسـم بـنـت 4",
+    "جـسـم بـنـت 5",
+    "جـسـم بـنـت 6",
+    "جـسـم بـنـت 7",
+    "جـسـم بـنـت 8",
+    "جـسـم بـنـت 9",
+    "جـسـم ولـد 1",
+    "جـسـم ولـد 2",
+    "جـسـم ولـد 3",
+    "جـسـم ولـد 4",
+    "جـسـم ولـد 5",
+    "جـسـم ولـد 6",
+    "جـسـم ولـد 7",
+    "جـسـم ولـد 8",
+    "جـسـم ولـد 9",
+    "جـسـم ولـد 10",
+    "جـسـم ولـد 11",
+    "جـسـم قـزم الـمـربـع"
+}
+
+local BodyData = {
+    ["رجـل مـقـطـوعـة لـلـبـنـات"] = {96491916349570, 76683091425509, 75159926897589, 139607718, 1, 1},
+    ["جـسـم ولـد كـيـوت"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد رول"] = {27112025, 27112039, 27112052, 3230472745, 3230470862, 1},
+    ["جـسـم ولـد مـعـضـل"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم بـنـت 1"] = {96491916349570, 76683091425509, 75159926897589, 1, 1, 1},
+    ["جـسـم بـنـت 2"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 3"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 4"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 5"] = {96491916349570, 76683091425509, 75159926897589, 111571034664628, 1, 1},
+    ["جـسـم بـنـت 6"] = {96491916349570, 76683091425509, 75159926897589, 1, 1, 1},
+    ["جـسـم بـنـت 7"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 8"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 9"] = {14861800638, 14861800626, 14861801452, 14861800627, 14861801454, 1},
+    ["جـسـم ولـد 1"] = {17754346388, 1, 1, 1, 1, 1},
+    ["جـسـم ولـد 2"] = {17754346388, 1, 1, 1, 1, 1},
+    ["جـسـم ولـد 3"] = {17754346388, 1, 1, 1, 1, 1},
+    ["جـسـم ولـد 4"] = {17754346388, 1, 1, 1, 1, 1},
+    ["جـسـم ولـد 5"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 6"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 7"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 8"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 9"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 10"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 11"] = {120973199097564, 118345433416023, 112849465115864, 78321005147549, 106586789635639, 1},
+    ["جـسـم قـزم الـمـربـع"] = {126267841602936, 77530451194918, 123471958406889, 117042768644173, 131948590344338, 1}
+}
+
+local SelectedBody = BodyList[1]
+
+HeadBodyTab:AddDropdown({
+    Name = "اختر جسمًا",
+    Options = BodyList,
+    Default = SelectedBody,
+    Callback = function(value)
+        SelectedBody = value
+    end
+})
+
+HeadBodyTab:AddButton({
+    Name = "تفعيل الجسم",
+    Callback = function()
+        if not SelectedBody then return end
+        SafeInvoke({"Remotes", "ChangeCharacterBody"}, { BodyData[SelectedBody] })
+    end
+})
+
 -- Definir cores para o efeito RGB
 local colors = {
     Color3.new(1, 0, 0),       -- Vermelho
@@ -7170,88 +7547,15 @@ TabMusic:AddToggle({
 -- معلومات أخيرة
 TabMusic:AddParagraph("Info", "تشغيل صوت قوي للجميع")
 
--- إنشاء التبويب باسم Tablag
+
+
+-- منع التزامن
+task.wait(0.1)
+
+-- ==================== 3. تبويب: لاق للسيرفر (Tablag) ====================
 local Tablag = Window:MakeTab({
     Name = "لاق للسيرفر",
-    Icon = "rbxassetid://83114982417764" -- يمكنك تغيير الأيقونة
-})
-
--- ==================== قسم: لاق باص ====================
-Tablag:AddSection({
-    Name = "لاق مؤقت (باص)"
-})
-
-local runLag = false
-local lagCoroutine
-
-Tablag:AddToggle({
-    Name = "لاق باص",
-    Default = false,
-    Flag = "lag_bus",
-    Callback = function(Value)
-        runLag = Value
-
-        if runLag then
-            local Players = game:GetService("Players")
-            local ReplicatedStorage = game:GetService("ReplicatedStorage")
-            local LocalPlayer = Players.LocalPlayer
-
-            if not LocalPlayer then
-                warn("LocalPlayer غير موجود!")
-                runLag = false
-                return
-            end
-
-            local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-            local humanoidRootPart = character:WaitForChild("HumanoidRootPart", 5)
-            if not humanoidRootPart then
-                warn("HumanoidRootPart غير موجود!")
-                runLag = false
-                return
-            end
-
-            local function GetBus()
-                local vehicles = workspace:FindFirstChild("Vehicles")
-                if vehicles then
-                    return vehicles:FindFirstChild(LocalPlayer.Name .. "Car")
-                end
-                return nil
-            end
-
-            local remoteEvent = ReplicatedStorage:FindFirstChild("RE")
-            if not remoteEvent then
-                warn("RemoteEvent 'RE' غير موجود!")
-                runLag = false
-                return
-            end
-
-            if not remoteEvent:FindFirstChild("1Ca1r") then
-                warn("الحدث '1Ca1r' غير موجود داخل 'RE'!")
-                runLag = false
-                return
-            end
-
-            lagCoroutine = coroutine.wrap(function()
-                while runLag do
-                    local success, err = pcall(function()
-                        humanoidRootPart.CFrame = CFrame.new(1118.81, 75.998, -1138.61)
-                        local bus = GetBus()
-                        if bus then
-                            remoteEvent["1Ca1r"]:FireServer("PickingCar", "SchoolBus")
-                        end
-                    end)
-
-                    if not success then
-                        warn("خطأ في تنفيذ لاق الباص: " .. tostring(err))
-                        runLag = false
-                    end
-
-                    task.wait(0)
-                end
-            end)
-            lagCoroutine()
-        end
-    end
+    Icon = "rbxassetid://83114982417764"
 })
 
 -- ==================== قسم: لاق بالابتوب ====================
@@ -7259,9 +7563,9 @@ Tablag:AddSection({
     Name = "لاق بالابتوب"
 })
 
-local toggles = { LagLaptop = false }
+-- استخدام جدول منفصل لتجنب التعارض
+local LagToggles = { Laptop = false, Phone = false, Bomb = false }
 
--- دالة النقر العادي
 local function clickNormally(object)
     local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
     if clickDetector then
@@ -7269,11 +7573,10 @@ local function clickNormally(object)
     end
 end
 
--- دالة لاق الابتوب
 local function lagarJogoLaptop(laptopPath, maxTeleports)
     if laptopPath then
         local teleportCount = 0
-        while teleportCount < maxTeleports and toggles.LagLaptop do
+        while teleportCount < maxTeleports and LagToggles.Laptop do
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = laptopPath.CFrame
             clickNormally(laptopPath)
             teleportCount = teleportCount + 1
@@ -7289,7 +7592,7 @@ Tablag:AddToggle({
     Default = false,
     Flag = "lag_laptop",
     Callback = function(state)
-        toggles.LagLaptop = state
+        LagToggles.Laptop = state
         if state then
             local laptopPath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_GiveTools"):FindFirstChild("Laptop")
             if laptopPath then
@@ -7312,13 +7615,10 @@ Tablag:AddSection({
     Name = "لاق بالهاتف"
 })
 
-toggles.LagPhone = false
-
--- دالة لاق الهاتف
 local function lagarJogoPhone(phonePath, maxTeleports)
     if phonePath then
         local teleportCount = 0
-        while teleportCount < maxTeleports and toggles.LagPhone do
+        while teleportCount < maxTeleports and LagToggles.Phone do
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = phonePath.CFrame
             clickNormally(phonePath)
             teleportCount = teleportCount + 1
@@ -7334,7 +7634,7 @@ Tablag:AddToggle({
     Default = false,
     Flag = "lag_phone",
     Callback = function(state)
-        toggles.LagPhone = state
+        LagToggles.Phone = state
         if state then
             local phonePath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_CommercialStores"):FindFirstChild("CommercialStorage1"):FindFirstChild("Store"):FindFirstChild("Tools"):FindFirstChild("Iphone")
             if phonePath then
@@ -7357,34 +7657,30 @@ Tablag:AddSection({
     Name = "لاق قنابل"
 })
 
-local BombActive = false
-
 Tablag:AddToggle({
     Name = "تشغيل لاق القنابل",
     Default = false,
     Flag = "lag_bomb",
     Callback = function(Value)
-        BombActive = Value
+        LagToggles.Bomb = Value
 
-        if BombActive then
+        if LagToggles.Bomb then
             local Player = game.Players.LocalPlayer
             local Character = Player.Character or Player.CharacterAdded:Wait()
             local RootPart = Character:WaitForChild("HumanoidRootPart")
             local ReplicatedStorage = game:GetService("ReplicatedStorage")
             local Bomb = workspace:WaitForChild("WorkspaceCom"):WaitForChild("001_CriminalWeapons"):WaitForChild("GiveTools"):WaitForChild("Bomb")
 
-            -- المهمة الأولى: التلبيس إلى مكان القنبلة
             task.spawn(function()
-                while BombActive and Bomb and RootPart do
+                while LagToggles.Bomb and Bomb and RootPart do
                     RootPart.CFrame = Bomb.CFrame
                     fireclickdetector(Bomb.ClickDetector)
                     task.wait(0.00001)
                 end
             end)
 
-            -- المهمة الثانية: النقر وتفجير القنبلة
             task.spawn(function()
-                while BombActive do
+                while LagToggles.Bomb do
                     if Bomb and RootPart then
                         local VirtualInputManager = game:GetService("VirtualInputManager")
                         VirtualInputManager:SendMouseButtonEvent(500, 500, 0, true, game, 0)
@@ -7405,7 +7701,6 @@ Tablag:AddToggle({
 })
 
 Tablag:AddParagraph("ملاحظات اللاق", "انتظر حوالي 35 ثانية ليبدأ تأثير اللاق")
-
 
 local Tab = Window:MakeTab({"الاماكن", "tp"}) -- Nome do ícone: 'portal' em minúsculo para teleporte
 
