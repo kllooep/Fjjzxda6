@@ -343,8 +343,8 @@ end
 
 -- === Toggle: هجوم فردي على النقر (One Click Kill) ===
 FreezTab:AddToggle({
-    Name = "هجوم بالضغط (Toggle)",
-    Description = "عند التفعيل، الضغط على لاعب = هجوم فوري",
+    Name = "Clickتجميد لاعب بنقرة",
+    Description = "تجميد اللاعب مرة واحدة عند النقرة",
     Default = false,
     Callback = function(state)
         if state then
@@ -451,8 +451,8 @@ end
 
 -- زر الهجوم في مكتبة Redz V5
 FreezTab:AddButton({
-	Name = "Auto Attack",
-	Description = "الهجوم التلقائي على اللاعب الذي تنقر عليه",
+	Name = "اداة تجميد تلقائي",
+	Description = "امسك الاداة واضغط على لاعب وسيتجمد تلقائيا وعند فك الاداة يتوقف",
 	Callback = function()
 		-- تجهيز الأداة
 		local tool = LocalPlayer.Backpack:FindFirstChild("GhimXRamiتجميد الناس")
