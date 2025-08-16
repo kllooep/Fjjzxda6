@@ -1,87 +1,124 @@
-local Tab = Window:MakeTab({"لاق للسيرفر", "bomb"})
+-- ==================== 1. تحميل مكتبة splibv2 ====================
+local splib = loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd0/SP_Hub/refs/heads/main/splibv2"))()
+if not splib then
+    warn("فشل في تحميل المكتبة!")
+    return
+end
 
+-- ==================== 2. إنشاء النافذة ====================
+local Window = splib:MakeWindow({
+    Name = "خليفه HUB",
+    SubTitle = "by Khalifa",
+    HidePremium = false,
+    SaveConfig = true,
+    Setting = true,
+    RainbowMainFrame = false,
+    RainbowTitle = false,
+    RainbowSubTitle = false,
+    ToggleIcon = "rbxassetid://83114982417764",
+    ConfigFolder = "KhalifaConfigs",
+    CloseCallback = function()
+        print("تم إغلاق واجهة خليفه")
+    end
+})
 
--- Shutdown Custom Section
-local Section = Tab:AddSection({
-    Name = "لاق مؤقت("
+-- منع التزامن
+task.wait(0.1)
+
+-- ==================== 3. تبويب: لاق للسيرفر (Tablag) ====================
+local Tablag = Window:MakeTab({
+    Name = "لاق للسيرفر",
+    Icon = "rbxassetid://83114982417764"
+})
+
+-- ==================== قسم: لاق باص ====================
+-- ==================== قسم: لاق باص ====================
+Tablag:AddSection({
+    Name = "لاق مؤقت (باص)"
 })
 
 local runLag = false
 local lagCoroutine
 
-Tab:AddToggle({
+Tablag:AddToggle({
     Name = "لاق باص",
     Default = false,
+    Flag = "lag_bus",
     Callback = function(Value)
         runLag = Value
 
         if runLag then
-            local Players = game:GetService("Players")  
-            local ReplicatedStorage = game:GetService("ReplicatedStorage")  
-            local LocalPlayer = Players.LocalPlayer  
+            local Players = game:GetService("Players")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local LocalPlayer = Players.LocalPlayer
 
-            if not LocalPlayer then  
-                warn("LocalPlayer não encontrado.")  
-                return  
-            end  
+            if not LocalPlayer then
+                warn("LocalPlayer غير موجود!")
+                runLag = false
+                return
+            end
 
-            local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()  
-            local humanoidRootPart = character:WaitForChild("HumanoidRootPart", 5)  
-            if not humanoidRootPart then  
-                warn("HumanoidRootPart não encontrado.")  
-                return  
-            end  
+            local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart", 5)
+            if not humanoidRootPart then
+                warn("HumanoidRootPart غير موجود!")
+                runLag = false
+                return
+            end
 
-            local function GetBus()  
-                local vehicles = workspace:FindFirstChild("Vehicles")  
-                if vehicles then  
-                    return vehicles:FindFirstChild(LocalPlayer.Name .. "Car")  
-                end  
-                return nil  
-            end  
+            local function GetBus()
+                local vehicles = workspace:FindFirstChild("Vehicles")
+                if vehicles then
+                    return vehicles:FindFirstChild(LocalPlayer.Name .. "Car")
+                end
+                return nil
+            end
 
-            local remoteEvent = ReplicatedStorage:FindFirstChild("RE")  
-            if not remoteEvent then  
-                warn("RemoteEvent 'RE' não encontrado em ReplicatedStorage.")  
-                return  
-            end  
+            local remoteEvent = ReplicatedStorage:FindFirstChild("RE")
+            if not remoteEvent then
+                warn("RemoteEvent 'RE' غير موجود!")
+                runLag = false
+                return
+            end
 
-            if not remoteEvent:FindFirstChild("1Ca1r") then  
-                warn("Evento filho '1Ca1r' não encontrado dentro de 'RE'.")  
-                return  
-            end  
+            if not remoteEvent:FindFirstChild("1Ca1r") then
+                warn("الحدث '1Ca1r' غير موجود داخل 'RE'!")
+                runLag = false
+                return
+            end
 
-            lagCoroutine = coroutine.wrap(function()  
-                while runLag do  
-                    local success, err = pcall(function()  
-                        humanoidRootPart.CFrame = CFrame.new(1118.81, 75.998, -1138.61)  
-                        local bus = GetBus()  
-                        remoteEvent["1Ca1r"]:FireServer("PickingCar", "SchoolBus")  
-                    end)  
+            lagCoroutine = coroutine.wrap(function()
+                while runLag do
+                    local success, err = pcall(function()
+                        -- التلبيس إلى مكان معين
+                        humanoidRootPart.CFrame = CFrame.new(1118.81, 75.998, -1138.61)
 
-                    if not success then  
-                        warn("Erro ao executar lag loop: " .. tostring(err))  
-                        runLag = false  
-                        break  
-                    end  
+                        -- ✅ الطريقة الصحيحة الجديدة: إرسال كجدول
+                        local args = { "PickingCar", "SchoolBus" }
+                        remoteEvent["1Ca1r"]:FireServer(args)
+                    end)
+
+                    if not success then
+                        warn("خطأ في تنفيذ لاق الباص: " .. tostring(err))
+                        runLag = false
+                    end
 
                     task.wait(0)
-                end  
-            end)  
+                end
+            end)
             lagCoroutine()
         end
     end
 })
 
--- Lag Laptop Section
-local Section = Tab:AddSection({
+-- ==================== قسم: لاق بالابتوب ====================
+Tablag:AddSection({
     Name = "لاق بالابتوب"
 })
 
--- Toggle State for Lag Laptop
-local toggles = { LagLaptop = false }
+-- استخدام جدول منفصل لتجنب التعارض
+local LagToggles = { Laptop = false, Phone = false, Bomb = false }
 
--- Function to Simulate Normal Click
 local function clickNormally(object)
     local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
     if clickDetector then
@@ -89,155 +126,266 @@ local function clickNormally(object)
     end
 end
 
--- Function to Lag Game with Laptop
 local function lagarJogoLaptop(laptopPath, maxTeleports)
     if laptopPath then
         local teleportCount = 0
-        while teleportCount < maxTeleports and toggles.LagLaptop do
+        while teleportCount < maxTeleports and LagToggles.Laptop do
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = laptopPath.CFrame
             clickNormally(laptopPath)
             teleportCount = teleportCount + 1
-            wait(0.0001)
+            task.wait(0.0001)
         end
     else
-        warn("Laptop não encontrado.")
+        warn("الابتوب غير موجود!")
     end
 end
 
--- Lag Laptop Toggle
-Tab:AddToggle({
+Tablag:AddToggle({
     Name = "لاق بالابتوب",
     Default = false,
+    Flag = "lag_laptop",
     Callback = function(state)
-        toggles.LagLaptop = state
+        LagToggles.Laptop = state
         if state then
             local laptopPath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_GiveTools"):FindFirstChild("Laptop")
             if laptopPath then
-                spawn(function()
+                task.spawn(function()
                     lagarJogoLaptop(laptopPath, 999999999)
                 end)
             else
-                warn("Laptop não encontrado.")
+                warn("الابتوب غير موجود!")
             end
         else
-            print("Lag com Laptop desativado.")
+            print("تم إيقاف لاق الابتوب")
         end
     end
 })
 
--- Lag Laptop Paragraph
-Tab:AddParagraph({
-    "تشغيل لاق لابتوب",
-    "انتظر حوالي 20 ثانية ليبدأ ثأثير اللاق"
-})
+Tablag:AddParagraph("تشغيل لاق لابتوب", "انتظر حوالي 20 ثانية ليبدأ تأثير اللاق")
 
--- Lag Phone Section
-local Section = Tab:AddSection({
+-- ==================== قسم: لاق بالهاتف ====================
+Tablag:AddSection({
     Name = "لاق بالهاتف"
 })
 
--- Toggle State for Lag Phone
-toggles.LagPhone = false
-
--- Function to Lag Game with Phone
 local function lagarJogoPhone(phonePath, maxTeleports)
     if phonePath then
         local teleportCount = 0
-        while teleportCount < maxTeleports and toggles.LagPhone do
+        while teleportCount < maxTeleports and LagToggles.Phone do
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = phonePath.CFrame
             clickNormally(phonePath)
             teleportCount = teleportCount + 1
-            wait(0.01)
+            task.wait(0.01)
         end
     else
-        warn("Telefone não encontrado.")
+        warn("الهاتف غير موجود!")
     end
 end
 
--- Lag Phone Toggle
-Tab:AddToggle({
+Tablag:AddToggle({
     Name = "تشغيل اللاق",
     Default = false,
+    Flag = "lag_phone",
     Callback = function(state)
-        toggles.LagPhone = state
+        LagToggles.Phone = state
         if state then
             local phonePath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_CommercialStores"):FindFirstChild("CommercialStorage1"):FindFirstChild("Store"):FindFirstChild("Tools"):FindFirstChild("Iphone")
             if phonePath then
-                spawn(function()
+                task.spawn(function()
                     lagarJogoPhone(phonePath, 999999)
                 end)
             else
-                warn("Telefone não encontrado.")
+                warn("الهاتف غير موجود!")
             end
         else
-            print("Lag com Telefone desativado.")
+            print("تم إيقاف لاق الهاتف")
         end
     end
 })
 
--- Lag Phone Paragraph
-Tab:AddParagraph({
-    "انتظر حوالي 20 ثانية ليبدأ تأثير اللاق"
-})
+Tablag:AddParagraph("تشغيل لاق الهاتف", "انتظر حوالي 20 ثانية ليبدأ تأثير اللاق")
 
-local Section = Tab:AddSection({
+-- ==================== قسم: لاق قنابل ====================
+Tablag:AddSection({
     Name = "لاق قنابل"
 })
 
-
-local BombActive = false
-
-Tab:AddToggle({
+Tablag:AddToggle({
     Name = "تشغيل لاق القنابل",
     Default = false,
+    Flag = "lag_bomb",
     Callback = function(Value)
-        if Value then
-            BombActive = true
+        LagToggles.Bomb = Value
 
+        if LagToggles.Bomb then
             local Player = game.Players.LocalPlayer
             local Character = Player.Character or Player.CharacterAdded:Wait()
             local RootPart = Character:WaitForChild("HumanoidRootPart")
-            local WorkspaceService = game:GetService("Workspace")
             local ReplicatedStorage = game:GetService("ReplicatedStorage")
-            local Bomb = WorkspaceService:WaitForChild("WorkspaceCom"):WaitForChild("001_CriminalWeapons"):WaitForChild("GiveTools"):WaitForChild("Bomb")
+            local Bomb = workspace:WaitForChild("WorkspaceCom"):WaitForChild("001_CriminalWeapons"):WaitForChild("GiveTools"):WaitForChild("Bomb")
 
             task.spawn(function()
-                while BombActive do
-                    if Bomb and RootPart then
-                        RootPart.CFrame = Bomb.CFrame
-                        fireclickdetector(Bomb.ClickDetector) -- Aciona o ClickDetector da bomba
-                        task.wait(0.00001) -- Delay mínimo para evitar travamentos
-                    else
-                        task.wait(0.0001) 
-                    end
+                while LagToggles.Bomb and Bomb and RootPart do
+                    RootPart.CFrame = Bomb.CFrame
+                    fireclickdetector(Bomb.ClickDetector)
+                    task.wait(0.00001)
                 end
             end)
 
             task.spawn(function()
-                while BombActive do
+                while LagToggles.Bomb do
                     if Bomb and RootPart then
                         local VirtualInputManager = game:GetService("VirtualInputManager")
-                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, true, game, 0) 
+                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, true, game, 0)
                         task.wait(1.5)
-                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, false, game, 0) 
+                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, false, game, 0)
 
-                        -- Executa o FireServer com o nome do jogador
-                        local args = {
-                            [1] = "Bomb" .. Player.Name -- Usa o nome do jogador atual
-                        }
-                        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Blo1wBomb1sServe1r"):FireServer(unpack(args))
+                        local args = { [1] = "Bomb" .. Player.Name }
+                        local BombServer = ReplicatedStorage:FindFirstChild("RE"):FindFirstChild("1Blo1wBomb1sServe1r")
+                        if BombServer then
+                            BombServer:FireServer(unpack(args))
+                        end
                     end
-                    task.wait(1.5) -- Intervalo de 1 segundo para clique e FireServer
+                    task.wait(1.5)
                 end
             end)
-        else
-            -- Desativando a funcionalidade
-            BombActive = false
         end
     end
 })
 
-Tab:AddParagraph({
-    "ملاحظات اللاق",
-    "انتظر حوالي35 ليبدأ اللاق"
+Tablag:AddParagraph("ملاحظات اللاق", "انتظر حوالي 35 ثانية ليبدأ تأثير اللاق")
+
+-- ==================== 4. تبويب: الرؤوس والأجسام ====================
+local HeadBodyTab = Window:MakeTab({
+    Name = "الرؤوس و الاجسام",
+    Icon = "rbxassetid://4483345998"
+})
+
+-- دالة آمنة لاستدعاء الريموت
+local function SafeInvoke(remotePath, args)
+    pcall(function()
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local Remote = ReplicatedStorage:WaitForChild(remotePath[1], 10):WaitForChild(remotePath[2], 10)
+        Remote:InvokeServer(unpack(args))
+    end)
+end
+
+-- قسم: الرؤوس
+HeadBodyTab:AddSection({
+    Name = "الرؤوس"
+})
+
+local HeadList = {
+    "رأس روبـوت",
+    "رأس بـنـت كـيـوت",
+    "رأس مـخـفـي",
+    "رأس كـوبـي| رول",
+    "رأس عـيـون زرقـاء"
+}
+
+local HeadIds = {
+    ["رأس روبـوت"] = 3210773801,
+    ["رأس بـنـت كـيـوت"] = 140991,
+    ["رأس مـخـفـي"] = 134082579,
+    ["رأس كـوبـي| رول"] = 746767604,
+    ["رأس عـيـون زرقـاء"] = 16580493236
+}
+
+local SelectedHead = HeadList[1]
+
+HeadBodyTab:AddDropdown({
+    Name = "اختر رأسًا",
+    Options = HeadList,
+    Default = SelectedHead,
+    Callback = function(value)
+        SelectedHead = value
+    end
+})
+
+HeadBodyTab:AddButton({
+    Name = "تفعيل الرأس",
+    Callback = function()
+        if not SelectedHead then return end
+        SafeInvoke({"Remotes", "Wear"}, { HeadIds[SelectedHead] })
+    end
+})
+
+-- قسم: الأجسام
+HeadBodyTab:AddSection({
+    Name = "الأجسام"
+})
+
+local BodyList = {
+    "رجـل مـقـطـوعـة لـلـبـنـات",
+    "جـسـم ولـد كـيـوت",
+    "جـسـم ولـد رول",
+    "جـسـم ولـد مـعـضـل",
+    "جـسـم بـنـت 1",
+    "جـسـم بـنـت 2",
+    "جـسـم بـنـت 3",
+    "جـسـم بـنـت 4",
+    "جـسـم بـنـت 5",
+    "جـسـم بـنـت 6",
+    "جـسـم بـنـت 7",
+    "جـسـم بـنـت 8",
+    "جـسـم بـنـت 9",
+    "جـسـم ولـد 1",
+    "جـسـم ولـد 2",
+    "جـسـم ولـد 3",
+    "جـسـم ولـد 4",
+    "جـسـم ولـد 5",
+    "جـسـم ولـد 6",
+    "جـسـم ولـد 7",
+    "جـسـم ولـد 8",
+    "جـسـم ولـد 9",
+    "جـسـم ولـد 10",
+    "جـسـم ولـد 11",
+    "جـسـم قـزم الـمـربـع"
+}
+
+local BodyData = {
+    ["رجـل مـقـطـوعـة لـلـبـنـات"] = {96491916349570, 76683091425509, 75159926897589, 139607718, 1, 1},
+    ["جـسـم ولـد كـيـوت"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد رول"] = {27112025, 27112039, 27112052, 3230472745, 3230470862, 1},
+    ["جـسـم ولـد مـعـضـل"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم بـنـت 1"] = {96491916349570, 76683091425509, 75159926897589, 1, 1, 1},
+    ["جـسـم بـنـت 2"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 3"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 4"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 5"] = {96491916349570, 76683091425509, 75159926897589, 111571034664628, 1, 1},
+    ["جـسـم بـنـت 6"] = {96491916349570, 76683091425509, 75159926897589, 1, 1, 1},
+    ["جـسـم بـنـت 7"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 8"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
+    ["جـسـم بـنـت 9"] = {14861800638, 14861800626, 14861801452, 14861800627, 14861801454, 1},
+    ["جـسـم ولـد 1"] = {17754346388, 1, 1, 1, 1, 1},
+    ["جـسـم ولـد 2"] = {17754346388, 1, 1, 1, 1, 1},
+    ["جـسـم ولـد 3"] = {17754346388, 1, 1, 1, 1, 1},
+    ["جـسـم ولـد 4"] = {17754346388, 1, 1, 1, 1, 1},
+    ["جـسـم ولـد 5"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 6"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 7"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 8"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 9"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 10"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
+    ["جـسـم ولـد 11"] = {120973199097564, 118345433416023, 112849465115864, 78321005147549, 106586789635639, 1},
+    ["جـسـم قـزم الـمـربـع"] = {126267841602936, 77530451194918, 123471958406889, 117042768644173, 131948590344338, 1}
+}
+
+local SelectedBody = BodyList[1]
+
+HeadBodyTab:AddDropdown({
+    Name = "اختر جسمًا",
+    Options = BodyList,
+    Default = SelectedBody,
+    Callback = function(value)
+        SelectedBody = value
+    end
+})
+
+HeadBodyTab:AddButton({
+    Name = "تفعيل الجسم",
+    Callback = function()
+        if not SelectedBody then return end
+        SafeInvoke({"Remotes", "ChangeCharacterBody"}, { BodyData[SelectedBody] })
+    end
 })
