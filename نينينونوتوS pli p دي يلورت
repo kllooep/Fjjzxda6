@@ -6796,13 +6796,12 @@ AccessoriesTab:AddButton({
 -- منع التزامن
 task.wait(0.1)
 
--- ==================== 4. تبويب: الرؤوس والأجسام ====================
+
 local HeadBodyTab = Window:MakeTab({
     Name = "الرؤوس و الاجسام",
-    Icon = "rbxassetid://4483345998"
+    Icon = "shirt"
 })
 
--- دالة آمنة لاستدعاء الريموت
 local function SafeInvoke(remotePath, args)
     pcall(function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -6811,7 +6810,6 @@ local function SafeInvoke(remotePath, args)
     end)
 end
 
--- قسم: الرؤوس
 HeadBodyTab:AddSection({
     Name = "الرؤوس"
 })
@@ -6851,7 +6849,6 @@ HeadBodyTab:AddButton({
     end
 })
 
--- قسم: الأجسام
 HeadBodyTab:AddSection({
     Name = "الأجسام"
 })
