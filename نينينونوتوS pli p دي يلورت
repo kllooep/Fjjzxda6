@@ -7702,9 +7702,14 @@ Tablag:AddToggle({
 
 Tablag:AddParagraph("ملاحظات اللاق", "انتظر حوالي 35 ثانية ليبدأ تأثير اللاق")
 
-local Tab = Window:MakeTab({"الاماكن", "tp"}) -- Nome do ícone: 'portal' em minúsculo para teleporte
 
--- Botões de Teleporte
+
+-- ==================== 5. تبويب: الأماكن ====================
+local PlacesTab = Window:MakeTab({
+    Name = "الأماكن",
+    Icon = "rbxassetid://1234567890" -- يمكنك تغيير الأيقونة
+})
+
 local teleportButtons = {
     {"فندق", CFrame.new(192, 4, 272)},
     {"ساحة المطعم", CFrame.new(136, 4, 117)},
@@ -7731,180 +7736,172 @@ local teleportButtons = {
 }
 
 for _, btn in ipairs(teleportButtons) do
-    Tab:AddButton({
-        btn[1],
-        function()
+    PlacesTab:AddButton({
+        Name = btn[1],
+        Callback = function()
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = btn[2]
         end
     })
 end
 
-
--- إنشاء تاب "الأغراض"
-local Section1 = Window:MakeTab({
-    Title = "الأغراض",
-    Icon = "box"
+-- ==================== 6. تبويب: الأغراض ====================
+local PropsTab = Window:MakeTab({
+    Name = "الأغراض",
+    Icon = "rbxassetid://1234567890"
 })
 
--- إنشاء قسم "الأغراض"
-local Section = Section1:AddSection("الأغراض")
-
--- دالة مساعدة لإرسال طلب أداة
 local function PickTool(ToolName)
     local args = {
         [1] = "PickingTools",
         [2] = ToolName
     }
-    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+    local ToolRemote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1Too1l")
+    if ToolRemote then
+        ToolRemote:InvokeServer(unpack(args))
+    end
 end
 
--- دالة مساعدة لحذف كل الأغراض
 local function ClearAllProps()
-    local args = {
-        [1] = "ClearAllProps"
-    }
-    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Clea1rTool1s"):FireServer(unpack(args))
+    local args = { [1] = "ClearAllProps" }
+    local ClearRemote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1Clea1rTool1s")
+    if ClearRemote then
+        ClearRemote:FireServer(unpack(args))
+    end
 end
 
--- دالة مساعدة لحذف كل الأدوات
 local function ClearAllTools()
-    local args = {
-        [1] = "ClearAllTools"
-    }
-    game:GetService("ReplicatedStorage").RE:FindFirstChild("1Clea1rTool1s"):FireServer(unpack(args))
+    local args = { [1] = "ClearAllTools" }
+    local ClearRemote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1Clea1rTool1s")
+    if ClearRemote then
+        ClearRemote:FireServer(unpack(args))
+    end
 end
 
--- === أزرار الأغراض ===
-Section1:AddButton({
+PropsTab:AddSection({
+    Name = "أدوات ومقاعد"
+})
+
+PropsTab:AddButton({
     Name = "اخذ كنبة",
     Callback = function()
-        local args = {
-            [1] = "PickingTools",
-            [2] = "Couch"
-        }
-        game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+        PickTool("Couch")
     end
 })
 
-
-
-Section1:AddButton({
+PropsTab:AddButton({
     Name = "اخذ كيس ناري",
     Callback = function()
         PickTool("PaperbagFire")
     end
 })
 
-Section1:AddButton({
+PropsTab:AddButton({
     Name = "اخذ ايباد",
     Callback = function()
         PickTool("Ipad")
     end
 })
 
-Section1:AddButton({
-    Name = "سنايبر",
-    Callback = function()
-        PickTool("Sniper")
-    end
-})
-
-Section1:AddButton({
-    Name = "سيف",
-    Callback = function()
-        PickTool("SwordWood")
-    end
-})
-
-Section1:AddButton({
-    Name = "قوس",
-    Callback = function()
-        PickTool("Bow")
-    end
-})
-
-Section1:AddButton({
-    Name = "Gloukمسدس",
-    Callback = function()
-        PickTool("Glock")
-    end
-})
-
-Section1:AddButton({
+PropsTab:AddButton({
     Name = "اخذ قنبلة",
     Callback = function()
         PickTool("Bomb")
     end
 })
 
-Section1:AddButton({
+PropsTab:AddButton({
+    Name = "سيف",
+    Callback = function()
+        PickTool("SwordWood")
+    end
+})
+
+PropsTab:AddButton({
+    Name = "قوس",
+    Callback = function()
+        PickTool("Bow")
+    end
+})
+
+PropsTab:AddButton({
+    Name = "Gloukمسدس",
+    Callback = function()
+        PickTool("Glock")
+    end
+})
+
+PropsTab:AddButton({
+    Name = "سنايبر",
+    Callback = function()
+        PickTool("Sniper")
+    end
+})
+
+PropsTab:AddButton({
     Name = "سنايبر ريفيل",
     Callback = function()
         PickTool("Assault")
     end
 })
 
-Section1:AddButton({
+PropsTab:AddButton({
     Name = "حذف كل الاغراض",
     Callback = function()
         ClearAllProps()
     end
 })
 
--- === تاب Bank Update ===
-Section1:AddSection("أغراض البنك")
+PropsTab:AddSection({
+    Name = "أغراض البنك"
+})
 
-Section1:AddButton({
+PropsTab:AddButton({
     Name = "حقيبة بيتكوين",
     Callback = function()
         PickTool("DuffleBagBitcoin")
     end
 })
 
-Section1:AddButton({
+PropsTab:AddButton({
     Name = "حقيبة الماس",
     Callback = function()
         PickTool("DuffleBagDiamonds")
     end
 })
 
-Section1:AddButton({
+PropsTab:AddButton({
     Name = "حقيبة ذهب",
     Callback = function()
         PickTool("DuffleBagGold")
     end
 })
 
-Section1:AddButton({
+PropsTab:AddButton({
     Name = "بطاقة صفراء",
     Callback = function()
         PickTool("BankGateKey")
     end
 })
 
-Section1:AddButton({
+PropsTab:AddButton({
     Name = "بطاقة بيضاء",
     Callback = function()
         PickTool("KeyCardWhite")
     end
 })
 
-Section1:AddButton({
-    Name = "حذف كل الاغراض",
+PropsTab:AddButton({
+    Name = "حذف كل الأدوات",
     Callback = function()
         ClearAllTools()
     end
 })
 
--- === أدوات إضافية ===
-
-
--- أداة النقل الفوري (TP Tool)
-Section1:AddButton({
+PropsTab:AddButton({
     Name = "انتقال فوري (يعمل بالنقر)",
     Callback = function()
         local Player = game.Players.LocalPlayer
-        local Mouse = Player:GetMouse() -- مطلوب للنقر
+        local Mouse = Player:GetMouse()
 
         local Tool = Instance.new("Tool")
         Tool.Name = "Equip to Click TP"
@@ -7918,67 +7915,55 @@ Section1:AddButton({
     end
 })
 
+-- ==================== 7. تبويب: سكربتات متنوعة ====================
+local ScriptsTab = Window:MakeTab({
+    Name = "سكربتات متنوعة",
+    Icon = "rbxassetid://1234567890"
+})
 
-
-local UniversalTab = Window:MakeTab({"سكربتات متنوعة", "plane"})
-
--- Seção para Scripts Universais
-Section = UniversalTab:AddSection({
+ScriptsTab:AddSection({
     Name = "سكربتات مفيدة"
 })
 
--- Botão para ShiftLock
-UniversalTab:AddButton({
+ScriptsTab:AddButton({
     Name = "سكربت قفل",
     Callback = function()
-        loadstring(game:HttpGet("https://pastebin.com/raw/N2tiHgyv"))()
+        pcall(loadstring(game:HttpGet("https://pastebin.com/raw/N2tiHgyv")))
     end
 })
 
--- Botão para Ghost Hub
-UniversalTab:AddButton({
+ScriptsTab:AddButton({
     Name = "Ghost Hub سكربت الشبح",
     Callback = function()
-        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-GhostHub-16534"))()
+        pcall(loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-GhostHub-16534")))
     end
 })
 
--- Botão para Infinite Yield
-UniversalTab:AddButton({
+ScriptsTab:AddButton({
     Name = "InfiniteYield - ادمن انفنتي",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+        pcall(loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")))
     end
 })
 
--- Botão para TP Tool
-UniversalTab:AddButton({
-    Name = "اداة انتقال",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/err0r129/KptHadesBlair/main/Bao.lua"))()
-    end
-})
-
--- Botão para Fly Gui
-UniversalTab:AddButton({
-    Name = "طيران",
-    Callback = function()
-        loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Fly-v3-7412"))()
-    end
-})
-
--- Botão para Nameless Admin 
-UniversalTab:AddButton({
+ScriptsTab:AddButton({
     Name = "Namelesسكربت ادمن",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source"))()
+        pcall(loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source")))
     end
 })
 
+ScriptsTab:AddButton({
+    Name = "طيران",
+    Callback = function()
+        pcall(loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Fly-v3-7412")))
+    end
+})
 
-UniversalTab:AddButton({
+ScriptsTab:AddButton({
     Name = "تحكم بالسيارات",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
+        warn("رابط التحكم بالسيارات غير متوفر")
+        -- لم يتم تحميل الملف من الرابط
     end
 })
