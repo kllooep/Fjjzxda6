@@ -6863,7 +6863,7 @@ end)
 
 -- Label após Auto Unban
 pcall(function()
-    HouseTab:AddLabel("Te desbane automaticamente das Casas")
+    HouseTab:AddLabel("ازالة باند البيت تلقائيا")
 end)
 
 -- Seção para Casa RGB
