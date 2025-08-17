@@ -410,9 +410,9 @@ local function createTag(player)
 
     -- تغيير لون الخلفية حسب الدور
     if label.Text == "مطور" then
-        frame.BackgroundColor3 = Color3.fromRGB(50, 50, 100)
+        frame.BackgroundColor3 = Color3.fromRGB(1, 0.82, 0)
     elseif label.Text == "ادمن" then
-        frame.BackgroundColor3 = Color3.fromRGB(100, 50, 50)
+        frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     end
 end
 
