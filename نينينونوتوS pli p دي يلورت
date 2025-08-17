@@ -7,10 +7,9 @@ local localPlayer = Players.LocalPlayer
 
 -- Usuários autorizados
 local allowedUsers = {
-	["EV_Rami"] = true,
+	["Sajwaad"] = true,
         ["zdrkn305"] = true,
         ["malk_55117"] = true,
-	["Sajwaad"] = true,
 	["DemonHub_Dev"] = true,
         ["Hwrejplq"] = true,
         ["Zarba_751"] = true,
@@ -289,6 +288,7 @@ TextChatService.OnIncomingMessage = function(message)
 		end
 	end
 end
+
 local args = {
 	"RolePlayName",
 	"NetroZ-HubV0.6"
@@ -309,6 +309,7 @@ local args = {
 	Color3.new(0.7050058841705322, 0, 0.000019834207705571316)
 }
 game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
+
 local splib = loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd0/SP_Hub/refs/heads/main/splibv2"))()
 
 local Window = splib:MakeWindow({
