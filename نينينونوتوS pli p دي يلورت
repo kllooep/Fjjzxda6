@@ -365,7 +365,7 @@ local Roles = {
 }
 
 --// حالة التبديل
-local tagsEnabled = false
+local tagsEnabled = true
 
 --// دالة لإنشاء العلامة فوق اللاعب
 local function createTag(player)
