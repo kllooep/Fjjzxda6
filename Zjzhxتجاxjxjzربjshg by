@@ -16,8 +16,8 @@ local Window = splib:MakeWindow({
 
 -- ==================== إنشاء تبويب الأغاني ====================
 local MusicTab = Window:MakeTab({
-    Name = "أغاني كل الدول العربية",
-    Icon = "rbxassetid://83114982417764"
+    Name = "(gamepass)أغاني",
+    Icon = "radio"
 })
 
 -- دالة عامة لتشغيل الموسيقى
@@ -52,7 +52,7 @@ MusicTab:AddTextbox({
 
 -- ==================== قسم: الأغاني العراقية ====================
 MusicTab:AddSection({
-    Name = "عراقي"
+    Name = "عراقيات"
 })
 
 MusicTab:AddButton({
@@ -111,12 +111,6 @@ MusicTab:AddButton({
     end
 })
 
-MusicTab:AddButton({
-    Name = "مع حضورك عراقية قديمة",
-    Callback = function()
-        PlayMusic(131507511127909)
-    end
-})
 
 -- ==================== قسم: الأغاني العربية ====================
 MusicTab:AddSection({
@@ -131,7 +125,7 @@ MusicTab:AddButton({
 })
 
 MusicTab:AddButton({
-    Name = "يا حلو",
+    Name = "ااه يا حلو",
     Callback = function()
         PlayMusic(93620598835551)
     end
@@ -253,182 +247,182 @@ MusicTab:AddButton({
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك 🦅",
+    Name = " Phonk ",
     Callback = function()
         PlayMusic(86271123924168)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 1 🦅",
+    Name = "Phonk 1",
     Callback = function()
         PlayMusic(15689443663)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 2 🦅",
+    Name = "Phonk 2",
     Callback = function()
         PlayMusic(16190782181)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 3 🦅",
+    Name = "Phonk 3",
     Callback = function()
         PlayMusic(15689448519)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 4 🦅",
+    Name = "Phonk 4",
     Callback = function()
         PlayMusic(7825702538)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك نادرة رقم5 🦅",
+    Name = "Phonk 5",
     Callback = function()
         PlayMusic(71517955953236)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 6 🦅",
+    Name = "Phonk 6",
     Callback = function()
         PlayMusic(127084858692372)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 7 🦅",
+    Name = "Phonk 7",
     Callback = function()
         PlayMusic(104541292443133)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 8 🦅",
+    Name = "Phonk 8",
     Callback = function()
         PlayMusic(130607529536925)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 9 🦅",
+    Name = "Phonk 9",
     Callback = function()
         PlayMusic(84733736048142)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 10 🦅",
+    Name = "Phonk 10",
     Callback = function()
         PlayMusic(82680101995105)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 11 🦅",
+    Name = "Phonk 11",
     Callback = function()
         PlayMusic(76603092488414)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 12 🦅",
+    Name = "Phonk 12",
     Callback = function()
         PlayMusic(124958445624871)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 13 🦅",
+    Name = "Phonk 13",
     Callback = function()
         PlayMusic(16662833837)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 14 🦅",
+    Name = "Phonk 14",
     Callback = function()
         PlayMusic(90698302380427)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 15 🦅",
+    Name = "Phonk 15",
     Callback = function()
         PlayMusic(16831108393)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 16 🦅",
+    Name = "Phonk 16",
     Callback = function()
         PlayMusic(78099799004483)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 17 🦅",
+    Name = "Phonk 17",
     Callback = function()
         PlayMusic(138106899521204)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 18 🦅",
+    Name = "Phonk 18",
     Callback = function()
         PlayMusic(84223825719510)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنية فونك رقم 19 🦅",
+    Name = "Phonk 19",
     Callback = function()
         PlayMusic(79314929106323)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنيه فونك رقم 20",
+    Name = "Phonk 20",
     Callback = function()
         PlayMusic(113312785512702)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 اغنيه وش فيك 🦅",
+    Name = "وش فيك",
     Callback = function()
         PlayMusic(7341215833)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 السب رقم 1 🦅",
+    Name = "سب1",
     Callback = function()
         PlayMusic(8701632845)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 السب رقم 2 🦅",
+    Name = "سب2",
     Callback = function()
         PlayMusic(5849978429)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 السب رقم 4 🦅",
+    Name = "سب3",
     Callback = function()
         PlayMusic(8136342274)
     end
 })
 
 MusicTab:AddButton({
-    Name = "🦅 السب رقم 5 🦅",
+    Name = "سب4",
     Callback = function()
         PlayMusic(6536444735)
     end
