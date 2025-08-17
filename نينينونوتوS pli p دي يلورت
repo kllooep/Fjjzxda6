@@ -359,22 +359,43 @@ local NameTab = Window:MakeTab({
     IsPC = false,
     IsMobile = false
 })
+-- قيم السرعات للخيار slider (أصغر قيمة = أسرع)
+local speeds = {0.5, 0.4, 0.3, 0.25, 0.2, 0.15, 0.1, 0.07, 0.05, 0.03} 
+local currentSpeed = 0.2 -- القيمة الافتراضية
+
+-- Slider للتحكم بالسرعة
+NameTab:AddSlider({
+    Name = "سرعة التلوين",
+    Min = 1,
+    Max = 10,
+    Increment = 1,
+    Default = 5, -- القيمة الافتراضية: 0.2
+    ValueName = "Speed",
+    Callback = function(Value)
+        currentSpeed = speeds[Value]
+    end
+})
 
 -- Toggle لتلوين البايو
+local bioToggleActive = false
 NameTab:AddToggle({
     Name = "بايو",
     Default = false,
     Callback = function(Value)
-        if Value then
+        bioToggleActive = Value
+        if not Value then
+            local args = {"PickingRPBioColor", Color3.fromRGB(255,255,255)}
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
+        else
             spawn(function()
                 local hue = 0
-                while Value do
+                while bioToggleActive do
                     local color = Color3.fromHSV(hue, 1, 1)
-                    local args = {"PickingRPNameColor", color}
+                    local args = {"PickingRPBioColor", color}
                     game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
                     hue = hue + 0.002
                     if hue > 1 then hue = 0 end
-                    task.wait(0.2)
+                    task.wait(currentSpeed)
                 end
             end)
         end
@@ -382,20 +403,25 @@ NameTab:AddToggle({
 })
 
 -- Toggle لتلوين الاسم
+local nameToggleActive = false
 NameTab:AddToggle({
     Name = "الاسم",
     Default = false,
     Callback = function(Value)
-        if Value then
+        nameToggleActive = Value
+        if not Value then
+            local args = {"PickingRPNameColor", Color3.fromRGB(255,255,255)}
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
+        else
             spawn(function()
                 local hue = 0
-                while Value do
+                while nameToggleActive do
                     local color = Color3.fromHSV(hue, 1, 1)
-                    local args = {"RolePlayNameColor", color} -- تأكد من اسم الحدث الصحيح لتلوين الاسم
+                    local args = {"PickingRPNameColor", color}
                     game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
                     hue = hue + 0.002
                     if hue > 1 then hue = 0 end
-                    task.wait(0.2)
+                    task.wait(currentSpeed)
                 end
             end)
         end
