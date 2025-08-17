@@ -354,9 +354,14 @@ InfoTab:AddButton({
 
 local Roles = {
     ["Sajwaad"] = "مطور",
-    ["Hwrejplq"] = "مطور",
-    ["Dante"] = "ادمن",
-    ["Skale"] = "ادمن"
+    ["Roblox"] = "مطور",
+    ["Hwrejplq"] = "ادمن",
+    ["mr_Mustafa213"] = "ادمن",
+    ["zdrkn305"] = "ادمن",
+    ["malk_55117"] = "ادمن", 
+    ["DemonHub_Dev"] = "ادمن",
+    ["Zarba_751"] = "ادمن"
+
 }
 
 --// حالة التبديل
@@ -446,14 +451,14 @@ InfoTab:AddToggle({
             updateAllTags() -- تفعيل العلامات
             game.StarterGui:SetCore("SendNotification", {
                 Title = "العلامات",
-                Text = "تم تفعيل عرض الأدوار",
+                Text = "تم تفعيل الرتب",
                 Duration = 3
             })
         else
             clearAllTags() -- إيقاف العلامات
             game.StarterGui:SetCore("SendNotification", {
-                Title = "العلامات",
-                Text = "تم إيقاف عرض الأدوار",
+                Title = "الرتب",
+                Text = "تم إيقاف عرض الرتبة",
                 Duration = 3
             })
         end
