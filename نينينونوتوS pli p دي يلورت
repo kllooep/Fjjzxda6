@@ -351,6 +351,122 @@ InfoTab:AddButton({
     end
 })
 
+local Roles = {
+    ["Sajwaad"] = "مطور",
+    ["Hwrejplq"] = "مطور",
+    ["Dante"] = "ادمن",
+    ["Skale"] = "ادمن"
+}
+
+--// حالة التبديل
+local tagsEnabled = false
+
+--// دالة لإنشاء العلامة فوق اللاعب
+local function createTag(player)
+    if not tagsEnabled then return end
+    if not player or not player.Character then return end
+
+    local character = player.Character
+    local head = character:FindFirstChild("Head")
+    if not head then return end
+
+    -- إزالة العلامة القديمة
+    local existing = character:FindFirstChild("NameTag")
+    if existing then
+        existing:Destroy()
+    end
+
+    -- إنشاء العلامة
+    local gui = Instance.new("BillboardGui")
+    gui.Name = "NameTag"
+    gui.Adornee = head
+    gui.Parent = character
+    gui.Size = UDim2.new(2, 0, 1, 0)
+    gui.StudsOffset = Vector3.new(0, 3, 0)
+    gui.AlwaysOnTop = true
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundTransparency = 0.3
+    frame.BackgroundColor3 = Color3.fromRGB(0, 170, 255) -- أزرق سماوي
+    frame.BorderSizePixel = 2
+    frame.BorderColor3 = Color3.fromRGB(0, 100, 150)
+    frame.Parent = gui
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.Text = Roles[player.Name] or "عضو"
+    label.TextColor3 = Color3.fromRGB(255, 0, 0) -- أحمر
+    label.TextSize = 18
+    label.Font = Enum.Font.SourceSansBold
+    label.Parent = frame
+
+    -- تغيير لون الخلفية حسب الدور
+    if label.Text == "مطور" then
+        frame.BackgroundColor3 = Color3.fromRGB(50, 50, 100)
+    elseif label.Text == "ادمن" then
+        frame.BackgroundColor3 = Color3.fromRGB(100, 50, 50)
+    end
+end
+
+--// دالة لتحديث العلامات
+local function updateAllTags()
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        spawn(function()
+            createTag(player)
+        end)
+    end
+end
+
+--// دالة لإزالة جميع العلامات
+local function clearAllTags()
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        local character = player.Character
+        if character then
+            local tag = character:FindFirstChild("NameTag")
+            if tag then
+                tag:Destroy()
+            end
+        end
+    end
+end
+
+--// إضافة قسم وتبديل في التاب
+InfoTab:AddSection({Name = "عرض العلامات"}) -- يمكنك تغيير الاسم
+
+InfoTab:AddToggle({
+    Name = "تفعيل علامات الأدوار",
+    Description = "يُظهر فوق رؤوس اللاعبين: مطور، ادمن، عضو",
+    Default = false,
+    Callback = function(state)
+        tagsEnabled = state
+        if state then
+            updateAllTags() -- تفعيل العلامات
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "العلامات",
+                Text = "تم تفعيل عرض الأدوار",
+                Duration = 3
+            })
+        else
+            clearAllTags() -- إيقاف العلامات
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "العلامات",
+                Text = "تم إيقاف عرض الأدوار",
+                Duration = 3
+            })
+        end
+    end
+})
+
+--// عند دخول لاعب جديد
+game.Players.PlayerAdded:Connect(function(player)
+    if tagsEnabled then
+        spawn(function()
+            createTag(player)
+        end)
+    end
+end)
 
 -- ==================== إنشاء التبويب "الأسماء" ====================
 local NameTab = Window:MakeTab({
