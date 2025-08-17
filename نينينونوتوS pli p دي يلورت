@@ -354,6 +354,41 @@ InfoTab:AddButton({
     end
 })
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- جلب صورة رأس اللاعب
+local thumbType = Enum.ThumbnailType.HeadShot
+local thumbSize = Enum.ThumbnailSize.Size100x100
+local success, imageUrl = pcall(function()
+    return Players:GetUserThumbnailAsync(LocalPlayer.UserId, thumbType, thumbSize)
+end)
+
+if success then
+    InfoTab:AddImageLabel({
+        IsMobile = false,
+        IsPC = false,
+        Name = LocalPlayer.Name, -- اسم اللاعب
+        Desc = "",
+        Image = imageUrl, -- رابط الصورة الديناميكي
+        Rainbow = true
+    })
+else
+    warn("فشل في جلب صورة اللاعب")
+end
+
+local Players = game:GetService("Players")
+
+-- إنشاء التاب
+local Players = game:GetService("Players")
+
+-- إنشاء التاب
+local Players = game:GetService("Players")
+
+local Players = game:GetService("Players")
+
+
+
 InfoTab:AddSection({Name = "عرض الرتب"}) -- يمكنك تغيير الاسم
 
 --// الخدمات
