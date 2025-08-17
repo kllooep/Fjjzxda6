@@ -14,416 +14,243 @@ local Window = splib:MakeWindow({
  CloseCallback = true
 })
 
--- ==================== إنشاء تبويب الأغاني ====================
-local MusicTab = Window:MakeTab({
-    Name = "(gamepass)أغاني",
-    Icon = "radio"
+local ChildTab = Window:MakeTab({
+    Name = "زعاطيط",
+    Icon = "rbxassetid://83114982417764"
 })
 
--- دالة عامة لتشغيل الموسيقى
-local function PlayMusic(id)
-    local args1 = { [1] = "SkateBoard" }
-    local args2 = { [1] = "PickingScooterMusicText", [2] = id }
-    local Remote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1NoMoto1rVehicle1s")
-    if Remote then
-        pcall(function()
-            Remote:FireServer(unpack(args1))
-            Remote:FireServer(unpack(args2))
-        end)
+-- ==================== القسم ====================
+ChildTab:AddSection({
+    Name = "زعطوط"
+})
+
+ChildTab:AddParagraph("معلومة:", "هنا تدز زعاطيط للناس.")
+
+-- === الخدمات ===
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+-- === المتغيرات ===
+local chasingplayer = nil
+local playerChild = nil
+
+-- === دالة منقولة من FreezTab لتحديث قائمة اللاعبين ===
+local function getPlayerList()
+    local playerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            table.insert(playerNames, player.Name)
+        end
     end
+    table.sort(playerNames)
+    return playerNames
 end
 
--- ==================== قسم: إدخال الكود يدويًا ====================
-MusicTab:AddSection({
-    Name = "ادخل كود الأغنية"
-})
-
-MusicTab:AddTextbox({
-    Name = "كود الأغنية",
-    PlaceholderText = "ادخل ID الصوت",
-    TextDisappear = false,
-    Callback = function(Value)
-        local id = tonumber(Value)
-        if id then
-            PlayMusic(id)
+-- === Dropdown لاختيار اللاعب ===
+playerChild = ChildTab:AddDropdown({
+    Name = "اختار لاعب تدز له زعطوط",
+    Options = getPlayerList(), -- تعبئة أولية
+    Default = "",
+    Callback = function(selected)
+        if Players:FindFirstChild(selected) then
+            chasingplayer = selected
+        else
+            chasingplayer = nil
         end
     end
 })
 
--- ==================== قسم: الأغاني العراقية ====================
-MusicTab:AddSection({
-    Name = "عراقيات"
-})
-
-MusicTab:AddButton({
-    Name = "يا حتة من كلبي",
+-- === زر تحديث قائمة اللاعبين (مُحدث من FreezTab) ===
+ChildTab:AddButton({
+    Name = "تحديث قائمة اللاعبين",
     Callback = function()
-        PlayMusic(119630965566559)
+        local newPlayers = getPlayerList()
+
+        -- تحديث القائمة
+        pcall(function()
+            playerChild:Refresh(newPlayers, true) -- true = اختيار أول عنصر (اختياري)
+        end)
+
+        -- إذا غادر اللاعب المُختار
+        if chasingplayer and not Players:FindFirstChild(chasingplayer) then
+            chasingplayer = nil
+            pcall(function()
+                playerChild:Set("") -- إزالة الاختيار
+            end)
+        end
     end
 })
 
-MusicTab:AddButton({
-    Name = "عفت كلبي",
+-- === حدث: لاعب جديد انضم ===
+Players.PlayerAdded:Connect(function(player)
+    task.wait(0.1) -- تأخير بسيط للتأكد من تحميل اللاعب
+    local updatedPlayers = getPlayerList()
+    pcall(function()
+        if playerChild then
+            playerChild:Refresh(updatedPlayers, true)
+        end
+    end)
+end)
+
+-- === حدث: لاعب غادر ===
+Players.PlayerRemoving:Connect(function(player)
+    task.wait(0.1)
+    local updatedPlayers = getPlayerList()
+    pcall(function()
+        if playerChild then
+            playerChild:Refresh(updatedPlayers, true)
+        end
+    end)
+    if chasingplayer == player.Name then
+        chasingplayer = nil
+        pcall(function()
+            playerChild:Set("")
+        end)
+    end
+end)
+
+-- === زر: إرسال الطفل للشخص ===
+ChildTab:AddButton({
+    Name = "ارسال الطفل للشخص",
     Callback = function()
-        PlayMusic(131004009162099)
+        if not chasingplayer then
+            warn("لم يتم اختيار لاعب!")
+            return
+        end
+
+        local target = Players:FindFirstChild(chasingplayer)
+        if not target then
+            warn("اللاعب غير موجود!")
+            return
+        end
+
+        -- إرسال الطفل
+        local args_spawn = {
+            [1] = "CharacterFollowSpawnPlayer",
+            [2] = "BabyBoy"
+        }
+        local Remote = ReplicatedStorage:FindFirstChild("RE"):FindFirstChild("1Bab1yFollo1w")
+        if not Remote then
+            warn("الريموت 1Bab1yFollo1w غير موجود!")
+            return
+        end
+
+        pcall(function()
+            Remote:FireServer(unpack(args_spawn))
+        end)
+
+        task.wait(0.2)
+
+        -- تمكين التصادم
+        if workspace:FindFirstChild(LocalPlayer.Name) then
+            for _, part in pairs(workspace[LocalPlayer.Name]:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
+            end
+        end
+
+        -- ربط الطفل باللاعب المختار
+        if workspace:FindFirstChild(LocalPlayer.Name) and workspace[LocalPlayer.Name]:FindFirstChild("FollowCharacter") then
+            workspace[LocalPlayer.Name].FollowCharacter.Parent = workspace[target.Name]
+
+            -- حركة الطفل خلف اللاعب
+            if not getgenv().FollowLoop then
+                getgenv().FollowLoop = RunService.Heartbeat:Connect(function()
+                    local followChar = workspace:FindFirstChild(target.Name):FindFirstChild("FollowCharacter")
+                    local targetHRP = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+                    if followChar and followChar:FindFirstChild("Torso") and targetHRP then
+                        local bodyPos = followChar.Torso:FindFirstChild("BodyPosition") or Instance.new("BodyPosition")
+                        bodyPos.Position = targetHRP.Position - targetHRP.CFrame.LookVector * 3
+                        bodyPos.MaxForce = Vector3.new(4000, 4000, 4000)
+                        bodyPos.Parent = followChar.Torso
+
+                        local bodyGyro = followChar.Torso:FindFirstChild("BodyGyro") or Instance.new("BodyGyro")
+                        bodyGyro.CFrame = targetHRP.CFrame
+                        bodyGyro.P = 15000
+                        bodyGyro.MaxTorque = Vector3.new(4000, 4000, 4000)
+                        bodyGyro.Parent = followChar.Torso
+                    end
+                end)
+            end
+        end
     end
 })
 
-MusicTab:AddButton({
-    Name = "ما نريدك",
+-- === زر: رسبون الطفل ===
+ChildTab:AddButton({
+    Name = "رسبون الطفل (لازم بالبداية تضغط هذي)",
     Callback = function()
-        PlayMusic(80039364766636)
+        -- إيقاف الحلقة السابقة
+        if getgenv().FollowLoop then
+            getgenv().FollowLoop:Disconnect()
+            getgenv().FollowLoop = nil
+        end
+
+        -- حذف الطفل
+        local args_delete = { [1] = "DeleteFollowCharacter" }
+        local Remote = ReplicatedStorage:FindFirstChild("RE"):FindFirstChild("1Bab1yFollo1w")
+        if Remote then
+            pcall(function()
+                Remote:FireServer(unpack(args_delete))
+            end)
+        end
+
+        task.wait(0.5)
+
+        -- إعادة إرسال الطفل
+        local args_spawn = { [1] = "CharacterFollowSpawnPlayer", [2] = "BabyBoy" }
+        if Remote then
+            pcall(function()
+                Remote:FireServer(unpack(args_spawn))
+            end)
+        end
     end
 })
 
-MusicTab:AddButton({
-    Name = "العراقي لو نزل",
-    Callback = function()
-        PlayMusic(111256095783364)
+-- === تبديل: تجسس على اللاعب ===
+ChildTab:AddToggle({
+    Name = "تجسس على اللاعب الذي تم ارسال له طفل",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            if not chasingplayer then
+                ChildTab:AddNotification({
+                    Name = "خطأ",
+                    Content = "لم يتم اختيار لاعب!",
+                    Time = 5
+                })
+                return
+            end
+
+            if not getgenv().CameraConnection then
+                getgenv().CameraConnection = RunService.RenderStepped:Connect(function()
+                    local target = Players:FindFirstChild(chasingplayer)
+                    if target and target.Character and target.Character:FindFirstChild("Humanoid") then
+                        Camera.CameraSubject = target.Character.Humanoid
+                    else
+                        if getgenv().CameraConnection then
+                            getgenv().CameraConnection:Disconnect()
+                            getgenv().CameraConnection = nil
+                        end
+                        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                            Camera.CameraSubject = LocalPlayer.Character.Humanoid
+                        end
+                    end
+                end)
+            end
+        else
+            if getgenv().CameraConnection then
+                getgenv().CameraConnection:Disconnect()
+                getgenv().CameraConnection = nil
+            end
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                Camera.CameraSubject = LocalPlayer.Character.Humanoid
+            end
+        end
     end
 })
 
-MusicTab:AddButton({
-    Name = "كل عقلك تحجي",
-    Callback = function()
-        PlayMusic(122774951440401)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "ما اريدك تهوانني",
-    Callback = function()
-        PlayMusic(135911328646170)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "جاي انساك",
-    Callback = function()
-        PlayMusic(72918998227337)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "نجوم الدنيا",
-    Callback = function()
-        PlayMusic(73632319736202)
-    end
-})
-
-
--- ==================== قسم: الأغاني العربية ====================
-MusicTab:AddSection({
-    Name = "عربي"
-})
-
-MusicTab:AddButton({
-    Name = "ليه ساكت",
-    Callback = function()
-        PlayMusic(119437864395329)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "ااه يا حلو",
-    Callback = function()
-        PlayMusic(93620598835551)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "يا بكائية",
-    Callback = function()
-        PlayMusic(98640789490482)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "صدقني كرهتك",
-    Callback = function()
-        PlayMusic(113478978326245)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "انا دمي فلسطيني",
-    Callback = function()
-        PlayMusic(84112690044490)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "كردي",
-    Callback = function()
-        PlayMusic(134738554464984)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "اغنية هجولة",
-    Callback = function()
-        PlayMusic(99472699182002)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "تحرير سوريا",
-    Callback = function()
-        PlayMusic(87510423075068)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "دبكة 1",
-    Callback = function()
-        PlayMusic(76698985299412)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "دبكة 2",
-    Callback = function()
-        PlayMusic(90807238125839)
-    end
-})
-
--- ==================== قسم: القرآن الكريم ====================
-MusicTab:AddSection({
-    Name = "قرآن"
-})
-
-MusicTab:AddButton({
-    Name = "هل لك سر عند الله",
-    Callback = function()
-        PlayMusic(89807249526206)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "قرآن 1",
-    Callback = function()
-        PlayMusic(1836685929)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "قرآن 2",
-    Callback = function()
-        PlayMusic(113184639716766)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "قرآن 3",
-    Callback = function()
-        PlayMusic(113267251759253)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "قرآن 4",
-    Callback = function()
-        PlayMusic(104251523505775)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "قرآن 5",
-    Callback = function()
-        PlayMusic(94610377976036)
-    end
-})
-
--- ==================== قسم: فونك والسب ====================
-MusicTab:AddSection({
-    Name = "فونك والسب"
-})
-
-MusicTab:AddButton({
-    Name = "صوت اشعار سامسونج",
-    Callback = function()
-        PlayMusic(7288899492)
-    end
-})
-
-MusicTab:AddButton({
-    Name = " Phonk ",
-    Callback = function()
-        PlayMusic(86271123924168)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 1",
-    Callback = function()
-        PlayMusic(15689443663)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 2",
-    Callback = function()
-        PlayMusic(16190782181)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 3",
-    Callback = function()
-        PlayMusic(15689448519)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 4",
-    Callback = function()
-        PlayMusic(7825702538)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 5",
-    Callback = function()
-        PlayMusic(71517955953236)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 6",
-    Callback = function()
-        PlayMusic(127084858692372)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 7",
-    Callback = function()
-        PlayMusic(104541292443133)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 8",
-    Callback = function()
-        PlayMusic(130607529536925)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 9",
-    Callback = function()
-        PlayMusic(84733736048142)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 10",
-    Callback = function()
-        PlayMusic(82680101995105)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 11",
-    Callback = function()
-        PlayMusic(76603092488414)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 12",
-    Callback = function()
-        PlayMusic(124958445624871)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 13",
-    Callback = function()
-        PlayMusic(16662833837)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 14",
-    Callback = function()
-        PlayMusic(90698302380427)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 15",
-    Callback = function()
-        PlayMusic(16831108393)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 16",
-    Callback = function()
-        PlayMusic(78099799004483)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 17",
-    Callback = function()
-        PlayMusic(138106899521204)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 18",
-    Callback = function()
-        PlayMusic(84223825719510)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 19",
-    Callback = function()
-        PlayMusic(79314929106323)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "Phonk 20",
-    Callback = function()
-        PlayMusic(113312785512702)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "وش فيك",
-    Callback = function()
-        PlayMusic(7341215833)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "سب1",
-    Callback = function()
-        PlayMusic(8701632845)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "سب2",
-    Callback = function()
-        PlayMusic(5849978429)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "سب3",
-    Callback = function()
-        PlayMusic(8136342274)
-    end
-})
-
-MusicTab:AddButton({
-    Name = "سب4",
-    Callback = function()
-        PlayMusic(6536444735)
-    end
-})
