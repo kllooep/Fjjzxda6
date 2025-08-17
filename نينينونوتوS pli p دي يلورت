@@ -1192,7 +1192,7 @@ FreezTab:AddToggle({
             if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
                 local channel = chatService.TextChannels:FindFirstChild("RBXGeneral")
                 if channel then
-                    channel:SendAsync("hi\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rServer: Hacked[🥶DemoZHub]")
+                    channel:SendAsync("hi\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rServer: Hacked[🥶NetroZHub]")
                 end
             else
                 print("Nadaa")
@@ -1627,7 +1627,7 @@ TrollTab:AddToggle({
             if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
                 local channel = chatService.TextChannels:FindFirstChild("RBXGeneral")
                 if channel then
-                    channel:SendAsync("hi\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rServer: Hacked[🥶DemoZHub]")
+                    channel:SendAsync("hi\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rServer: Hacked[🥶NetroZHub]")
                 end
             else
                 print("Nadaa")
@@ -1961,7 +1961,7 @@ TrollTab:AddToggle({
 
 
 -- Tab 4: Anti Sit
-TrollTab:AddSection({ "" })
+TrollTab:AddSection({ "مضاد جلوس" })
 TrollTab:AddToggle({
     Name = "مضاد جلوس",
     Description = "",
@@ -3477,7 +3477,7 @@ local kill = Troll:AddSection({Name = "قتل بالنقر على اللاعب"}
 
 Troll:AddButton({
   Name = "قتل بالابواب [Beta]",
-Description = "Para Usar, Recomendo chegar perto de outras portas, apos ela ir até você, clique no jogador que deseja flingar",
+Description = "تتجمع الابواب عليك وتطير فيها الناس",
   Callback = function()
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
@@ -4157,7 +4157,7 @@ local LocalPlayer = Players.LocalPlayer
 
 -- إنشاء الأداة
 local tool = Instance.new("Tool")
-tool.Name = "GhimXRamiتجميد الناس"
+tool.Name = "Ramiتجميد نقرة"
 tool.RequiresHandle = false
 tool.CanBeDropped = false
 tool.Parent = LocalPlayer.Backpack
@@ -4753,7 +4753,7 @@ end
 print("House Ban kill All button created")
 
 Troll:AddButton({
-    Name = "Fling Boat all",
+    Name = "تطيير الكل قارب",
     Callback = function()
         local Player = game.Players.LocalPlayer
     local Character = Player.Character
