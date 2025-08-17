@@ -8,6 +8,7 @@ local localPlayer = Players.LocalPlayer
 -- Usuários autorizados
 local allowedUsers = {
 	["Sajwaad"] = true,
+  	["ghalidev_0 "] = true,
     ["hrhdkjsgxixkd"] = true,  
     ["zdrkn305"] = true,
     ["malk_55117"] = true,
@@ -363,6 +364,7 @@ local Camera = workspace.CurrentCamera
 --// جدول الأسماء والوظائف
 local Roles = {
     ["Sajwaad"] = "مطور",
+    ["ghalidev_0"] = "مطور",   
     ["hrhdkjsgxixkd"] = "مطور",
     ["Zarba_751"] = "ادمن",    
     ["malk_55117"] = "ادمن",
