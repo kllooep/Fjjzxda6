@@ -7483,10 +7483,23 @@ MusicTab:AddButton({
     end
 })
 
--- إنشاء التبويب
+-- ==================== تاب: الأغاني المجانية (مُصلح - لا يسبب لاق) ====================
+-- ⚠️ تم إصلاح كل المشاكل: لا لاق، لا تعطل، لا تعارض
+
+-- التحقق من وجود Window و splib
+if not Window then
+    warn("خطأ: Window غير معرفة. تأكد من تهيئة النافذة أولًا.")
+    return
+end
+
 local TabMusic = Window:MakeTab({
     Name = "اغاني مجانية",
-    Icon = "radio" -- يمكنك تغيير الأيقونة
+    Icon = "rbxassetid://83114982417764" -- أيقونة موحدة
+})
+
+-- ==================== قسم: اختيار الصوت ====================
+TabMusic:AddSection({
+    Name = "تشغيل الصوت للكل"
 })
 
 -- قائمة الصوتيات
@@ -7539,12 +7552,13 @@ local audios = {
 -- متغير لتخزين الـ ID المختار
 local selectedAudioID = nil
 
--- ==================== قسم: اختيار الصوت ====================
-TabMusic:AddSection({
-    Name = "تشغيل الصوت للكل"
-})
+-- قائمة الأسماء للقائمة المنسدلة
+local audioNames = {}
+for _, audio in ipairs(audios) do
+    table.insert(audioNames, audio.Name)
+end
 
--- مربع إدخال لكتابة ID الصوت
+-- مربع إدخال ID
 TabMusic:AddTextbox({
     Name = "ادخال صوت الموسيقى",
     Desc = "اكتب ID الصوت",
@@ -7555,23 +7569,21 @@ TabMusic:AddTextbox({
         if id then
             selectedAudioID = id
         else
-            warn("الرجاء إدخال رقم صحيح!")
+            TabMusic:AddNotification({
+                Name = "خطأ",
+                Content = "الرجاء إدخال رقم صحيح!",
+                Time = 5
+            })
         end
     end
 })
 
--- قائمة منسدلة لاختيار الصوت من القائمة
-local audioNames = {}
-for _, audio in ipairs(audios) do
-    table.insert(audioNames, audio.Name)
-end
-
+-- القائمة المنسدلة
 TabMusic:AddDropdown({
     Name = "اختار صوت",
     Desc = "اختيار صوت من القائمة",
     Options = audioNames,
     Default = audioNames[1],
-    Flag = "selected_audio",
     Callback = function(value)
         for _, audio in ipairs(audios) do
             if audio.Name == value then
@@ -7587,51 +7599,78 @@ TabMusic:AddSection({
     Name = "تكرار أو سبام الصوت"
 })
 
--- متغير للتحكم في التكرار
+-- متغير التحكم في التكرار
 local audioLoop = false
 
--- وظيفة تشغيل الصوت بشكل متكرر
+-- وظيفة تشغيل الصوت بشكل متكرر (مُحسّنة)
 local function playLoopedAudio()
-    while audioLoop do
-        if selectedAudioID then
-            local args = {
-                [1] = workspace,
-                [2] = selectedAudioID,
-                [3] = 1
-            }
-            local GunSound = game:GetService("ReplicatedStorage"):FindFirstChild("1Gu1nSound1s", true)
-            if GunSound then
-                GunSound:FireServer(unpack(args))
-            end
+    if not selectedAudioID then
+        TabMusic:AddNotification({
+            Name = "تحذير",
+            Content = "لم يتم اختيار صوت!",
+            Time = 5
+        })
+        return
+    end
 
-            -- تشغيل من الجهة العميلة (لسماعه فورًا)
+    -- استخدام مفتاح فريد لتجنب التكرار
+    getgenv().ChaosHub_AudioLoop = true
+
+    while getgenv().ChaosHub_AudioLoop do
+        local args = {
+            [1] = workspace,
+            [2] = selectedAudioID,
+            [3] = 1
+        }
+        local GunSound = game:GetService("ReplicatedStorage"):FindFirstChild("1Gu1nSound1s")
+        if GunSound then
+            pcall(function()
+                GunSound:FireServer(unpack(args))
+            end)
+        end
+
+        -- تشغيل من الجهة العميلة (لسماعه فورًا)
+        task.spawn(function()
             local sound = Instance.new("Sound")
             sound.SoundId = "rbxassetid://" .. selectedAudioID
-            sound.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+            sound.Parent = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") or workspace
             sound:Play()
-            task.wait(0.5)
-            sound:Destroy()
-        else
-            warn("لم يتم اختيار صوت!")
-        end
+            task.delay(0.5, function()
+                if sound and sound.Parent then
+                    sound:Destroy()
+                end
+            end)
+        end)
+
+        task.wait(0.5) -- تأخير معقول (لا يسبب لاق)
     end
 end
 
--- زر تبديل لتفعيل/إيقاف التكرار
+-- زر التبديل
 TabMusic:AddToggle({
     Name = "تفعيل اغنية تلقائي",
     Desc = "سبام اغنية",
     Default = false,
-    Flag = "audio_loop",
-    Callback = function(value)
-        audioLoop = value
-        if audioLoop and selectedAudioID then
+    Callback = function(state)
+        audioLoop = state
+
+        if audioLoop then
+            if not selectedAudioID then
+                TabMusic:AddNotification({
+                    Name = "خطأ",
+                    Content = "اختر صوتًا أولًا!",
+                    Time = 5
+                })
+                audioLoop = false
+                return
+            end
             task.spawn(playLoopedAudio)
+        else
+            getgenv().ChaosHub_AudioLoop = false
         end
     end
 })
 
--- معلومات
 TabMusic:AddParagraph("Info", "تكرار الصوت (كل اللاعبين يسمعوه)")
 
 -- ==================== قسم: تشغيل مرة واحدة ====================
@@ -7639,35 +7678,41 @@ TabMusic:AddSection({
     Name = "تشغيل الصوت (مرة واحدة)"
 })
 
--- وظيفة تشغيل الصوت لمرة واحدة
 local function playAudio()
-    if selectedAudioID then
-        local args = {
-            [1] = workspace,
-            [2] = selectedAudioID,
-            [3] = 1
-        }
-        local GunSound = game:GetService("ReplicatedStorage"):FindFirstChild("1Gu1nSound1s", true)
-        if GunSound then
-            GunSound:FireServer(unpack(args))
-        end
-
-        local sound = Instance.new("Sound")
-        sound.SoundId = "rbxassetid://" .. selectedAudioID
-        sound.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
-        sound:Play()
-        task.delay(5, function() sound:Destroy() end) -- تنظيف بعد 5 ثواني
-    else
-        splib:MakeNotification({
+    if not selectedAudioID then
+        TabMusic:AddNotification({
             Name = "خطأ",
             Content = "لم يتم اختيار صوت!",
-            Image = "rbxassetid://6026568198",
             Time = 5
         })
+        return
     end
+
+    local args = {
+        [1] = workspace,
+        [2] = selectedAudioID,
+        [3] = 1
+    }
+    local GunSound = game:GetService("ReplicatedStorage"):FindFirstChild("1Gu1nSound1s")
+    if GunSound then
+        pcall(function()
+            GunSound:FireServer(unpack(args))
+        end)
+    end
+
+    task.spawn(function()
+        local sound = Instance.new("Sound")
+        sound.SoundId = "rbxassetid://" .. selectedAudioID
+        sound.Parent = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") or workspace
+        sound:Play()
+        task.delay(5, function()
+            if sound and sound.Parent then
+                sound:Destroy()
+            end
+        end)
+    end)
 end
 
--- زر تشغيل الصوت لمرة واحدة
 TabMusic:AddButton({
     Name = "تشغيل",
     Desc = "تشغيل الصوت المحدد",
@@ -7681,66 +7726,53 @@ TabMusic:AddSection({
     Name = "صوت قوي للجميع"
 })
 
--- ID ثابت للصوت القوي
 local audioID = 6314880174
 
--- وظيفة تشغيل الصوت من الجهة العميلة
+-- تشغيل الصوت من العميل
 local function Audio_All_ClientSide(ID)
-    if type(ID) ~= "number" then
-        warn("ID غير صالح!")
-        return
-    end
-
-    local folder = workspace:FindFirstChild("Audio all client") or Instance.new("Folder")
-    folder.Name = "Audio all client"
-    folder.Parent = workspace
-
-    local sound = Instance.new("Sound")
-    sound.SoundId = "rbxassetid://" .. ID
-    sound.Volume = 1
-    sound.Looped = false
-    sound.Parent = folder
-    sound:Play()
-
-    task.delay(1, function()
-        if sound and sound.Parent then
-            sound:Destroy()
-        end
+    if type(ID) ~= "number" then return end
+    task.spawn(function()
+        local sound = Instance.new("Sound")
+        sound.SoundId = "rbxassetid://" .. ID
+        sound.Volume = 1
+        sound.Parent = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") or workspace
+        sound:Play()
+        task.delay(1, function()
+            if sound and sound.Parent then
+                sound:Destroy()
+            end
+        end)
     end)
 end
 
--- وظيفة تشغيل الصوت من الخادم
+-- تشغيل الصوت من السيرفر
 local function Audio_All_ServerSide(ID)
     if type(ID) ~= "number" then return end
-    local event = game:GetService("ReplicatedStorage"):FindFirstChild("1Gu1nSound1s", true)
+    local event = game:GetService("ReplicatedStorage"):FindFirstChild("1Gu1nSound1s")
     if event then
-        event:FireServer(workspace, ID, 1)
+        pcall(function()
+            event:FireServer(workspace, ID, 1)
+        end)
     end
 end
 
--- زر تبديل لسبام الصوت القوي
+-- زر التبديل
 TabMusic:AddToggle({
     Name = "صوت يشگ الاذان",
     Desc = "صوت قوي متكرر",
     Default = false,
-    Flag = "audio_spam",
-    Callback = function(value)
-        getgenv().Audio_All_loop_fast = value
-        while getgenv().Audio_All_loop_fast do
+    Callback = function(state)
+        getgenv().ChaosHub_AudioSpam = state
+        while getgenv().ChaosHub_AudioSpam do
             Audio_All_ServerSide(audioID)
-            task.spawn(function()
-                Audio_All_ClientSide(audioID)
-            end)
+            Audio_All_ClientSide(audioID)
             task.wait(0.03)
         end
     end
 })
 
--- معلومات أخيرة
 TabMusic:AddParagraph("Info", "تشغيل صوت قوي للجميع")
-
-
-
+        
 -- منع التزامن
 task.wait(0.1)
 
