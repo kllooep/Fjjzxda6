@@ -439,10 +439,10 @@ local function clearAllTags()
 end
 
 --// إضافة قسم وتبديل في التاب
-InfoTab:AddSection({Name = "عرض العلامات"}) -- يمكنك تغيير الاسم
+InfoTab:AddSection({Name = "عرض الرتب"}) -- يمكنك تغيير الاسم
 
 InfoTab:AddToggle({
-    Name = "تفعيل علامات الأدوار",
+    Name = "تفعيل كشف الرتب",
     Description = "يُظهر فوق رؤوس اللاعبين: مطور، ادمن، عضو",
     Default = false,
     Callback = function(state)
@@ -450,7 +450,7 @@ InfoTab:AddToggle({
         if state then
             updateAllTags() -- تفعيل العلامات
             game.StarterGui:SetCore("SendNotification", {
-                Title = "العلامات",
+                Title = "الكشف",
                 Text = "تم تفعيل الرتب",
                 Duration = 3
             })
