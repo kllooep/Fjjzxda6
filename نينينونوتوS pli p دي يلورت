@@ -360,6 +360,48 @@ local NameTab = Window:MakeTab({
     IsMobile = false
 })
 
+-- Toggle لتلوين البايو
+NameTab:AddToggle({
+    Name = "بايو",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            spawn(function()
+                local hue = 0
+                while Value do
+                    local color = Color3.fromHSV(hue, 1, 1)
+                    local args = {"PickingRPNameColor", color}
+                    game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
+                    hue = hue + 0.002
+                    if hue > 1 then hue = 0 end
+                    task.wait(0.2)
+                end
+            end)
+        end
+    end
+})
+
+-- Toggle لتلوين الاسم
+NameTab:AddToggle({
+    Name = "الاسم",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            spawn(function()
+                local hue = 0
+                while Value do
+                    local color = Color3.fromHSV(hue, 1, 1)
+                    local args = {"RolePlayNameColor", color} -- تأكد من اسم الحدث الصحيح لتلوين الاسم
+                    game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
+                    hue = hue + 0.002
+                    if hue > 1 then hue = 0 end
+                    task.wait(0.2)
+                end
+            end)
+        end
+    end
+})
+
 -- ==================== قسم: تعيين الأسماء ====================
 NameTab:AddSection({
     Name = "أدخل الأسماء"
