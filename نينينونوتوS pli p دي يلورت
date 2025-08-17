@@ -355,7 +355,7 @@ InfoTab:AddButton({
 -- ==================== إنشاء التبويب "الأسماء" ====================
 local NameTab = Window:MakeTab({
     Name = "الأسماء",
-    Icon = "rbxassetid://10723415903",
+    Icon = "Paper",
     IsPC = false,
     IsMobile = false
 })
@@ -914,7 +914,7 @@ end})
 
 local FreezTab = Window:MakeTab({
 Name = "Superتجميدات",
-Icon = "Zap"
+Icon = "moon"
 })
 
 
