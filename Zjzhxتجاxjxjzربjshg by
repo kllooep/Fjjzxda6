@@ -492,13 +492,13 @@ FreezTab:AddButton({
 	end
 })
 
---// 创建一个标签页 (Tab)，假设你已经有 Window
-local Tab = Window:MakeTab({"Body Parts", "hand"}) -- 你可以修改名称
 
---// 添加一个区域
-Tab:AddSection({Name = "更换右手"})
+local Tab = Window:MakeTab({"Body Parts", "hand"})
 
---// 手部模型 ID 列表
+
+Tab:AddSection({Name = "يد يمين"})
+
+ 
 local Arms = {
     ["يد مقطوعه من النصف"] = 16973885849,
     ["يد شيطان ازرق"] = 3333102326,
@@ -507,12 +507,12 @@ local Arms = {
     ["يد كوروبلوكس"] = 111811646706539
 }
 
---// 当前选择的手部
+
 local selectedArmId = nil
 
---// 下拉菜单：选择手部
+
 Tab:AddDropdown({
-    Name = "选择右手样式",
+    Name = "اختيار يد يمين",
     Options = {
         "يد مقطوعه من النصف",
         "يد شيطان ازرق",
@@ -520,9 +520,9 @@ Tab:AddDropdown({
         "يد عظمي",
         "يد كوروبلوكس"
     },
-    Default = "يد مقطوعه من النصف", -- 默认选项
+    Default = "يد مقطوعه من النصف", 
     Callback = function(value)
-        selectedArmId = Arms[value] -- 保存选择的 ID
+        selectedArmId = Arms[value]  ID
     end
 })
 
@@ -530,11 +530,11 @@ Tab:AddDropdown({
 Tab:AddButton({
     Name = "تفعيل",
     Callback = function()
-        -- 检查是否选择了手部
+        
         if not selectedArmId then
             game.StarterGui:SetCore("SendNotification", {
-                Title = "错误",
-                Text = "请先选择一个手部样式",
+                Title = "تم تفعيل اليد",
+                Text = ".",
                 Duration = 3
             })
             return
@@ -556,8 +556,8 @@ Tab:AddButton({
         pcall(function()
             game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer(unpack(args))
             game.StarterGui:SetCore("SendNotification", {
-                Title = "成功",
-                Text = "右手已更换！",
+                Title = "",
+                Text = "！",
                 Duration = 2
             })
         end)
