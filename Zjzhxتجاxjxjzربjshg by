@@ -1,1069 +1,435 @@
-local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/tbao143/Library-ui/refs/heads/main/Redzhubui"))()
+local splib = loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd0/SP_Hub/refs/heads/main/splibv2"))()
 
-local Window = redzlib:MakeWindow({
-Title = "DemoZHub",
-SubTitle = "بواسطة رامي",
-SaveFolder = "testando | redz lib v5.lua"
+local Window = splib:MakeWindow({
+ Name = "NetroZ  Hub",
+ SubTitle = "By Rami",
+ HidePremium = false,
+ SaveConfig = true,
+ Setting = true,
+ RainbowMainFrame = false,
+ RainbowTitle = false,
+ RainbowSubTitle = false,
+ ToggleIcon = "rbxassetid://76309561927185",
+ ConfigFolder = "SP_Library",
+ CloseCallback = true
 })
 
-Window:AddMinimizeButton({
-Button = { Image = "rbxassetid://71014873973869", BackgroundTransparency = 0 },
-Corner = { CornerRadius = UDim.new(35, 1) },
+-- ==================== إنشاء تبويب الأغاني ====================
+local MusicTab = Window:MakeTab({
+    Name = "أغاني كل الدول العربية",
+    Icon = "rbxassetid://83114982417764"
 })
 
-local FreezTab = Window:MakeTab({"Um", "cherry"})
-
-
--- === الخدمات والمتغيرات الأساسية ===
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local LocalPlayer = Players.LocalPlayer
-local RunService = game:GetService("RunService")
-local cam = workspace.CurrentCamera
-
--- === الوصول إلى الحدث المسؤول عن الهجوم ===
-local RE = ReplicatedStorage:WaitForChild("RE")
-local FireEvent = RE:FindFirstChild("1Gu1n")
-
-if not FireEvent then
-    warn("تحذير: الحدث 1Gu1n غير موجود!")
-end
-
--- === المتغيرات ===
-local selectedPlayerName = nil
-getgenv().Target = nil
-
--- === دالة لتحديث قائمة اللاعبين ===
-local function getPlayerList()
-    local playerNames = {}
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            table.insert(playerNames, player.Name)
-        end
-    end
-    table.sort(playerNames)
-    return playerNames
-end
-
--- === إضافة القسم ===
-local PlayerSection = FreezTab:AddSection({ Name = "اختيار اللاعب" })
-
--- === Dropdown لاختيار اللاعب ===
-local killDropdown = FreezTab:AddDropdown({
-    Name = "اختيار لاعب",
-    Options = getPlayerList(),
-    Default = "",
-    Callback = function(value)
-        selectedPlayerName = value
-        getgenv().Target = value
-        print("تم اختيار اللاعب: " .. tostring(value or "لا شيء"))
-    end
-})
-
--- === زر تحديث قائمة اللاعبين ===
-FreezTab:AddButton({
-    Name = "تحديث قائمة اللاعبين",
-    Callback = function()
-        local newPlayers = getPlayerList()
-        if killDropdown then
-            killDropdown:Set(newPlayers)
-            print("تم تحديث القائمة: " .. table.concat(newPlayers, ", "))
-        end
-        -- إعادة تعيين الاختيار إذا كان اللاعب المختار قد خرج
-        if selectedPlayerName and not Players:FindFirstChild(selectedPlayerName) then
-            selectedPlayerName = nil
-            getgenv().Target = nil
-            killDropdown:SetValue("")
-        end
-    end
-})
-
--- === زر الانتقال للاعب ===
-FreezTab:AddButton({
-    Name = "انتقال للاعب",
-    Callback = function()
-        if not selectedPlayerName then
-            print("❌ لم يتم اختيار لاعب!")
-            return
-        end
-        local target = Players:FindFirstChild(selectedPlayerName)
-        if not target or not target.Character then
-            print("❌ اللاعب غير موجود أو لا توجد شخصية")
-            return
-        end
-        local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-        if hrp then
-            hrp.CFrame = target.Character.HumanoidRootPart.CFrame
-        end
-    end
-})
-
--- === Toggle التجسس على اللاعب ===
-FreezTab:AddToggle({
-    Name = "تجسس على اللاعب",
-    Default = false,
-    Callback = function(value)
-        if value then
-            getgenv().CameraConnection = RunService.Heartbeat:Connect(function()
-                if selectedPlayerName then
-                    local target = Players:FindFirstChild(selectedPlayerName)
-                    if target and target.Character and target.Character:FindFirstChild("Humanoid") then
-                        cam.CameraSubject = target.Character.Humanoid
-                    end
-                end
-            end)
-        else
-            if getgenv().CameraConnection then
-                getgenv().CameraConnection:Disconnect()
-                getgenv().CameraConnection = nil
-            end
-            -- إعادة الكاميرا للشخصية
-            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-                cam.CameraSubject = LocalPlayer.Character.Humanoid
-            end
-        end
-    end
-})
-
--- === دالة الهجوم (مستخدمة من الكود السابق) ===
-local function fireAtPart(targetPart)
-    if not targetPart or not FireEvent then return end
-    local args = {
-        targetPart,
-        targetPart,
-        Vector3.new(1e14, 1e14, 1e14),
-        targetPart.Position,
-        nil, nil, 0, 0, { false },
-        { 25, Vector3.new(100, 100, 100), BrickColor.new(29), 0.25, Enum.Material.SmoothPlastic, 0.25 },
-        true, false
-    }
-    pcall(function()
-        FireEvent:FireServer(unpack(args))
-    end)
-end
-
--- === زر الهجوم الفردي ===
-FreezTab:AddButton({
-    Name = "تجميد اللاعب مرة واحدة🥵",
-    Callback = function()
-        if not selectedPlayerName then
-            print("❌ لم يتم اختيار لاعب!")
-            return
-        end
-        local target = Players:FindFirstChild(selectedPlayerName)
-        if not target or not target.Character then
-            print("❌ اللاعب غير موجود")
-            return
-        end
-        local hrp = target.Character:FindFirstChild("HumanoidRootPart")
-        if hrp then
-            for i = 1, 3 do
-                fireAtPart(hrp)
-                task.wait(0.05)
-            end
-            print("✅ تم تنفيذ التجميد على " .. selectedPlayerName)
-        end
-    end
-})
-
-local continuousAttackActive = false
-
-FreezTab:AddToggle({
-    Name = "تجميد اللاعب تلقائيا🥶",
-    Default = false,
-    Callback = function(state)
-        continuousAttackActive = state
-
-        if state then
-            task.spawn(function()
-                while true do
-                    -- التوقف الفوري إذا تم إيقاف التوغل
-                    if not continuousAttackActive then
-                        break
-                    end
-
-                    if not selectedPlayerName then
-                        task.wait(0.5)
-                        continue
-                    end
-
-                    local target = Players:FindFirstChild(selectedPlayerName)
-                    if target and target.Character then
-                        local hrp = target.Character:FindFirstChild("HumanoidRootPart")
-                        if hrp then
-                            fireAtPart(hrp)
-                        end
-                    end
-
-                    task.wait(0.05)
-                end
-            end)
-        end
-    end
-})
-
-FreezTab:AddSection({ 
-Name = "Extraتجميدات" 
-})
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Player = Players.LocalPlayer
-
-local RE = ReplicatedStorage:WaitForChild("RE")
-local FireEvent = RE:FindFirstChild("1Gu1n") -- الحدث المسؤول عن الهجوم
-
-if not FireEvent then
-    warn("الحدث 1Gu1n غير موجود!")
-end
-
-local attackEnabled = false
-
--- دالة الهجوم على جزء معين (مثل HumanoidRootPart)
-local function fireAtPart(targetPart)
-    if not targetPart or not FireEvent then return end
-
-    local args = {
-        targetPart,                    -- TargetPart
-        targetPart,                    -- HitPart
-        Vector3.new(1e14, 1e14, 1e14), -- Direction
-        targetPart.Position,           -- Position
-        nil,                           -- MuzzleEffect (لا حاجة)
-        nil,                           -- HitEffect
-        0,                             -- ShotType
-        0,                             -- DamageType
-        { false },                     -- IsHeadshot
-        {
-            25,                        -- Damage
-            Vector3.new(100, 100, 100), -- Force
-            BrickColor.new(29),        -- Color
-            0.25,                      -- BulletHoleSize
-            Enum.Material.SmoothPlastic, -- Material
-            0.25                       -- SparkSize
-        },
-        true,                          -- CanPenetrate
-        false                          -- IsSilent
-    }
-
-    pcall(function()
-        FireEvent:FireServer(unpack(args))
-    end)
-end
-
--- دالة بدء الهجوم (بدون سلاح)
-local function startAttackLoop()
-    task.spawn(function()
-        while attackEnabled do
-            -- الهجوم على كل لاعب نشط
-            for _, targetPlayer in ipairs(Players:GetPlayers()) do
-                if not attackEnabled then break end
-                if targetPlayer ~= Player and targetPlayer.Character then
-                    local hrp = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-                    if hrp then
-                        -- 3 طلقات سريعة على كل لاعب
-                        for i = 1, 3 do
-                            if not attackEnabled then break end
-                            fireAtPart(hrp)
-                            task.wait(0.05) -- فاصل بين الطلقات
-                        end
-                    end
-                end
-            end
-
-            task.wait(1) -- فاصل بين الجولات
-        end
-    end)
-end
-
--- إضافة التوغل إلى التبويب
-FreezTab:AddToggle({
-    Name = "V2(تجميد اللاعبين)",
-    Description = "تجميد كل اللاعبين🥶",
-    Default = false,
-    Callback = function(state)
-        attackEnabled = state
-
-        if attackEnabled then
-            -- إرسال رسالة في الشات (مرة واحدة عند التفعيل)
-            local chatService = game:GetService("TextChatService")
-            if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
-                local channel = chatService.TextChannels:FindFirstChild("RBXGeneral")
-                if channel then
-                    channel:SendAsync("hi\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rServer: Hacked[🥶DemoZHub]")
-                end
-            else
-                print("Nadaa")
-            end
-
-            -- بدء الهجوم المباشر
-            startAttackLoop()
-        end
-    end
-})
-
--- === المتغيرات الأساسية ===
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local LocalPlayer = Players.LocalPlayer
-local mouse = LocalPlayer:GetMouse()
-
--- الوصول إلى الحدث المسؤول عن الهجوم
-local RE = ReplicatedStorage:WaitForChild("RE")
-local FireEvent = RE:FindFirstChild("1Gu1n")
-
-if not FireEvent then
-    warn("تحذير: الحدث 1Gu1n غير موجود!")
-end
-
--- === دالة الهجوم على جزء معين ===
-local function fireAtPart(targetPart)
-    if not targetPart or not FireEvent then return end
-
-    local args = {
-        targetPart,                    -- TargetPart
-        targetPart,                    -- HitPart
-        Vector3.new(1e14, 1e14, 1e14), -- Direction
-        targetPart.Position,
-        nil, nil, 0, 0, { false },
-        {
-            25,
-            Vector3.new(100, 100, 100),
-            BrickColor.new(29),
-            0.25,
-            Enum.Material.SmoothPlastic,
-            0.25
-        },
-        true,
-        false
-    }
-
-    pcall(function()
-        FireEvent:FireServer(unpack(args))
-    end)
-end
-
--- === Toggle: هجوم فردي على النقر (One Click Kill) ===
-FreezTab:AddToggle({
-    Name = "Clickتجميد لاعب بنقرة",
-    Description = "تجميد اللاعب مرة واحدة عند النقرة",
-    Default = false,
-    Callback = function(state)
-        if state then
-            -- تفعيل الاستماع للنقر
-            getgenv().ClickConnection = mouse.Button1Down:Connect(function()
-                local targetPart = mouse.Target
-                if targetPart then
-                    local character = targetPart:FindFirstAncestorWhichIsA("Model")
-                    local player = Players:GetPlayerFromCharacter(character)
-                    if player and player ~= LocalPlayer then
-                        local hrp = character:FindFirstChild("HumanoidRootPart")
-                        if hrp then
-                            fireAtPart(hrp)
-                            print("تم الهجوم على: " .. player.Name)
-                        end
-                    end
-                end
-            end)
-        else
-            -- إيقاف الاستماع
-            if getgenv().ClickConnection then
-                getgenv().ClickConnection:Disconnect()
-                getgenv().ClickConnection = nil
-            end
-        end
-    end
-})
-
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
--- المرجع للأحداث
-local RE = ReplicatedStorage:WaitForChild("RE")
-local ClearEvent = RE:FindFirstChild("1Clea1rTool1s")
-local ToolEvent = RE:FindFirstChild("1Too1l")
-local FireEvent = RE:FindFirstChild("1Gu1n")
-
--- المتغيرات
-local attacking = false
-local targetPlayer = nil
-
--- دوال مساعدة
-local function clearAllTools()
-	if ClearEvent then
-		ClearEvent:FireServer("ClearAllTools")
-	end
-end
-
-local function getAssault()
-	if ToolEvent then
-		ToolEvent:InvokeServer("PickingTools", "Assault")
-	end
-end
-
-local function hasAssault()
-	return LocalPlayer.Backpack:FindFirstChild("Assault") ~= nil
-end
-
-local function fireAtPart(targetPart)
-	local gunScript = LocalPlayer.Backpack:FindFirstChild("Assault")
-		and LocalPlayer.Backpack.Assault:FindFirstChild("GunScript_Local")
-
-	if not gunScript or not targetPart then return end
-
-	local args = {
-		targetPart,
-		targetPart,
-		Vector3.new(1e14, 1e14, 1e14),
-		targetPart.Position,
-		gunScript:FindFirstChild("MuzzleEffect"),
-		gunScript:FindFirstChild("HitEffect"),
-		0,
-		0,
-		{ false },
-		{
-			25,
-			Vector3.new(100, 100, 100),
-			BrickColor.new(29),
-			0.25,
-			Enum.Material.SmoothPlastic,
-			0.25
-		},
-		true,
-		false
-	}
-
-	FireEvent:FireServer(unpack(args))
-end
-
-local mouse = LocalPlayer:GetMouse()
-
-local function attackLoop()
-	while attacking and targetPlayer do
-		if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-			for i = 1, 3 do
-				fireAtPart(targetPlayer.Character.HumanoidRootPart)
-				task.wait(0.2)
-			end
-		end
-		task.wait(2)
-	end
-end
-
--- زر الهجوم في مكتبة Redz V5
-FreezTab:AddButton({
-	Name = "اداة تجميد تلقائي",
-	Description = "امسك الاداة واضغط على لاعب وسيتجمد تلقائيا وعند فك الاداة يتوقف",
-	Callback = function()
-		-- تجهيز الأداة
-		local tool = LocalPlayer.Backpack:FindFirstChild("GhimXRamiتجميد الناس")
-		if not tool then
-			tool = Instance.new("Tool")
-			tool.Name = "Ramiتجميد تلقائي"
-			tool.RequiresHandle = false
-			tool.CanBeDropped = false
-			tool.Parent = LocalPlayer.Backpack
-		end
-
-		clearAllTools()
-		getAssault()
-		repeat task.wait(0.2) until hasAssault()
-
-		-- عند النقر على لاعب يبدأ الهجوم
-		mouse.Button1Down:Connect(function()
-			if not tool.Parent then return end
-			local target = mouse.Target
-			if target and target.Parent then
-				local player = Players:GetPlayerFromCharacter(target.Parent)
-				if player then
-					targetPlayer = player
-					if not attacking then
-						attacking = true
-						task.spawn(attackLoop)
-					end
-				end
-			end
-		end)
-
-		-- عند نزع الأداة توقف الهجوم
-		tool.Unequipped:Connect(function()
-			attacking = false
-			targetPlayer = nil
-		end)
-	end
-})
-
-
-local Tab = Window:MakeTab({"Body Parts", "hand"})
-
-
-Tab:AddSection({Name = "يد يمين"})
-
- 
-local Arms = {
-    ["يد مقطوعه من النصف"] = 16973885849,
-    ["يد شيطان ازرق"] = 3333102326,
-    ["يد ماعرف اسمه"] = 3230471784,
-    ["يد عظمي"] = 14547141173,
-    ["يد كوروبلوكس"] = 111811646706539
-}
-
-
-local selectedArmId = nil
-
-
-Tab:AddDropdown({
-    Name = "اختيار يد يمين",
-    Options = {
-        "يد مقطوعه من النصف",
-        "يد شيطان ازرق",
-        "يد ماعرف اسمه",
-        "يد عظمي",
-        "يد كوروبلوكس"
-    },
-    Default = "يد مقطوعه من النصف", 
-    Callback = function(value)
-        selectedArmId = Arms[value]  ID
-    end
-})
-
-
-Tab:AddButton({
-    Name = "تفعيل",
-    Callback = function()
-        
-        if not selectedArmId then
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "تم تفعيل اليد",
-                Text = ".",
-                Duration = 3
-            })
-            return
-        end
-
-        
-        local args = {
-            [1] = {
-                [1] = 1, -- 头
-                [2] = 1, -- 左手
-                [3] = selectedArmId, -- 右手
-                [4] = 1, -- 躯干
-                [5] = 1, -- 左腿
-                [6] = 1  -- 右腿
-            }
-        }
-
-        
+-- دالة عامة لتشغيل الموسيقى
+local function PlayMusic(id)
+    local args1 = { [1] = "SkateBoard" }
+    local args2 = { [1] = "PickingScooterMusicText", [2] = id }
+    local Remote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1NoMoto1rVehicle1s")
+    if Remote then
         pcall(function()
-            game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer(unpack(args))
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "",
-                Text = "！",
-                Duration = 2
-            })
+            Remote:FireServer(unpack(args1))
+            Remote:FireServer(unpack(args2))
         end)
     end
-})
-
--- ✅ تاب دردشة متوافق 100% مع Sd@733.txt - بدون أخطاء
-local ChatTab = Window:MakeTab({ Title = "الدردشة", Icon = "rbxassetid://10723415903" })
-
-local playerInput1 = ""
-local playerInput2 = ""
-local playerInput3 = ""
-
--- === إرسال رسالة عادية ===
-ChatTab:AddSection({ Name = "إرسال رسالة في الشات" })
-ChatTab:AddTextBox({
-    Name = "نص الرسالة",
-    Default = "",
-    TextDisappear = false,
-    Callback = function(text)
-        playerInput1 = text
-    end
-})
-ChatTab:AddButton({
-    Name = "إرسال الرسالة",
-    Callback = function()
-        local TextChatService = game:GetService("TextChatService")
-        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
-        local channel = TextChatService.TextChannels.RBXGeneral
-        if not channel then return end
-
-        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r" .. playerInput1
-        channel:SendAsync(message)
-    end
-})
-
--- === إرسال رسالة كـ System ===
-ChatTab:AddSection({ Name = "إرسال رسالة كـ System" })
-ChatTab:AddTextBox({
-    Name = "نص System",
-    Default = "",
-    TextDisappear = false,
-    Callback = function(text)
-        playerInput2 = text
-    end
-})
-ChatTab:AddButton({
-    Name = "إرسال كـ System",
-    Callback = function()
-        local TextChatService = game:GetService("TextChatService")
-        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
-        local channel = TextChatService.TextChannels.RBXGeneral
-        if not channel then return end
-
-        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rSystem: " .. playerInput2
-        channel:SendAsync(message)
-    end
-})
-
--- === إرسال رسالة كـ SysAdmin ===
-ChatTab:AddSection({ Name = "إرسال رسالة [SysAdmin]" })
-ChatTab:AddTextBox({
-    Name = "نص SysAdmin",
-    Default = "",
-    TextDisappear = false,
-    Callback = function(text)
-        playerInput3 = text
-    end
-})
-ChatTab:AddButton({
-    Name = "إرسال كـ SysAdmin",
-    Callback = function()
-        local TextChatService = game:GetService("TextChatService")
-        if TextChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then return end
-        local channel = TextChatService.TextChannels.RBXGeneral
-        if not channel then return end
-
-        local message = ".\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r[SysAdmin UI]: " .. playerInput3
-        channel:SendAsync(message)
-    end
-})
-local Tab2 = Window:MakeTab({"Um", "chetab"})
-
-local Section = Tab2:AddSection({"Section"})
-local Paragraph = Tab2:AddParagraph({"Script fora do ar", "O script está fora do ar no momento"})
-
--- ✅ تاب "الاكسسوارات" - مُصلح ومتوافق مع Sd@733 (1).txt
-local AccessoriesTab = Window:MakeTab({
-    Title = "الاكسسوارات",
-    Icon = "shirt"
-})
-
--- دالة مساعدة لارتداء عنصر
-local function Wear(ItemId)
-    local args = { [1] = ItemId }
-    game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("Wear", 9e9):InvokeServer(unpack(args))
 end
 
--- ==================== 1. قسم: ملابس ====================
-AccessoriesTab:AddSection({ Name = "ملابس" })
-
-local clothesOptions = {
-    "سترة اسود",
-    "سترة زهري كيوت",
-    "لبس كيوت 1",
-    "لبس كيوت 2",
-    "لبس كيوت 3",
-    "لبس كيوت 4",
-    "لبس كيوت 5"
-}
-
-local clothesIds = {
-    89892588488089,
-    99429391843259,
-    84110484978046,
-    75698084918608,
-    79220663432789,
-    78061398976556,
-    93303265717630
-}
-
-local selectedClothes = clothesOptions[1]
-
-AccessoriesTab:AddDropdown({
-    Name = "اختر ملابس",
-    Options = clothesOptions,
-    Default = selectedClothes,
-    Callback = function(value)
-        selectedClothes = value
-    end
+-- ==================== قسم: إدخال الكود يدويًا ====================
+MusicTab:AddSection({
+    Name = "ادخل كود الأغنية"
 })
 
-AccessoriesTab:AddButton({
-    Name = "تفعيل الملابس",
-    Callback = function()
-        for i, name in ipairs(clothesOptions) do
-            if name == selectedClothes then
-                Wear(clothesIds[i])
-                break
-            end
+MusicTab:AddTextbox({
+    Name = "كود الأغنية",
+    PlaceholderText = "ادخل ID الصوت",
+    TextDisappear = false,
+    Callback = function(Value)
+        local id = tonumber(Value)
+        if id then
+            PlayMusic(id)
         end
     end
 })
 
-
-
--- ==================== 2. قسم: القفازات ====================
-AccessoriesTab:AddSection({ Name = "قفازات" })
-
-local glovesOptions = {
-    "قفازات يد اسود مخطط",
-    "قفازات يد اسود عادي 1",
-    "قفازات يد اسود عادي 2",
-    "قفازات يد اسود عادي 3",
-    "قفازات يد ابيض مزخرف",
-    "قفازات يد زهري",
-    "قفازات يد احمر",
-    "اضافر اسود",
-    "قفازات يد قصير 1",
-    "قفازات يد قصير 2",
-    "قفازات يد قصير 3",
-    "قفازات يد قصير 4",
-    "قفازات يد قصير 5",
-    "قفازات يد قصير 6"
-}
-
-local glovesIds = {
-    9239689111,
-    10789914680,
-    11363898043,
-    10791180072,
-    10871965173,
-    10789939838,
-    12379676852,
-    12825022709,
-    12483105503,
-    12483109504,
-    11613796964,
-    10954568687,
-    11679250718,
-    11182924874
-}
-
-local selectedGloves = glovesOptions[1]
-
-AccessoriesTab:AddDropdown({
-    Name = "اختر قفازات",
-    Options = glovesOptions,
-    Default = selectedGloves,
-    Callback = function(value)
-        selectedGloves = value
-    end
+-- ==================== قسم: الأغاني العراقية ====================
+MusicTab:AddSection({
+    Name = "عراقي"
 })
 
-AccessoriesTab:AddButton({
-    Name = "تفعيل القفازات",
+MusicTab:AddButton({
+    Name = "يا حتة من كلبي",
     Callback = function()
-        for i, name in ipairs(glovesOptions) do
-            if name == selectedGloves then
-                Wear(glovesIds[i])
-                break
-            end
-        end
+        PlayMusic(119630965566559)
     end
 })
 
-
-
--- ==================== 3. قسم: الورد ====================
-AccessoriesTab:AddSection({ Name = "الورد" })
-
-local flowersOptions = {
-    "ورد احمر وابيض",
-    "ورد زهري",
-    "ورد سماوي",
-    "ورد اسود",
-    "ورد ابيض",
-    "ورد احمر",
-    "مسدس ماء لعبة"
-}
-
-local flowersIds = {
-    1246535644,
-    1246547853,
-    12465483807,
-    12465465333,
-    12465472210,
-    12465376206,
-    13135818072
-}
-
-local selectedFlowers = flowersOptions[1]
-
-AccessoriesTab:AddDropdown({
-    Name = "اختر ورد",
-    Options = flowersOptions,
-    Default = selectedFlowers,
-    Callback = function(value)
-        selectedFlowers = value
-    end
-})
-
-AccessoriesTab:AddButton({
-    Name = "تفعيل الورد",
+MusicTab:AddButton({
+    Name = "عفت كلبي",
     Callback = function()
-        for i, name in ipairs(flowersOptions) do
-            if name == selectedFlowers then
-                Wear(flowersIds[i])
-                break
-            end
-        end
+        PlayMusic(131004009162099)
     end
 })
 
-
-
--- ==================== 4. قسم: الأحذية ====================
-AccessoriesTab:AddSection({ Name = "الأحذية" })
-
-local shoesOptions = {
-    "حذاء الشيطان زهري",
-    "حذاء الشيطان احمر",
-    "حذاء الشيطان ابيض",
-    "حذاء الشيطان اسود",
-    "حذاء طويل اسود",
-    "حذاء طويل ابيض",
-    "حذاء طويل ابيض واحمر",
-    "حذاء القرش الاسود",
-    "حذاء قصير 1",
-    "حذاء قصير 2",
-    "حذاء قصير 3",
-    "حذاء قصير 4",
-    "حذاء قصير 5",
-    "حذاء قصير 6",
-    "حذاء قصير 7",
-    "حذاء قصير 8",
-    "حذاء قصير 9",
-    "حذاء قصير 10"
-}
-
-local shoesIds = {
-    14388006902,
-    14388019333,
-    14387999337,
-    14388004031,
-    11433864064,
-    11111279400,
-    11708887517,
-    13463375063,
-    11856087406,
-    14388001192,
-    12453321203,
-    14338742287,
-    14338742287,
-    12296189693,
-    14338732820,
-    14338735628,
-    14338738380,
-    14338744418
-}
-
-local selectedShoes = shoesOptions[1]
-
-AccessoriesTab:AddDropdown({
-    Name = "اختر حذاء",
-    Options = shoesOptions,
-    Default = selectedShoes,
-    Callback = function(value)
-        selectedShoes = value
-    end
-})
-
-AccessoriesTab:AddButton({
-    Name = "تفعيل الحذاء",
+MusicTab:AddButton({
+    Name = "ما نريدك",
     Callback = function()
-        for i, name in ipairs(shoesOptions) do
-            if name == selectedShoes then
-                Wear(shoesIds[i])
-                break
-            end
-        end
-    end
-})
--- ==================== إنشاء تاب "الاكسسوارات" ====================
-local BodyTab = Window:MakeTab({
-    Title = "الأجسام والرؤوس",
-    Icon = "shirt"
-})
-
--- دالة مساعدة لارتداء عنصر
-local function Wear(ItemId)
-    local args = { [1] = ItemId }
-    game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("Wear", 9e9):InvokeServer(unpack(args))
-end
-
--- ==================== 1. قسم: ملابس ====================
-BodyTab:AddSection({ Name = "الرؤوس" })
-
-local HeadsOptions = {
-    "رأس روبـوت",
-    "رأس مـخـفـي",
-    "رأس كـوبـي| رول",
-    "رأس عـيـون زرقـاء"
-}
-
-local HeadsIds = {
-    3210773801,
-134082579,
-746767604,
-16580493236
-}
-
-local selectedHeads = HeadsOptions[1]
-
-BodyTab:AddDropdown({
-    Name = "اختر الرأس",
-    Options = HeadsOptions,
-    Default = selectedHeads,
-    Callback = function(value)
-        selectedHeads = value
+        PlayMusic(80039364766636)
     end
 })
 
-BodyTab:AddButton({
-    Name = "تفعيل الرأس",
+MusicTab:AddButton({
+    Name = "العراقي لو نزل",
     Callback = function()
-        for i, name in ipairs(HeadsOptions) do
-            if name == selectedHeads then
-                Wear(HeadsIds[i])
-                break
-            end
-        end
+        PlayMusic(111256095783364)
     end
 })
 
--- دالة مساعدة لتغيير الجسم
-local function ChangeBody(bodyArgs)
-    local args = { bodyArgs }
-    game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer(unpack(args))
-end
-
--- ==================== 1. قسم: أجسام البنات ====================
-BodyTab:AddSection({ Name = "أجسام البنات" })
-
--- خيارات أجسام البنات
-local girlBodyOptions = {
-    "جسم بنت رول",
-    "جسم بنت يد طويلة",
-    "جسم بنت خصر",
-    "جسم بنت خصر2",
-    "جسم بنت بكمية"
-}
-
--- القيم (Body IDs) لكل جسم
-local girlBodyValues = {
-    {96491916349570, 76683091425509, 75159926897589, 1, 1, 1},
-    {96491916349570, 14854350570, 14854350451, 1, 1, 1},
-    {74302534603111, 76683091425509, 75159926897589, 1, 1, 1},
-    {18839824113, 18839824209, 18839824132, 1, 1, 1},
-    {15539008532, 15539008875, 15539008680, 15539008795, 15539011945, 1}
-}
-
--- المتغير المختار
-local selectedGirlBody = girlBodyOptions[1]
-
--- القائمة المنسدلة
-BodyTab:AddDropdown({
-    Name = "اختر جسم بنت",
-    Options = girlBodyOptions,
-    Default = selectedGirlBody,
-    Callback = function(value)
-        selectedGirlBody = value
-    end
-})
-
--- زر التفعيل
-BodyTab:AddButton({
-    Name = "تفعيل جسم البنت",
+MusicTab:AddButton({
+    Name = "كل عقلك تحجي",
     Callback = function()
-        for i, name in ipairs(girlBodyOptions) do
-            if name == selectedGirlBody then
-                ChangeBody(girlBodyValues[i])
-                break
-            end
-        end
+        PlayMusic(122774951440401)
     end
 })
 
-
-
--- ==================== 2. قسم: أجسام الأولاد ====================
-BodyTab:AddSection({ Name = "أجسام الأولاد" })
-
-local boyBodyOptions = {
-    "(R6)جسم ولد خصر",
-    "جسم ولد نحيف",
-    "جسم ولد كوبي",
-    "جسم ولد رول"
-}
-
-local boyBodyValues = {
-    {17754346388, 1, 1, 1, 1, 1},
-    {92757812011061, 99519402284266, 115905570886697, 1, 1, 1},
-    {86499666, 27112039, 27112052, 27112068, 27112056, 1},
-    {27112025, 27112039, 27112052, 3230472745, 3230470862, 1}
-}
-
-local selectedBoyBody = boyBodyOptions[1]
-
-BodyTab:AddDropdown({
-    Name = "اختر جسم ولد",
-    Options = boyBodyOptions,
-    Default = selectedBoyBody,
-    Callback = function(value)
-        selectedBoyBody = value
-    end
-})
-
-BodyTab:AddButton({
-    Name = "تفعيل جسم الولد",
+MusicTab:AddButton({
+    Name = "ما اريدك تهوانني",
     Callback = function()
-        for i, name in ipairs(boyBodyOptions) do
-            if name == selectedBoyBody then
-                ChangeBody(boyBodyValues[i])
-                break
-            end
-        end
+        PlayMusic(135911328646170)
     end
 })
 
-
-
--- ==================== 3. قسم: أجسام الأقزام ====================
-BodyTab:AddSection({ Name = "أجسام الأقزام" })
-
-local dwarfBodyOptions = {
-    "جسم قزم عادي",
-    "جسم قزم متوسط",
-    "جسم قزم صغيره [ كيوت ]"
-}
-
-local dwarfBodyValues = {
-    {14579958702, 14579959062, 14579959191, 14579959249, 14579963667, 1},
-    {77813057823038, 135110043370135, 116607813654019, 138966229804486, 128961183894053, 1},
-    {120973199097564, 118345433416023, 112849465115864, 78321005147549, 106586789635639, 1}
-}
-
-local selectedDwarfBody = dwarfBodyOptions[1]
-
-BodyTab:AddDropdown({
-    Name = "اختر جسم قزم",
-    Options = dwarfBodyOptions,
-    Default = selectedDwarfBody,
-    Callback = function(value)
-        selectedDwarfBody = value
-    end
-})
-
-BodyTab:AddButton({
-    Name = "تفعيل جسم القزم",
+MusicTab:AddButton({
+    Name = "جاي انساك",
     Callback = function()
-        for i, name in ipairs(dwarfBodyOptions) do
-            if name == selectedDwarfBody then
-                ChangeBody(dwarfBodyValues[i])
-                break
-            end
-        end
+        PlayMusic(72918998227337)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "نجوم الدنيا",
+    Callback = function()
+        PlayMusic(73632319736202)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "مع حضورك عراقية قديمة",
+    Callback = function()
+        PlayMusic(131507511127909)
+    end
+})
+
+-- ==================== قسم: الأغاني العربية ====================
+MusicTab:AddSection({
+    Name = "عربي"
+})
+
+MusicTab:AddButton({
+    Name = "ليه ساكت",
+    Callback = function()
+        PlayMusic(119437864395329)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "يا حلو",
+    Callback = function()
+        PlayMusic(93620598835551)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "يا بكائية",
+    Callback = function()
+        PlayMusic(98640789490482)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "صدقني كرهتك",
+    Callback = function()
+        PlayMusic(113478978326245)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "انا دمي فلسطيني",
+    Callback = function()
+        PlayMusic(84112690044490)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "كردي",
+    Callback = function()
+        PlayMusic(134738554464984)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "اغنية هجولة",
+    Callback = function()
+        PlayMusic(99472699182002)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "تحرير سوريا",
+    Callback = function()
+        PlayMusic(87510423075068)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "دبكة 1",
+    Callback = function()
+        PlayMusic(76698985299412)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "دبكة 2",
+    Callback = function()
+        PlayMusic(90807238125839)
+    end
+})
+
+-- ==================== قسم: القرآن الكريم ====================
+MusicTab:AddSection({
+    Name = "قرآن"
+})
+
+MusicTab:AddButton({
+    Name = "هل لك سر عند الله",
+    Callback = function()
+        PlayMusic(89807249526206)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "قرآن 1",
+    Callback = function()
+        PlayMusic(1836685929)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "قرآن 2",
+    Callback = function()
+        PlayMusic(113184639716766)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "قرآن 3",
+    Callback = function()
+        PlayMusic(113267251759253)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "قرآن 4",
+    Callback = function()
+        PlayMusic(104251523505775)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "قرآن 5",
+    Callback = function()
+        PlayMusic(94610377976036)
+    end
+})
+
+-- ==================== قسم: فونك والسب ====================
+MusicTab:AddSection({
+    Name = "فونك والسب"
+})
+
+MusicTab:AddButton({
+    Name = "صوت اشعار سامسونج",
+    Callback = function()
+        PlayMusic(7288899492)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك 🦅",
+    Callback = function()
+        PlayMusic(86271123924168)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 1 🦅",
+    Callback = function()
+        PlayMusic(15689443663)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 2 🦅",
+    Callback = function()
+        PlayMusic(16190782181)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 3 🦅",
+    Callback = function()
+        PlayMusic(15689448519)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 4 🦅",
+    Callback = function()
+        PlayMusic(7825702538)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك نادرة رقم5 🦅",
+    Callback = function()
+        PlayMusic(71517955953236)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 6 🦅",
+    Callback = function()
+        PlayMusic(127084858692372)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 7 🦅",
+    Callback = function()
+        PlayMusic(104541292443133)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 8 🦅",
+    Callback = function()
+        PlayMusic(130607529536925)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 9 🦅",
+    Callback = function()
+        PlayMusic(84733736048142)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 10 🦅",
+    Callback = function()
+        PlayMusic(82680101995105)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 11 🦅",
+    Callback = function()
+        PlayMusic(76603092488414)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 12 🦅",
+    Callback = function()
+        PlayMusic(124958445624871)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 13 🦅",
+    Callback = function()
+        PlayMusic(16662833837)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 14 🦅",
+    Callback = function()
+        PlayMusic(90698302380427)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 15 🦅",
+    Callback = function()
+        PlayMusic(16831108393)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 16 🦅",
+    Callback = function()
+        PlayMusic(78099799004483)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 17 🦅",
+    Callback = function()
+        PlayMusic(138106899521204)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 18 🦅",
+    Callback = function()
+        PlayMusic(84223825719510)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنية فونك رقم 19 🦅",
+    Callback = function()
+        PlayMusic(79314929106323)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنيه فونك رقم 20",
+    Callback = function()
+        PlayMusic(113312785512702)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 اغنيه وش فيك 🦅",
+    Callback = function()
+        PlayMusic(7341215833)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 السب رقم 1 🦅",
+    Callback = function()
+        PlayMusic(8701632845)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 السب رقم 2 🦅",
+    Callback = function()
+        PlayMusic(5849978429)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 السب رقم 4 🦅",
+    Callback = function()
+        PlayMusic(8136342274)
+    end
+})
+
+MusicTab:AddButton({
+    Name = "🦅 السب رقم 5 🦅",
+    Callback = function()
+        PlayMusic(6536444735)
     end
 })
