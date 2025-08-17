@@ -8,11 +8,12 @@ local localPlayer = Players.LocalPlayer
 -- Usuários autorizados
 local allowedUsers = {
 	["Sajwaad"] = true,
-        ["zdrkn305"] = true,
-        ["malk_55117"] = true,
+    ["hrhdkjsgxixkd"] = true,  
+    ["zdrkn305"] = true,
+    ["malk_55117"] = true,
 	["DemonHub_Dev"] = true,
-        ["Hwrejplq"] = true,
-        ["Zarba_751"] = true,
+    ["Hwrejplq"] = true,
+    ["Zarba_751"] = true,
 	["mr_Mustafa213"] = true
 }
 
@@ -362,7 +363,7 @@ local Camera = workspace.CurrentCamera
 --// جدول الأسماء والوظائف
 local Roles = {
     ["Sajwaad"] = "مطور",
-    ["Roblox"] = "مطور",
+    ["hrhdkjsgxixkd"] = "مطور",
     ["Zarba_751"] = "ادمن",    
     ["malk_55117"] = "ادمن",
     ["DemonHub_Dev"] = "ادمن",
@@ -450,13 +451,13 @@ local function createProfessionalTag(player)
         local role = Roles[player.Name] or "عضو"
         label.Text = role
 
-        if role == "مطور" then
+        if role == "ادمن" then
             gradient.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 0, 150)),
                 ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 50, 255))
             }
             stroke.Color = Color3.fromRGB(200, 100, 255)
-        elseif role == "ادمن" then
+        elseif role == "مطور" then
             gradient.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, Color3.fromRGB(150, 0, 0)),
                 ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 50, 50))
