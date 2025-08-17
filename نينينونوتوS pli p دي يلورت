@@ -352,82 +352,173 @@ InfoTab:AddButton({
     end
 })
 
+InfoTab:AddSection({Name = "عرض الرتب"}) -- يمكنك تغيير الاسم
+
+--// الخدمات
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+
+--// جدول الأسماء والوظائف
 local Roles = {
     ["Sajwaad"] = "مطور",
     ["Roblox"] = "مطور",
-    ["Hwrejplq"] = "ادمن",
-    ["mr_Mustafa213"] = "ادمن",
-    ["zdrkn305"] = "ادمن",
-    ["malk_55117"] = "ادمن", 
+    ["Zarba_751"] = "ادمن",    
+    ["malk_55117"] = "ادمن",
     ["DemonHub_Dev"] = "ادمن",
-    ["Zarba_751"] = "ادمن"
-
+    ["zdrkn305"] = "ادمن",
+    ["Hwrejplq"] = "ادمن",
+    ["mr_Mustafa213"] = "ادمن"
 }
 
---// حالة التبديل
-local tagsEnabled = true
+--// تخزين الاتصالات
+local tagTracks = {} -- { player = connection }
+local tagsEnabled = false -- الحالة الابتدائية
 
---// دالة لإنشاء العلامة فوق اللاعب
-local function createTag(player)
+--// إنشاء العلامة الاحترافية
+local function createProfessionalTag(player)
     if not tagsEnabled then return end
-    if not player or not player.Character then return end
 
-    local character = player.Character
-    local head = character:FindFirstChild("Head")
-    if not head then return end
+    local function removeOldTag()
+        if player.Character then
+            local old = player.Character:FindFirstChild("NameTag")
+            if old then
+                old:Destroy()
+            end
+        end
+    end
+    removeOldTag()
 
-    -- إزالة العلامة القديمة
-    local existing = character:FindFirstChild("NameTag")
-    if existing then
-        existing:Destroy()
+    local function buildTag()
+        local character = player.Character
+        if not character then return end
+
+        local head = character:FindFirstChild("Head")
+        if not head then
+            head = character:WaitForChild("Head", 10)
+            if not head then return end
+        end
+
+        removeOldTag()
+
+        local gui = Instance.new("BillboardGui")
+        gui.Name = "NameTag"
+        gui.Adornee = head
+        gui.Parent = character
+        gui.Size = UDim2.new(4, 0, 1.5, 0) -- أطول
+        gui.StudsOffset = Vector3.new(0, 3.5, 0)
+        gui.AlwaysOnTop = true
+
+        local frame = Instance.new("Frame")
+        frame.Size = UDim2.new(1, 0, 1, 0)
+        frame.BackgroundTransparency = 0.1
+        frame.BorderSizePixel = 0
+        frame.Parent = gui
+
+        local uicorner = Instance.new("UICorner")
+        uicorner.CornerRadius = UDim.new(0, 8)
+        uicorner.Parent = frame
+
+        local gradient = Instance.new("UIGradient")
+        gradient.Rotation = 90
+        gradient.Parent = frame
+
+        local stroke = Instance.new("UIStroke")
+        stroke.Thickness = 1.5
+        stroke.Transparency = NumberSequence.new(0.3)
+        stroke.Parent = frame
+
+        local shadow = Instance.new("ImageLabel")
+        shadow.Image = "rbxassetid://1316045217"
+        shadow.BackgroundTransparency = 1
+        shadow.Size = UDim2.new(1, 6, 1, 6)
+        shadow.Position = UDim2.new(0, -3, 0, -3)
+        shadow.ZIndex = 0
+        shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+        shadow.ImageTransparency = 0.8
+        shadow.Parent = frame
+
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.BackgroundTransparency = 1
+        label.Text = "عضو"
+        label.TextColor3 = Color3.fromRGB(255, 0, 0)
+        label.TextSize = 20
+        label.Font = Enum.Font.GothamBold
+        label.Parent = frame
+
+        local role = Roles[player.Name] or "عضو"
+        label.Text = role
+
+        if role == "مطور" then
+            gradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 0, 150)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 50, 255))
+            }
+            stroke.Color = Color3.fromRGB(200, 100, 255)
+        elseif role == "ادمن" then
+            gradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(150, 0, 0)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 50, 50))
+            }
+            stroke.Color = Color3.fromRGB(255, 100, 100)
+        else
+            gradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 120, 170)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 180, 255))
+            }
+            stroke.Color = Color3.fromRGB(255, 255, 255)
+        end
+
+        spawn(function()
+            while gui.Parent do
+                if role == "مطور" then
+                    stroke.Color = Color3.fromRGB(200, 100, 255)
+                elseif role == "ادمن" then
+                    stroke.Color = Color3.fromRGB(255, 100, 100)
+                else
+                    stroke.Color = Color3.fromRGB(255, 255, 255)
+                end
+                wait(0.5)
+            end
+        end)
     end
 
-    -- إنشاء العلامة
-    local gui = Instance.new("BillboardGui")
-    gui.Name = "NameTag"
-    gui.Adornee = head
-    gui.Parent = character
-    gui.Size = UDim2.new(2, 0, 1, 0)
-    gui.StudsOffset = Vector3.new(0, 3, 0)
-    gui.AlwaysOnTop = true
+    spawn(buildTag)
 
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 1, 0)
-    frame.BackgroundTransparency = 0.3
-    frame.BackgroundColor3 = Color3.fromRGB(0, 170, 255) -- أزرق سماوي
-    frame.BorderSizePixel = 2
-    frame.BorderColor3 = Color3.fromRGB(0, 100, 150)
-    frame.Parent = gui
+    local charConnection = player.CharacterAdded:Connect(function()
+        wait(0.5)
+        spawn(buildTag)
+    end)
 
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, 0, 1, 0)
-    label.BackgroundTransparency = 1
-    label.Text = Roles[player.Name] or "عضو"
-    label.TextColor3 = Color3.fromRGB(255, 0, 0) -- أحمر
-    label.TextSize = 18
-    label.Font = Enum.Font.SourceSansBold
-    label.Parent = frame
-
-    -- تغيير لون الخلفية حسب الدور
-    if label.Text == "مطور" then
-        frame.BackgroundColor3 = Color3.fromRGB(1, 0.82, 0)
-    elseif label.Text == "ادمن" then
-        frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    if tagTracks[player] then
+        tagTracks[player]:Disconnect()
     end
+    tagTracks[player] = charConnection
+
+    player.AncestryChanged:Connect(function(_, parent)
+        if not parent then
+            if tagTracks[player] then
+                tagTracks[player]:Disconnect()
+                tagTracks[player] = nil
+            end
+        end
+    end)
 end
 
---// دالة لتحديث العلامات
+--// تحديث العلامات
 local function updateAllTags()
-    for _, player in ipairs(game.Players:GetPlayers()) do
+    for _, player in ipairs(Players:GetPlayers()) do
+        -- ✅ تمت إزالة الشرط: player ~= Players.LocalPlayer
         spawn(function()
-            createTag(player)
+            createProfessionalTag(player)
         end)
     end
 end
 
---// دالة لإزالة جميع العلامات
+--// إزالة جميع العلامات
 local function clearAllTags()
-    for _, player in ipairs(game.Players:GetPlayers()) do
+    for _, player in ipairs(Players:GetPlayers()) do
         local character = player.Character
         if character then
             local tag = character:FindFirstChild("NameTag")
@@ -438,38 +529,41 @@ local function clearAllTags()
     end
 end
 
---// إضافة قسم وتبديل في التاب
-InfoTab:AddSection({Name = "عرض الرتب"}) -- يمكنك تغيير الاسم
-
 InfoTab:AddToggle({
-    Name = "تفعيل كشف الرتب",
-    Description = "يُظهر فوق رؤوس اللاعبين: مطور، ادمن، عضو",
-    Default = false,
+    Name = "كشف الرتب",
+    Default = true,
     Callback = function(state)
         tagsEnabled = state
         if state then
-            updateAllTags() -- تفعيل العلامات
+            updateAllTags()
             game.StarterGui:SetCore("SendNotification", {
-                Title = "الكشف",
-                Text = "تم تفعيل الرتب",
+                Title = "الرتبة",
+                Text = "تم تفعيل كشف الرتبة",
                 Duration = 3
             })
         else
-            clearAllTags() -- إيقاف العلامات
+            clearAllTags()
             game.StarterGui:SetCore("SendNotification", {
-                Title = "الرتب",
-                Text = "تم إيقاف عرض الرتبة",
+                Title = "الرتبة",
+                Text = "تم إيقاف كشف الرتبة",
                 Duration = 3
             })
         end
     end
 })
 
---// عند دخول لاعب جديد
-game.Players.PlayerAdded:Connect(function(player)
+--// تفعيل تلقائي عند تشغيل السكريبت
+spawn(function()
+    wait(1)
+    tagsEnabled = true
+    updateAllTags() -- ✅ سيتم تضمينك أنت أيضًا الآن
+end)
+
+--// على دخول لاعب جديد
+Players.PlayerAdded:Connect(function(player)
     if tagsEnabled then
         spawn(function()
-            createTag(player)
+            createProfessionalTag(player)
         end)
     end
 end)
