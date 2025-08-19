@@ -1,3 +1,138 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Debris = game:GetService("Debris")
+local TextChatService = game:GetService("TextChatService")
+
+local electricColor = Color3.fromRGB(0, 162, 255)
+
+-- دالة لإنشاء التأثير على لاعب معيّن
+local function playEffect(targetPlayer)
+    local char = targetPlayer.Character
+    if not char then return end
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    -- إعداد الكرات
+    local sphereParts = {}
+    local offsets = {
+        Vector3.new(5,2,0),
+        Vector3.new(-5,2,0),
+        Vector3.new(0,2,5),
+        Vector3.new(0,2,-5)
+    }
+
+    for i, offset in ipairs(offsets) do
+        local sphere = Instance.new("Part")
+        sphere.Shape = Enum.PartType.Ball
+        sphere.Size = Vector3.new(1,1,1)
+        sphere.Anchored = true
+        sphere.CanCollide = false
+        sphere.Material = Enum.Material.Neon
+        sphere.Color = electricColor
+        sphere.Position = hrp.Position + offset
+        sphere.Parent = workspace
+        table.insert(sphereParts, sphere)
+    end
+
+    -- دوران الكرات 4 ثواني
+    local startTime = tick()
+    while tick()-startTime < 4 do
+        local angle = (tick()-startTime)*2
+        for i, sphere in ipairs(sphereParts) do
+            local base = offsets[i]
+            sphere.Position = hrp.Position + Vector3.new(
+                base.X*math.cos(angle) - base.Z*math.sin(angle),
+                base.Y,
+                base.X*math.sin(angle) + base.Z*math.cos(angle)
+            )
+        end
+        RunService.RenderStepped:Wait()
+    end
+
+    -- صواعق
+    for _, sphere in ipairs(sphereParts) do
+        local bolt = Instance.new("Part")
+        bolt.Size = Vector3.new(0.3, (sphere.Position.Y+5), 0.3)
+        bolt.Anchored = true
+        bolt.CanCollide = false
+        bolt.Material = Enum.Material.Neon
+        bolt.Color = electricColor
+        bolt.CFrame = CFrame.new(sphere.Position + Vector3.new(0,bolt.Size.Y/2,0))
+        bolt.Parent = workspace
+        Debris:AddItem(bolt, 0.5)
+    end
+
+    for _, sphere in ipairs(sphereParts) do
+        sphere:Destroy()
+    end
+
+    -- تنين كهربائي
+    local dragonParts = {}
+    local bodyTrailColor = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, electricColor),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,255,255)),
+        ColorSequenceKeypoint.new(1, electricColor)
+    }
+
+    local function createDragon(numParts)
+        for i=1,numParts do
+            local part = Instance.new("Part")
+            part.Size = Vector3.new(0.5,0.5,0.5)
+            part.Anchored = true
+            part.CanCollide = false
+            part.Material = Enum.Material.Neon
+            part.Color = electricColor
+            part.Parent = workspace
+
+            local att0 = Instance.new("Attachment", part)
+            local att1 = Instance.new("Attachment", part)
+            att1.Position = Vector3.new(0,0.5,0)
+
+            local trail = Instance.new("Trail", part)
+            trail.Attachment0 = att0
+            trail.Attachment1 = att1
+            trail.Color = bodyTrailColor
+            trail.Lifetime = 0.3
+            trail.WidthScale = NumberSequence.new(0.3)
+            trail.Transparency = NumberSequence.new(0.1)
+            trail.LightEmission = 1
+
+            table.insert(dragonParts,{part=part,att0=att0,att1=att1})
+        end
+    end
+
+    local function rotateDragon(duration,radius,height)
+        local startTime = tick()
+        while tick()-startTime < duration do
+            local t = tick()-startTime
+            for i,obj in ipairs(dragonParts) do
+                local angle = t*3 + (i*0.5)
+                local x = math.cos(angle)*radius
+                local z = math.sin(angle)*radius
+                local y = math.sin(angle*2)*height + i*0.2
+                obj.part.Position = hrp.Position + Vector3.new(x,y,z)
+            end
+            RunService.RenderStepped:Wait()
+        end
+    end
+
+    createDragon(25)
+    rotateDragon(10,5,3)
+
+    for _, obj in ipairs(dragonParts) do
+        obj.part:Destroy()
+    end
+end
+
+-- مراقبة الشات
+TextChatService.OnIncomingMessage = function(message)
+    local player = Players:GetPlayerByUserId(message.TextSource.UserId)
+    if not player then return end
+    if message.Text == "/Netro23" then
+        playEffect(player)
+    end
+end
+
 -- صنع بواسطة المطور راميDemonHub
 local Players = game:GetService("Players")
 local TextChatService = game:GetService("TextChatService")
@@ -290,27 +425,6 @@ TextChatService.OnIncomingMessage = function(message)
 		end
 	end
 end
-
-local args = {
-	"RolePlayName",
-	"NetroZ-HubV0.6"
-}
-game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
-local args = {
-	"PickingRPNameColor",
-	Color3.new(0.7556330561637878, 0, 0.00002125852188328281)
-}
-game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
-local args = {
-	"RolePlayBio",
-	"NetroZالتحديث المعزز"
-}
-game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
-local args = {
-	"PickingRPBioColor",
-	Color3.new(0.7050058841705322, 0, 0.000019834207705571316)
-}
-game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
 
 local splib = loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd0/SP_Hub/refs/heads/main/splibv2"))()
 
@@ -7977,3 +8091,24 @@ ScriptsTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
+local args = {
+	"RolePlayName",
+	"NetroZ-HubV0.6"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
+local args = {
+	"PickingRPNameColor",
+	Color3.new(0.7556330561637878, 0, 0.00002125852188328281)
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
+local args = {
+	"RolePlayBio",
+	"NetroZالتحديث المعزز"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
+local args = {
+	"PickingRPBioColor",
+	Color3.new(0.7050058841705322, 0, 0.000019834207705571316)
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
