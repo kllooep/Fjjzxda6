@@ -6316,6 +6316,95 @@ Tab:AddButton({
     end
 })
 
+Tab:AddToggle({
+    Name = "🌫️دخان تلقائي",
+    Default = false,
+    Callback = function(Value)
+        isActive = Value
+
+        while isActive do
+            local mall = workspace:WaitForChild("WorkspaceCom"):WaitForChild("001_Mall"):WaitForChild("001_Pizza"):FindFirstChild("CatchFire")
+            
+            if mall then
+                local touchInterest = mall:FindFirstChild("TouchInterest")
+                if touchInterest then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, mall, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, mall, 1)
+                end
+            end
+            wait(1)
+        end
+    end
+})
+
+Tab:AddToggle({
+    Name = "🔥نار تلقائية في السكن",
+    Default = false,
+    Callback = function(Value)
+        isActive = Value
+
+        while isActive do
+            local playerName = game.Players.LocalPlayer.Name
+            local lotFolder = game:GetService("Workspace"):WaitForChild("001_Lots")
+            local house = lotFolder:FindFirstChild(playerName .. "House")
+
+            if house then
+                local mall = house:WaitForChild("HousePickedByPlayer"):WaitForChild("HouseModel"):WaitForChild("001_BBQ"):FindFirstChild("CatchFire")
+                if mall then
+                    local touchInterest = mall:FindFirstChild("TouchInterest")
+                    if touchInterest then
+                        firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, mall, 0)
+                        wait()
+                        firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, mall, 1)
+                    end
+                end
+            else
+                warn("House not found for player: " .. playerName)
+            end
+            wait(1)
+        end
+    end
+})
+
+Tab:AddButton({
+    Name = "تفعيل",
+    Callback = function()
+        local Player = game.Players.LocalPlayer
+        local Character = Player.Character
+        local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+        local RootPart = Character:FindFirstChild("HumanoidRootPart")
+        local OldPos = RootPart.CFrame
+        
+        local function freezeHumanoid(humanoid)
+            humanoid.WalkSpeed = 0
+            humanoid.JumpPower = 0
+        end
+        
+        local function restoreHumanoid(humanoid)
+            humanoid.WalkSpeed = 16
+            humanoid.JumpPower = 50
+        end
+        
+        local firstPosition = CFrame.new(-349, 5, 98)
+        
+        local PoolClick = workspace.WorkspaceCom["001_Hospital"]:FindFirstChild("PoolClick")
+        
+        if PoolClick and PoolClick:FindFirstChild("ClickDetector") then
+            freezeHumanoid(Humanoid)
+            RootPart.CFrame = firstPosition
+            task.wait(1)
+            RootPart.CFrame = PoolClick.CFrame
+            fireclickdetector(PoolClick.ClickDetector)
+            task.wait(2)
+            RootPart.CFrame = OldPos
+            restoreHumanoid(Humanoid)
+        else
+            warn("PoolClick ou ClickDetector não encontrado!")
+        end
+    end
+})
+
 -- ✅ تاب "الاكسسوارات" - مُصلح ومتوافق مع Sd@733 (1).txt
 local AccessoriesTab = Window:MakeTab({
     Title = "الاكسسوارات",
