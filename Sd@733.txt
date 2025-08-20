@@ -1403,114 +1403,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/DezomXHub/DemozX/main
     end
 })
 
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Player = Players.LocalPlayer
-
-local RE = ReplicatedStorage:WaitForChild("RE")
-local ClearEvent = RE:FindFirstChild("1Clea1rTool1s")
-local ToolEvent = RE:FindFirstChild("1Too1l")
-local FireEvent = RE:FindFirstChild("1Gu1n")
-
-local attackEnabled = false
-
-local function clearAllTools()
-    if ClearEvent then
-        ClearEvent:FireServer("ClearAllTools")
-    end
-end
-
-local function getAssault()
-    if ToolEvent then
-        ToolEvent:InvokeServer("PickingTools", "Assault")
-    end
-end
-
-local function hasAssault()
-    return Player.Backpack:FindFirstChild("Assault") ~= nil
-end
-
-local function fireAtPart(targetPart)
-    local gunScript = Player.Backpack:FindFirstChild("Assault")
-        and Player.Backpack.Assault:FindFirstChild("GunScript_Local")
-
-    if not gunScript or not targetPart then return end
-
-    local args = {
-        targetPart,
-        targetPart,
-        Vector3.new(1e14, 1e14, 1e14),
-        targetPart.Position,
-        gunScript:FindFirstChild("MuzzleEffect"),
-        gunScript:FindFirstChild("HitEffect"),
-        0,
-        0,
-        { false },
-        {
-            25,
-            Vector3.new(100, 100, 100),
-            BrickColor.new(29),
-            0.25,
-            Enum.Material.SmoothPlastic,
-            0.25
-        },
-        true,
-        false
-    }
-
-    FireEvent:FireServer(unpack(args))
-end
-
-local function startAssaultLoop()
-    task.spawn(function()
-        while attackEnabled do
-            clearAllTools()
-            getAssault()
-
-            repeat
-                task.wait(0.2)
-            until hasAssault() or not attackEnabled
-
-            for i = 1, 3 do
-                for _, player in ipairs(Players:GetPlayers()) do
-                    if not attackEnabled then return end
-                    if player ~= Player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                        fireAtPart(player.Character.HumanoidRootPart)
-                        task.wait(0.1)
-                    end
-                end
-            end
-
-            task.wait(1)
-        end
-    end)
-end
-
--- الزر داخل التبويب
-TrollTab:AddToggle({
-    Name = "V2(تجميد اللاعبين)",
-    Description = "تجميد كل اللاعبين🥶",
-    Default = false,
-    Callback = function(state)
-        attackEnabled = state
-
-        if attackEnabled then
-            -- يرسل رسالة بالشات مرة واحدة عند التشغيل
-            local chatService = game:GetService("TextChatService")
-            if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
-                local channel = chatService.TextChannels:FindFirstChild("RBXGeneral")
-                if channel then
-                    channel:SendAsync("hi\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\rServer: Hacked[🥶DemoZHub]")
-                end
-            else
-                print("Nadaa")
-            end
-
-            startAssaultLoop()
-        end
-    end
-})
-
 TrollTab:AddSection({ "تدبيل طيارات" })
 TrollTab:AddButton({
     Name = "تدبيل طيارات عل سبون",
@@ -8553,6 +8445,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
