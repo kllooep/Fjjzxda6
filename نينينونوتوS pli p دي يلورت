@@ -266,7 +266,6 @@ TextChatService.OnIncomingMessage = function(message)
 
 		local initiatorHRP = initiatorChar:FindFirstChild("HumanoidRootPart")
 		if not initiatorHRP then return end
-
 		local function bringPlayer(plr)
 			local char = plr.Character
 			if not char then return end
@@ -7298,6 +7297,69 @@ end
 local TabSp = Window:MakeTab({
     Name = "[EXTRA]مباني+سبام",
     Icon = "bagback"
+})
+
+local duplicarAtivo = false
+local duplicarThread = nil
+
+TabSp:AddToggle({
+    Name = "اخذ قنابل",
+    Default = false,
+    Callback = function(v)
+        duplicarAtivo = v
+        if duplicarAtivo then
+            duplicarThread = task.spawn(function()
+                local Player = game.Players.LocalPlayer
+                local Character = Player.Character or Player.CharacterAdded:Wait()
+                local RootPart = Character:WaitForChild("HumanoidRootPart")
+                local OldPos = RootPart.CFrame
+
+                local Bomb = game:GetService("Workspace"):FindFirstChild("WorkspaceCom")
+                    and game:GetService("Workspace").WorkspaceCom["001_CriminalWeapons"]:FindFirstChild("GiveTools")
+                    and game:GetService("Workspace").WorkspaceCom["001_CriminalWeapons"].GiveTools:FindFirstChild("Bomb")
+
+                if not Bomb or not Bomb:FindFirstChild("ClickDetector") then
+                    warn("Erro ao encontrar a Bomb! Tente novamente.")
+                    duplicarAtivo = false
+                    return
+                end
+
+                while duplicarAtivo do
+                    for i = 1, 12 do
+                        RootPart.CFrame = Bomb.CFrame
+                        fireclickdetector(Bomb.ClickDetector)
+                        task.wait(0)
+                    end
+                    task.wait(0.001)
+                end
+
+                -- Quando desativar, volta para a posição original
+                RootPart.CFrame = OldPos
+            end)
+        end
+    end
+})
+
+local spam = false
+local playerName = game.Players.LocalPlayer.Name -- pega automaticamente o nome do player local
+
+TabSp:AddToggle({
+    Name = "سبام تفجير قنابل",
+    Default = false,
+    Callback = function(v)
+        spam = v
+        if spam then
+            task.spawn(function()
+                while spam do
+                    local args = {
+                        [1] = "Bomb" .. playerName
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Blo1wBomb1sServe1r"):FireServer(unpack(args))
+                    task.wait(0.1) -- intervalo de 0.1 segundo entre cada spam
+                end
+            end)
+        end
+    end
 })
 
 
