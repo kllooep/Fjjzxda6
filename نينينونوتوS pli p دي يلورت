@@ -7299,6 +7299,60 @@ local TabSp = Window:MakeTab({
     Icon = "bagback"
 })
 
+TabSp:AddSection({ "تدبيل/مباني" })
+
+local BNumber = 2000 -- Initial default value
+
+TabSp:AddToggle({
+    Name = "تدبيل كرات سلة",
+    Default = false,
+    Callback = function(Value)
+        BasketToggleH = Value
+        if BasketToggleH then
+            local Player = game.Players.LocalPlayer
+            local Backpack = Player.Backpack
+            local Mouse = Player:GetMouse()
+            local Character = Player.Character
+            local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+            local RootPart = Character:FindFirstChild("HumanoidRootPart")
+            local OldPosition = RootPart.CFrame
+            local Clone = Workspace.WorkspaceCom["001_GiveTools"].Basketball
+
+            for i = 1, BNumber do
+                task.wait()
+                RootPart.CFrame = Clone.CFrame
+                fireclickdetector(Clone.ClickDetector)
+            end
+            task.wait()
+            RootPart.CFrame = OldPosition
+
+            while BasketToggleH do
+                task.wait()
+                for i, v in ipairs(Character:GetChildren()) do
+                    if v.Name == "Basketball" then
+                        task.wait()
+                        local args = {
+                            [1] = Mouse.Hit.p
+                        }
+                        v.ClickEvent:FireServer(unpack(args))
+                    end
+                end
+            end
+        end
+    end
+})
+
+TabSp:AddSlider({
+    Name = "كمية مرات السلة",
+    MinValue = 1,
+    MaxValue = 2000, -- Adjust as needed
+    Default = BNumber,
+    Increase = 1,
+    Callback = function(Value)
+        BNumber = Value
+    end
+})
+
 local duplicarAtivo = false
 local duplicarThread = nil
 
@@ -7363,11 +7417,444 @@ TabSp:AddToggle({
 })
 
 
+TabSp:AddSection({"المباني"})
+
+local BNumber = 600 -- Valor fixo
+local distanciaEntreItens = 3 -- DistÃ¢ncia entre os itens ao longo do bastÃ£o
+
+-- FunÃ§Ã£o para organizar itens em forma de bastÃ£o gigante para baixo
+local function organizarItensEmBastaoParaBaixo()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local backpack = player.Backpack
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- Coleta todos os Tools no personagem e na mochila
+    local itens = {}
+
+    -- Procura Tools no personagem
+    for _, item in pairs(character:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+
+    -- Procura Tools na mochila
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+
+    -- Verifica duplicatas e organiza por nome
+    local duplicatas = {}
+    for _, item in pairs(itens) do
+        if not duplicatas[item.Name] then
+            duplicatas[item.Name] = {}
+        end
+        table.insert(duplicatas[item.Name], item)
+    end
+
+    -- Para cada grupo de duplicatas, organize-os em formato de bastÃ£o
+    local yOffset = 0 -- Offset inicial no eixo Y
+    for _, grupo in pairs(duplicatas) do
+        local total = #grupo
+        if total > 1 then
+            for i, item in pairs(grupo) do
+                -- Equipa o item para ajustar o GripPos
+                item.Parent = character
+
+                -- Define a posiÃ§Ã£o vertical para o item no bastÃ£o (para baixo no eixo Y)
+                item.GripPos = Vector3.new(0, -yOffset, 0)
+
+                -- Incrementa o offset no eixo Y para "descer"
+                yOffset = yOffset + distanciaEntreItens
+
+                -- Aguarda um pouco para o efeito ser visÃ­vel
+                task.wait()
+
+                -- Solta o item colocando de volta na mochila
+                item.Parent = backpack
+            end
+        end
+    end
+
+    -- Equipa todos os itens "FireX" da mochila
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            item.Parent = character
+        end
+    end
+end
+
+
+TabSp:AddButton({
+  Name = "عصا طويلة طفاية حريق[FireX]",
+  Callback = function()
+    local Player = game.Players.LocalPlayer
+        local Character = Player.Character or Player.CharacterAdded:Wait()
+        local RootPart = Character:WaitForChild("HumanoidRootPart")
+
+        -- AtualizaÃ§Ã£o da hierarquia para FireX
+        local Clone = game:GetService("Workspace"):FindFirstChild("WorkspaceCom")
+            and game:GetService("Workspace").WorkspaceCom:FindFirstChild("001_GiveTools")
+            and game:GetService("Workspace").WorkspaceCom["001_GiveTools"]:FindFirstChild("FireX")
+
+        if Clone and Clone:FindFirstChild("ClickDetector") then
+            local OldPos = RootPart.CFrame -- Armazena a posiÃ§Ã£o original
+
+            -- Loop para pegar os itens repetidamente
+            local processed = 0
+            while processed < BNumber do
+                RootPart.CFrame = Clone.CFrame -- Teletransporta para o clone
+                fireclickdetector(Clone.ClickDetector) -- Clica no detector
+                processed = processed + 1
+                task.wait() -- Pausa para evitar travamento
+            end
+
+            -- Retorna Ã  posiÃ§Ã£o original
+            RootPart.CFrame = OldPos
+
+            -- Executa a funÃ§Ã£o de organizaÃ§Ã£o ao final do loop
+            organizarItensEmBastaoParaBaixo()
+        else
+            warn("FireX ou ClickDetector nÃ£o encontrado!")
+        end
+  end
+})
+
+
+local BNumber = 600 -- Valor fixo
+local raioCirculo = 5 -- DistÃ¢ncia do cÃ­rculo em relaÃ§Ã£o ao personagem
+
+-- FunÃ§Ã£o para organizar itens em formato de cÃ­rculo
+local function organizarItensEmCirculo()
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local backpack = player.Backpack
+local rootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Coleta todos os Tools no personagem e na mochila  
+local itens = {}  
+  
+-- Procura Tools no personagem  
+for _, item in pairs(character:GetChildren()) do  
+    if item:IsA("Tool") and item.Name == "FireX" then  
+        table.insert(itens, item)  
+    end  
+end  
+  
+-- Procura Tools na mochila  
+for _, item in pairs(backpack:GetChildren()) do  
+    if item:IsA("Tool") and item.Name == "FireX" then  
+        table.insert(itens, item)  
+    end  
+end  
+  
+-- Verifica duplicatas e organiza por nome  
+local duplicatas = {}  
+for _, item in pairs(itens) do  
+    if not duplicatas[item.Name] then  
+        duplicatas[item.Name] = {}  
+    end  
+    table.insert(duplicatas[item.Name], item)  
+end  
+  
+-- Para cada grupo de duplicatas, organize-os em formato de cÃ­rculo  
+for _, grupo in pairs(duplicatas) do  
+    local total = #grupo  
+    if total > 1 then  
+        for i, item in pairs(grupo) do  
+            -- Equipa o item para ajustar o GripPos  
+            item.Parent = character  
+              
+            -- Calcula o Ã¢ngulo de cada item no cÃ­rculo  
+            local angulo = (i / total) * (2 * math.pi)  
+              
+            -- Calcula a posiÃ§Ã£o circular atrÃ¡s do jogador  
+            local offsetX = math.cos(angulo) * raioCirculo  
+            local offsetZ = math.sin(angulo) * raioCirculo  
+              
+            -- Define a posiÃ§Ã£o atrÃ¡s do HumanoidRootPart  
+            item.GripPos = Vector3.new(-offsetX, 0, -offsetZ - raioCirculo)  
+              
+            -- Aguarda um pouco para o efeito ser visÃ­vel  
+            task.wait()  
+              
+            -- Solta o item colocando de volta na mochila  
+            item.Parent = backpack  
+        end  
+    end  
+end  
+  
+-- Equipa todos os itens "FireX" da mochila  
+for _, item in pairs(backpack:GetChildren()) do  
+    if item:IsA("Tool") and item.Name == "FireX" then  
+        item.Parent = character  
+    end  
+end
+
+end
+
+
+TabSp:AddButton({
+  Name = "[FireX]دائرة",
+  Callback = function()
+    local Player = game.Players.LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local RootPart = Character:WaitForChild("HumanoidRootPart")
+
+-- AtualizaÃ§Ã£o da hierarquia para FireX  
+    local Clone = game:GetService("Workspace"):FindFirstChild("WorkspaceCom")   
+        and game:GetService("Workspace").WorkspaceCom:FindFirstChild("001_GiveTools")  
+        and game:GetService("Workspace").WorkspaceCom["001_GiveTools"]:FindFirstChild("FireX")  
+
+    if Clone and Clone:FindFirstChild("ClickDetector") then  
+        local OldPos = RootPart.CFrame -- Armazena a posiÃ§Ã£o original  
+
+        -- Loop para pegar os itens repetidamente  
+        local processed = 0  
+        while processed < BNumber do  
+            RootPart.CFrame = Clone.CFrame -- Teletransporta para o clone  
+            fireclickdetector(Clone.ClickDetector) -- Clica no detector  
+            processed = processed + 1  
+            task.wait() -- Pausa para evitar travamento  
+        end  
+
+        -- Retorna Ã  posiÃ§Ã£o original  
+        RootPart.CFrame = OldPos   
+
+        -- Executa a funÃ§Ã£o de organizaÃ§Ã£o ao final do loop  
+        organizarItensEmCirculo()  
+    else  
+        warn("FireX ou ClickDetector nÃ£o encontrado!")  
+    end  
+  end
+})
+
+
+local BNumber = 600 -- Valor fixo
+local distanciaAtras = 5 -- DistÃ¢ncia da parede em relaÃ§Ã£o ao personagem
+local espacamentoX = 3 -- EspaÃ§amento horizontal entre itens
+local espacamentoY = 3 -- EspaÃ§amento vertical entre itens
+
+-- FunÃ§Ã£o para organizar itens em formato de parede
+local function organizarItensEmParede()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local backpack = player.Backpack
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- Coleta todos os Tools no personagem e na mochila
+    local itens = {}
+    
+    -- Procura Tools no personagem
+    for _, item in pairs(character:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+    
+    -- Procura Tools na mochila
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+    
+    -- Verifica duplicatas e organiza por nome
+    local duplicatas = {}
+    for _, item in pairs(itens) do
+        if not duplicatas[item.Name] then
+            duplicatas[item.Name] = {}
+        end
+        table.insert(duplicatas[item.Name], item)
+    end
+    
+    -- Organiza os itens em formato de parede
+    for _, grupo in pairs(duplicatas) do
+        local total = #grupo
+        
+        -- Calcula o nÃºmero de colunas e linhas necessÃ¡rias
+        local colunas = math.ceil(math.sqrt(total))
+        local linhas = math.ceil(total / colunas)
+        
+        for i, item in pairs(grupo) do
+            -- Calcula a posiÃ§Ã£o na grade
+            local linha = math.floor((i-1) / colunas)
+            local coluna = (i-1) % colunas
+            
+            -- Equipa o item para ajustar o GripPos
+            item.Parent = character
+            
+            -- Ajusta a posiÃ§Ã£o na parede atrÃ¡s do jogador
+            item.GripPos = Vector3.new(coluna * espacamentoX, -linha * espacamentoY, -distanciaAtras)
+            
+            -- Aguarda um pouco para o efeito ser visÃ­vel
+            task.wait()
+            
+            -- Solta o item colocando de volta na mochila
+            item.Parent = backpack
+        end
+    end
+    
+    -- Equipa todos os itens "FireX" da mochila
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            item.Parent = character
+        end
+    end
+end
+
+
+TabSp:AddButton({
+  Name = "[Firex]جدار عملاق",
+  Callback = function()
+    local Player = game.Players.LocalPlayer 
+        local Character = Player.Character or Player.CharacterAdded:Wait()
+        local RootPart = Character:WaitForChild("HumanoidRootPart")
+        
+        -- AtualizaÃ§Ã£o da hierarquia para FireX
+        local Clone = game:GetService("Workspace"):FindFirstChild("WorkspaceCom") 
+            and game:GetService("Workspace").WorkspaceCom:FindFirstChild("001_GiveTools")
+            and game:GetService("Workspace").WorkspaceCom["001_GiveTools"]:FindFirstChild("FireX")
+
+        if Clone and Clone:FindFirstChild("ClickDetector") then
+            local OldPos = RootPart.CFrame -- Armazena a posiÃ§Ã£o original
+
+            -- Loop para pegar os itens repetidamente
+            local processed = 0
+            while processed < BNumber do
+                RootPart.CFrame = Clone.CFrame -- Teletransporta para o clone
+                fireclickdetector(Clone.ClickDetector) -- Clica no detector
+                processed = processed + 1
+                task.wait() -- Pausa para evitar travamento
+            end
+
+            -- Retorna Ã  posiÃ§Ã£o original
+            RootPart.CFrame = OldPos 
+
+            -- Executa a funÃ§Ã£o de organizaÃ§Ã£o ao final do loop
+            organizarItensEmParede()
+        else
+            warn("FireX ou ClickDetector nÃ£o encontrado!")
+        end
+  end
+})
+
+TabSp:AddSection({"مسك الاغراض"})
+
+TabSp:AddButton({
+  Name = "مسك جميع الاغراض",
+  Callback = function()
+    local function equiptool()
+  for i,v in ipairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+    if v:IsA("Tool") then
+      v.Parent = game.Players.LocalPlayer.Character
+    end
+  end
+end
+equiptool()
+  end
+})
+
 -- ==================== 3. تبويب: لاق للسيرفر (Tablag) ====================
 local Tablag = Window:MakeTab({
     Name = "لاق للسيرفر",
     Icon = "bomb"
 })
+
+Tablag:AddSection({"ايقاف السيرفر[Beta]"})
+
+Tablag:AddButton({
+  Name = "[طفاية حريق]ايقاف السيرفر",
+  Callback = function()
+    tools = "FireX"
+		lagserver = true
+		if game:GetService("Workspace"):FindFirstChild("Camera") then
+			game:GetService("Workspace"):FindFirstChild("Camera"):Destroy() end
+			wait(0.1)
+		if game:GetService("Workspace"):FindFirstChild("Camera") then
+		game:GetService("Workspace"):FindFirstChild("Camera"):Destroy() end
+		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").WorkspaceCom["001_GiveTools"].FireX.CFrame + Vector3.new(0,-15,0)
+task.wait(0.2)
+game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+ddos = true
+		for i=1, 425 do task.wait()
+			if ddos == false then
+				local args = {
+					[1] = "ClearAllTools"
+				}
+				
+				cleartoolremote:FireServer(unpack(args))
+				 game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+				 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(9999,-475,9999)
+				 return
+			end
+			if game:GetService("Workspace"):FindFirstChild("Camera") then
+				game:GetService("Workspace"):FindFirstChild("Camera"):Destroy() end
+				if game:GetService("Players").LocalPlayer.Character:FindFirstChild(tools) then
+					game:GetService("Players").LocalPlayer.Character:FindFirstChild(tools):Destroy() end
+					if ddos == false then return end
+			fireclickdetector(game:GetService("Workspace").WorkspaceCom["001_GiveTools"].FireX.ClickDetector,0)
+			end
+			game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0,-475,0)
+			wait()
+			lagserver = false
+  end
+})
+
+
+Tablag:AddButton({
+  Name = "ايقاف السيرفر[V2]",
+  Callback = function()
+    tools = "Iphone"
+		lagserver = true
+		if game:GetService("Workspace"):FindFirstChild("Camera") then
+			game:GetService("Workspace"):FindFirstChild("Camera"):Destroy() end
+			wait(0.1)
+		if game:GetService("Workspace"):FindFirstChild("Camera") then
+		game:GetService("Workspace"):FindFirstChild("Camera"):Destroy() end
+		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").WorkspaceCom["001_GiveTools"].FireX.CFrame + Vector3.new(0,-15,0)
+task.wait(0.2)
+game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+ddos = true
+		for i=1, 425 do task.wait()
+			if ddos == false then
+				local args = {
+					[1] = "ClearAllTools"
+				}
+				
+				cleartoolremote:FireServer(unpack(args))
+				 game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+				 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(9999,-475,9999)
+				 return
+			end
+			if game:GetService("Workspace"):FindFirstChild("Camera") then
+				game:GetService("Workspace"):FindFirstChild("Camera"):Destroy() end
+				if game:GetService("Players").LocalPlayer.Character:FindFirstChild(tools) then
+					game:GetService("Players").LocalPlayer.Character:FindFirstChild(tools):Destroy() end
+					if ddos == false then return end
+			fireclickdetector(game:GetService("Workspace").WorkspaceCom["001_GiveTools"].FireX.ClickDetector,0)
+			end
+			game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0,-475,0)
+			wait()
+			lagserver = false
+  end
+})
+
+
+Tablag:AddButton({
+  Name = "الغاء ايقافات السيرفر",
+  Callback = function()
+    ddos = false
+		lagserver = false
+		shutdownserver = false
+  end
+})
+
 
 -- ==================== قسم: لاق بالابتوب ====================
 Tablag:AddSection({
