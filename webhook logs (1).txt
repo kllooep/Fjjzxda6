@@ -3,7 +3,7 @@ loadstring(game:HttpGet("https://pastebin.com/raw/rLbGjgEL"))()
 local TextChatService = game:GetService("TextChatService")
 
 -- Exibe uma mensagem de sistema apenas para o jogador local
-TextChatService.TextChannels.RBXGeneral:DisplaySystemMessage("SYS ADMIN HUB [LOADED].")
+TextChatService.TextChannels.RBXGeneral:DisplaySystemMessage("NetroZ Music [.. قيد التحميل].")
 
 local remote = game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t")
 
@@ -4437,3 +4437,4 @@ end
 local Highlight = loadstring(
     game:HttpGet("https://raw.githubusercontent.com/Lhymdz/lhymdz/main/highlight.lua")
 )()
+
