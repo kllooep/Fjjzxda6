@@ -7296,7 +7296,7 @@ end
 
 local TabSp = Window:MakeTab({
     Name = "[EXTRA]مباني+سبام",
-    Icon = "bagback"
+    Icon = "hammer"
 })
 
 TabSp:AddSection({ "تدبيل/مباني" })
@@ -7758,6 +7758,155 @@ equiptool()
   end
 })
 
+-- ==================== تبويب: زعاطيط ====================
+local ChildTab = Window:MakeTab({
+    Title = "زعاطيط",
+    Icon = "baby"
+})
+
+-- تجنب التعارض في المتغيرات
+local LocalPlayer = game.Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local Workspace = game.Workspace
+
+local selectedPlayerName = nil
+
+-- ==================== دالة جلب اللاعبين ====================
+local function getPlayerList()
+    local list = {}
+    for _, p in ipairs(game.Players:GetPlayers()) do
+        if p ~= LocalPlayer then
+            table.insert(list, p.Name)
+        end
+    end
+    return #list > 0 and list or {"لا يوجد لاعبين"}
+end
+
+-- ==================== القائمة المنسدلة ====================
+local playerChild = ChildTab:AddDropdown({
+    Name = "اختار لاعب",
+    Options = getPlayerList(),
+    Default = "لا يوجد لاعبين",
+    Callback = function(value)
+        if value == "لا يوجد لاعبين" then
+            selectedPlayerName = nil
+        else
+            selectedPlayerName = value
+            getgenv().Target = value
+        end
+    end
+})
+
+-- ==================== زر تحديث القائمة ====================
+ChildTab:AddButton({
+    Name = "تحديث اللاعبين",
+    Callback = function()
+        local newPlayers = getPlayerList()
+        playerChild:Set(newPlayers)
+        if #newPlayers > 0 then
+            playerChild:SetValue(newPlayers[1])
+            selectedPlayerName = newPlayers[1]
+        else
+            playerChild:SetValue("لا يوجد لاعبين")
+            selectedPlayerName = nil
+        end
+    end
+})
+
+-- ==================== تحديث تلقائي ====================
+game.Players.PlayerAdded:Connect(function(player)
+    task.wait(0.2)
+    local newPlayers = getPlayerList()
+    playerChild:Set(newPlayers)
+end)
+
+game.Players.PlayerRemoving:Connect(function(player)
+    task.wait(0.2)
+    local newPlayers = getPlayerList()
+    playerChild:Set(newPlayers)
+    if selectedPlayerName == player.Name then
+        selectedPlayerName = nil
+    end
+end)
+
+-- ==================== زر: إرسال الطفل ====================
+ChildTab:AddButton({
+    Name = "إرسال الطفل",
+    Callback = function()
+        if not selectedPlayerName then
+            ChildTab:AddNotification({ Name = "خطأ", Content = "اختر لاعبًا!", Time = 5 })
+            return
+        end
+
+        local args = { [1] = "CharacterFollowSpawnPlayer", [2] = "BabyBoy" }
+        pcall(function()
+            ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer(unpack(args))
+        end)
+
+        task.wait(0.2)
+
+        local char = LocalPlayer.Character
+        local target = Workspace:FindFirstChild(selectedPlayerName)
+        if target and char and char:FindFirstChild("FollowCharacter") then
+            char.FollowCharacter.Parent = target
+
+            if not getgenv().ChildConnection then
+                getgenv().ChildConnection = RunService.Heartbeat:Connect(function()
+                    local follow = target:FindFirstChild("FollowCharacter")
+                    local hrp = target:FindFirstChild("HumanoidRootPart")
+                    if follow and hrp and follow.Torso and follow.Torso.BodyPosition then
+                        follow.Torso.BodyPosition.Position = hrp.Position - hrp.CFrame.LookVector * 3
+                    end
+                end)
+            end
+        end
+    end
+})
+
+-- ==================== زر: رسبون الطفل ====================
+ChildTab:AddButton({
+    Name = "رسبون الطفل",
+    Callback = function()
+        if getgenv().ChildConnection then
+            getgenv().ChildConnection:Disconnect()
+            getgenv().ChildConnection = nil
+        end
+
+        pcall(function()
+            ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer("DeleteFollowCharacter")
+            task.wait(0.5)
+            ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer("CharacterFollowSpawnPlayer", "BabyBoy")
+        end)
+    end
+})
+
+-- ==================== تجسس على اللاعب ====================
+ChildTab:AddToggle({
+    Name = "تجسس على اللاعب",
+    Default = false,
+    Callback = function(state)
+        local Camera = Workspace.CurrentCamera
+        if state then
+            if not selectedPlayerName then return end
+            if getgenv().SpyConnection then getgenv().SpyConnection:Disconnect() end
+
+            getgenv().SpyConnection = RunService.Heartbeat:Connect(function()
+                local target = game.Players:FindFirstChild(selectedPlayerName)
+                if target and target.Character then
+                    Camera.CameraSubject = target.Character:FindFirstChild("Humanoid") or Camera.CameraSubject
+                end
+            end)
+        else
+            if getgenv().SpyConnection then
+                getgenv().SpyConnection:Disconnect()
+                getgenv().SpyConnection = nil
+            end
+            Camera.CameraSubject = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") or Camera.CameraSubject
+        end
+    end
+})
+
 -- ==================== 3. تبويب: لاق للسيرفر (Tablag) ====================
 local Tablag = Window:MakeTab({
     Name = "لاق للسيرفر",
@@ -7855,131 +8004,150 @@ Tablag:AddButton({
   end
 })
 
-
--- ==================== قسم: لاق بالابتوب ====================
-Tablag:AddSection({
-    Name = "لاق بالابتوب"
-})
-
--- استخدام جدول منفصل لتجنب التعارض
+-- استخدام جدول مركزي للتحكم
 local LagToggles = { Laptop = false, Phone = false, Bomb = false }
 
+-- دالة النقر العامة
 local function clickNormally(object)
     local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
     if clickDetector then
-        fireclickdetector(clickDetector)
+        pcall(fireclickdetector, clickDetector)
     end
 end
 
-local function lagarJogoLaptop(laptopPath, maxTeleports)
-    if laptopPath then
-        local teleportCount = 0
-        while teleportCount < maxTeleports and LagToggles.Laptop do
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = laptopPath.CFrame
-            clickNormally(laptopPath)
-            teleportCount = teleportCount + 1
-            task.wait(0.0001)
-        end
-    else
-        warn("الابتوب غير موجود!")
-    end
-end
+-- ==================== قسم: لاق بالابتوب ====================
+Tablag:AddSection("لاق بالابتوب")
 
 Tablag:AddToggle({
     Name = "لاق بالابتوب",
     Default = false,
-    Flag = "lag_laptop",
     Callback = function(state)
         LagToggles.Laptop = state
         if state then
-            local laptopPath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_GiveTools"):FindFirstChild("Laptop")
-            if laptopPath then
-                task.spawn(function()
-                    lagarJogoLaptop(laptopPath, 999999999)
-                end)
-            else
-                warn("الابتوب غير موجود!")
+            local laptopPath = workspace:FindFirstChild("WorkspaceCom")
+                and workspace.WorkspaceCom:FindFirstChild("001_GiveTools")
+                and workspace.WorkspaceCom["001_GiveTools"]:FindFirstChild("Laptop")
+
+            if not laptopPath then
+                Tablag:AddNotification({
+                    Name = "خطأ",
+                    Content = "الابتوب غير موجود!",
+                    Time = 5
+                })
+                return
             end
-        else
-            print("تم إيقاف لاق الابتوب")
+
+            -- تشغيل الحلقة في خيط منفصل
+            task.spawn(function()
+                local teleportCount = 0
+                while LagToggles.Laptop and laptopPath do
+                    local char = game.Players.LocalPlayer.Character
+                    if char and char:FindFirstChild("HumanoidRootPart") then
+                        char.HumanoidRootPart.CFrame = laptopPath.CFrame
+                        clickNormally(laptopPath)
+                    end
+                    teleportCount += 1
+                    if teleportCount % 100 == 0 then task.wait(0.1) end -- تجنب التجميد
+                end
+            end)
         end
     end
 })
 
-Tablag:AddParagraph("تشغيل لاق لابتوب", "انتظر حوالي 20 ثانية ليبدأ تأثير اللاق")
+Tablag:AddParagraph({
+    Title = "ملاحظة",
+    Text = "انتظر 20 ثانية لظهور تأثير اللاق"
+})
 
 -- ==================== قسم: لاق بالهاتف ====================
-Tablag:AddSection({
-    Name = "لاق بالهاتف"
-})
-
-local function lagarJogoPhone(phonePath, maxTeleports)
-    if phonePath then
-        local teleportCount = 0
-        while teleportCount < maxTeleports and LagToggles.Phone do
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = phonePath.CFrame
-            clickNormally(phonePath)
-            teleportCount = teleportCount + 1
-            task.wait(0.01)
-        end
-    else
-        warn("الهاتف غير موجود!")
-    end
-end
+Tablag:AddSection("لاق بالهاتف")
 
 Tablag:AddToggle({
-    Name = "تشغيل اللاق",
+    Name = "لاق بالهاتف",
     Default = false,
-    Flag = "lag_phone",
     Callback = function(state)
         LagToggles.Phone = state
         if state then
-            local phonePath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_CommercialStores"):FindFirstChild("CommercialStorage1"):FindFirstChild("Store"):FindFirstChild("Tools"):FindFirstChild("Iphone")
-            if phonePath then
-                task.spawn(function()
-                    lagarJogoPhone(phonePath, 999999)
-                end)
-            else
-                warn("الهاتف غير موجود!")
+            local phonePath = workspace:FindFirstChild("WorkspaceCom")
+                and workspace.WorkspaceCom:FindFirstChild("001_CommercialStores")
+                and workspace.WorkspaceCom["001_CommercialStores"]:FindFirstChild("CommercialStorage1")
+                and workspace.WorkspaceCom["001_CommercialStores"].CommercialStorage1:FindFirstChild("Store")
+                and workspace.WorkspaceCom["001_CommercialStores"].CommercialStorage1.Store:FindFirstChild("Tools")
+                and workspace.WorkspaceCom["001_CommercialStores"].CommercialStorage1.Store.Tools:FindFirstChild("Iphone")
+
+            if not phonePath then
+                Tablag:AddNotification({
+                    Name = "خطأ",
+                    Content = "الهاتف غير موجود!",
+                    Time = 5
+                })
+                return
             end
-        else
-            print("تم إيقاف لاق الهاتف")
+
+            task.spawn(function()
+                local teleportCount = 0
+                while LagToggles.Phone and phonePath do
+                    local char = game.Players.LocalPlayer.Character
+                    if char and char:FindFirstChild("HumanoidRootPart") then
+                        char.HumanoidRootPart.CFrame = phonePath.CFrame
+                        clickNormally(phonePath)
+                    end
+                    teleportCount += 1
+                    if teleportCount % 50 == 0 then task.wait(0.1) end
+                end
+            end)
         end
     end
 })
 
-Tablag:AddParagraph("تشغيل لاق الهاتف", "انتظر حوالي 20 ثانية ليبدأ تأثير اللاق")
-
--- ==================== قسم: لاق قنابل ====================
-Tablag:AddSection({
-    Name = "لاق قنابل"
+Tablag:AddParagraph({
+    Title = "ملاحظة",
+    Text = "انتظر 20 ثانية لظهور تأثير اللاق"
 })
 
-Tablag:AddToggle({
-    Name = "تشغيل لاق القنابل",
-    Default = false,
-    Flag = "lag_bomb",
-    Callback = function(Value)
-        LagToggles.Bomb = Value
+-- ==================== قسم: لاق بالقنابل ====================
+Tablag:AddSection("لاق قنابل")
 
-        if LagToggles.Bomb then
+Tablag:AddToggle({
+    Name = "لاق قنابل",
+    Default = false,
+    Callback = function(state)
+        LagToggles.Bomb = state
+        if state then
             local Player = game.Players.LocalPlayer
             local Character = Player.Character or Player.CharacterAdded:Wait()
             local RootPart = Character:WaitForChild("HumanoidRootPart")
             local ReplicatedStorage = game:GetService("ReplicatedStorage")
-            local Bomb = workspace:WaitForChild("WorkspaceCom"):WaitForChild("001_CriminalWeapons"):WaitForChild("GiveTools"):WaitForChild("Bomb")
 
+            local Bomb = workspace:FindFirstChild("WorkspaceCom")
+                and workspace.WorkspaceCom:FindFirstChild("001_CriminalWeapons")
+                and workspace.WorkspaceCom["001_CriminalWeapons"]:FindFirstChild("GiveTools")
+                and workspace.WorkspaceCom["001_CriminalWeapons"].GiveTools:FindFirstChild("Bomb")
+
+            if not Bomb or not Bomb:FindFirstChild("ClickDetector") then
+                Tablag:AddNotification({
+                    Name = "خطأ",
+                    Content = "القنبلة غير موجودة!",
+                    Time = 5
+                })
+                return
+            end
+
+            -- حلقة النقر
             task.spawn(function()
                 while LagToggles.Bomb and Bomb and RootPart do
-                    RootPart.CFrame = Bomb.CFrame
-                    fireclickdetector(Bomb.ClickDetector)
-                    task.wait(0.00001)
+                    pcall(function()
+                        RootPart.CFrame = Bomb.CFrame
+                        fireclickdetector(Bomb.ClickDetector)
+                    end)
+                    task.wait(0.0001)
                 end
             end)
 
+            -- حلقة إرسال القنبلة
             task.spawn(function()
                 while LagToggles.Bomb do
-                    if Bomb and RootPart then
+                    pcall(function()
                         local VirtualInputManager = game:GetService("VirtualInputManager")
                         VirtualInputManager:SendMouseButtonEvent(500, 500, 0, true, game, 0)
                         task.wait(1.5)
@@ -7990,7 +8158,7 @@ Tablag:AddToggle({
                         if BombServer then
                             BombServer:FireServer(unpack(args))
                         end
-                    end
+                    end)
                     task.wait(1.5)
                 end
             end)
@@ -7998,7 +8166,10 @@ Tablag:AddToggle({
     end
 })
 
-Tablag:AddParagraph("ملاحظات اللاق", "انتظر حوالي 35 ثانية ليبدأ تأثير اللاق")
+Tablag:AddParagraph({
+    Title = "ملاحظة",
+    Text = "انتظر 35 ثانية لظهور تأثير اللاق"
+})
 
 -- ==================== 7. تبويب: سكربتات متنوعة ====================
 local ScriptsTab = Window:MakeTab({
