@@ -6500,6 +6500,7 @@ Tab:AddToggle({
 
 Tab:AddToggle({
     Name = "🔥نار تلقائية في السكن",
+    Description = "من اقتراح:Ahmed_Nokia", 
     Default = false,
     Callback = function(Value)
         isActive = Value
@@ -6528,7 +6529,7 @@ Tab:AddToggle({
 })
 
 Tab:AddButton({
-    Name = "تفعيل",
+    Name = "تفعيل نار في اليد",
     Callback = function()
         local Player = game.Players.LocalPlayer
         local Character = Player.Character
