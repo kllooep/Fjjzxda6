@@ -1901,7 +1901,7 @@ TrollTab:AddToggle({
     end
 })
 
-TrollTab:AddSection({ "Desastres naturais" })
+TrollTab:AddSection({ "🌋الكوارث" })
 TrollTab:AddButton({
     Name = "[⚠️ MUITO OP] سفينة ترگع ام السيرفر",
     Description = "",
