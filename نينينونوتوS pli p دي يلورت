@@ -6089,6 +6089,17 @@ ChatTab:AddButton({
 })
 
 
+local TabM = Window:MakeTab({
+Name = "الاغاني",
+Icon = "music"
+})
+
+TabM:AddButton({
+Name = "NetroZسكربت اغاني",
+Description = "السكربت الخاص للأغاني كبير جدا",
+Callback = function()
+
+
 local Tab = Window:MakeTab({"السكن", "rbxassetid://10734952036"})
 
 Tab:AddSection({ Name = "نسخ السكن" })
