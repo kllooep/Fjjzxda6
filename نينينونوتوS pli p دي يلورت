@@ -317,10 +317,13 @@ Icon = "rbxassetid://10723415903" })
 InfoTab:AddSection({
 Name = "NetroZمعلومات سكربت"
 })
-InfoTab:AddParagraph({ "المالك / المطورين:", "Rami (TikTok: .q.kn," })
-InfoTab:AddParagraph({ "فريق:", "RAMI, المطور رآمي, المطور غالي " })
-InfoTab:AddParagraph({ ":", "DemoZHub" })
-InfoTab:AddParagraph({"عمل تجريبي سيتم تطويره"})
+InfoTab:AddParagraph({ "المالك / المطورين:", "Rami (TikTok: .q.kn,)" })
+InfoTab:AddParagraph({ "فريق:", ", المطور رآمي, المطور غالي " })
+InfoTab:AddParagraph({ ":سكربت", "NetroZHub" })
+InfoTab:AddSection({ "حسابات المطورين روب" })
+InfoTab:AddParagraph({"Sajwaad :حساب رامي"})
+InfoTab:AddParagraph({"DemonHub_Dev :2حساب رامي"})
+InfoTab:AddParagraph({"ghalidev_0 :حساب غالي"})
 
 
 InfoTab:AddSection({ "اعادة دخول" })
