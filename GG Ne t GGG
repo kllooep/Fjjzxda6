@@ -6098,7 +6098,9 @@ TabM:AddButton({
 Name = "NetroZسكربت اغاني",
 Description = "السكربت الخاص للأغاني كبير جدا",
 Callback = function()
-
+loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main/GG Ne t GGG"))()
+end
+})
 
 local Tab = Window:MakeTab({"السكن", "rbxassetid://10734952036"})
 
