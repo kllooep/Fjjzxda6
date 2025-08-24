@@ -15,6 +15,7 @@ local allowedUsers = {
 	["DemonHub_Dev"] = true,
     ["Hwrejplq"] = true,
     ["Zarba_751"] = true,
+    ["imane_pink54"] = true,
 	["mr_Mustafa213"] = true
 }
 
@@ -348,10 +349,10 @@ local Camera = workspace.CurrentCamera
 local Roles = {
     ["Sajwaad"] = "مطور",
     ["ghalidev_0"] = "مطور",   
-    ["hrhdkjsgxixkd"] = "مطور",
     ["Zarba_751"] = "ادمن",    
     ["malk_55117"] = "ادمن",
     ["DemonHub_Dev"] = "ادمن",
+    ["imane_pink54"] = "ادمن",
     ["zdrkn305"] = "ادمن",
     ["Hwrejplq"] = "ادمن",
     ["mr_Mustafa213"] = "ادمن"
