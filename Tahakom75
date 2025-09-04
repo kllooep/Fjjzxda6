@@ -1,0 +1,4 @@
+local FreezTab = Window:MakeTab({
+Name = "Superتجميدات",
+Icon = "moon"
+})
