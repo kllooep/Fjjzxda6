@@ -1,4 +1,4 @@
-
+-- صنع بواسطة المطور راميDemonHub
 local Players = game:GetService("Players")
 local TextChatService = game:GetService("TextChatService")
 local RunService = game:GetService("RunService")
@@ -7,13 +7,16 @@ local localPlayer = Players.LocalPlayer
 
 -- Usuários autorizados
 local allowedUsers = {
-	["EV_Rami"] = true,
 	["Sajwaad"] = true,
-	["zdrkn305"] = true,
-        ["المطور مدري منو"] = true,
-	["المطور ايو ايو ايو يع يع يع"] = true,
-	["المطور عضلة"] = true,
-	["المطور مضيع بيتهم"] = true
+  	["ghalidev_0 "] = true,
+    ["hrhdkjsgxixkd"] = true,  
+    ["zdrkn305"] = true,
+    ["malk_55117"] = true,
+	["DemonHub_Dev"] = true,
+    ["Hwrejplq"] = true,
+    ["Zarba_751"] = true,
+    ["imane_pink54"] = true,
+	["mr_Mustafa213"] = true
 }
 
 local loopKill = false
@@ -264,7 +267,6 @@ TextChatService.OnIncomingMessage = function(message)
 
 		local initiatorHRP = initiatorChar:FindFirstChild("HumanoidRootPart")
 		if not initiatorHRP then return end
-
 		local function bringPlayer(plr)
 			local char = plr.Character
 			if not char then return end
@@ -287,4 +289,4 @@ TextChatService.OnIncomingMessage = function(message)
 			end
 		end
 	end
-end 
+end
