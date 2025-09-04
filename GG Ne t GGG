@@ -18,8 +18,6 @@ local Window = splib:MakeWindow({
  CloseCallback = true
 })
 
-
-
 local InfoTab = Window:MakeTab({ 
 IsMobile = false,
  IsPC = false,
@@ -37,7 +35,6 @@ InfoTab:AddParagraph({"Sajwaad :حساب رامي"})
 InfoTab:AddParagraph({"DemonHub_Dev :2حساب رامي"})
 InfoTab:AddParagraph({"ghalidev_0 :حساب غالي"})
 
-
 InfoTab:AddSection({ "اعادة دخول" })
 InfoTab:AddButton({
     Name = "اعادة دخول للسيرفر",
@@ -49,12 +46,10 @@ InfoTab:AddButton({
 
 InfoTab:AddSection({Name = "عرض الرتب"}) -- يمكنك تغيير الاسم
 
---// الخدمات
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Camera = workspace.CurrentCamera
 
---// جدول الأسماء والوظائف
 local Roles = {
     ["Sajwaad"] = "مطور",
     ["ghalidev_0"] = "مطور",   
@@ -67,11 +62,9 @@ local Roles = {
     ["mr_Mustafa213"] = "ادمن"
 }
 
---// تخزين الاتصالات
 local tagTracks = {} -- { player = connection }
 local tagsEnabled = false -- الحالة الابتدائية
 
---// إنشاء العلامة الاحترافية
 local function createProfessionalTag(player)
     if not tagsEnabled then return end
 
