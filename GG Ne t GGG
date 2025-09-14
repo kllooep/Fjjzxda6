@@ -7337,13 +7337,38 @@ Tablag:AddButton({
 
 local LagToggles = { Laptop = false, Phone = false, Bomb = false }
 
--- دالة النقر العامة
-local function clickNormally(object)
+
+local function ClickNormally(object)
+     Instance
+    if typeof(object) ~= "Instance" then
+        warn("ClickNormally: object ليس Instance صحيح")
+        return
+    end
+
+
     local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
-    if clickDetector then
-        pcall(fireclickdetector, clickDetector)
+    if not clickDetector then
+        warn("ClickNormally: لم يتم العثور على ClickDetector في "..object:GetFullName())
+        return
+    end
+
+    
+    if typeof(fireclickdetector) == "function" then
+        local ok, err = pcall(function()
+            fireclickdetector(clickDetector)
+        end)
+        if not ok then
+            warn("ClickNormally: فشل استدعاء fireclickdetector > "..tostring(err))
+        end
+    elseif clickDetector:IsA("ClickDetector") and clickDetector.Parent then
+         fireclickdetector (.)
+        clickDetector:Click() 
+    else
+        warn("ClickNormally: لا يوجد fireclickdetector ولا يمكن محاكاة الضغط")
     end
 end
+
+return ClickNormally
 
 -- ==================== قسم: لاق بالابتوب ====================
 Tablag:AddSection("لاق بالابتوب")
