@@ -1,9 +1,18 @@
-local LagToggles = { Laptop = false, Phone = false, Bomb = false }
+local laptopPath = workspace:FindFirstChild("WorkspaceCom")
+                and workspace.WorkspaceCom:FindFirstChild("001_GiveTools")
+                and workspace.WorkspaceCom["001_GiveTools"]:FindFirstChild("Laptop")
 
--- دالة النقر العامة
-local function clickNormally(object)
-    local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
-    if clickDetector then
-        pcall(fireclickdetector, clickDetector)
-    end
-end
+            -- تشغيل الحلقة في خيط منفصل
+            task.spawn(function()
+                local teleportCount = 0
+                while LagToggles.Laptop and laptopPath do
+                    local char = game.Players.LocalPlayer.Character
+                    if char and char:FindFirstChild("HumanoidRootPart") then
+                        char.HumanoidRootPart.CFrame = laptopPath.CFrame
+                        clickNormally(laptopPath)
+                    end
+                    teleportCount += 1
+                    if teleportCount % 100 == 0 then task.wait(0.1) end -- تجنب التجميد
+                end
+            end)
+        end
