@@ -7335,8 +7335,15 @@ Tablag:AddButton({
   end
 })
 
--- استخدام جدول مركزي للتحكم
 local LagToggles = { Laptop = false, Phone = false, Bomb = false }
+
+-- دالة النقر العامة
+local function clickNormally(object)
+    local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
+    if clickDetector then
+        pcall(fireclickdetector, clickDetector)
+    end
+end
 
 -- ==================== قسم: لاق بالابتوب ====================
 Tablag:AddSection("لاق بالابتوب")
@@ -7347,7 +7354,33 @@ Tablag:AddToggle({
     Callback = function(state)
         LagToggles.Laptop = state
         if state then
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main/Tahakom74"))()
+            local laptopPath = workspace:FindFirstChild("WorkspaceCom")
+                and workspace.WorkspaceCom:FindFirstChild("001_GiveTools")
+                and workspace.WorkspaceCom["001_GiveTools"]:FindFirstChild("Laptop")
+
+            if not laptopPath then
+                Tablag:AddNotification({
+                    Name = "خطأ",
+                    Content = "الابتوب غير موجود!",
+                    Time = 5
+                })
+                return
+            end
+
+            -- تشغيل الحلقة في خيط منفصل
+            task.spawn(function()
+                local teleportCount = 0
+                while LagToggles.Laptop and laptopPath do
+                    local char = game.Players.LocalPlayer.Character
+                    if char and char:FindFirstChild("HumanoidRootPart") then
+                        char.HumanoidRootPart.CFrame = laptopPath.CFrame
+                        clickNormally(laptopPath)
+                    end
+                    teleportCount += 1
+                    if teleportCount % 100 == 0 then task.wait(0.1) end -- تجنب التجميد
+                end
+            end)
+        end
     end
 })
 
