@@ -1,3 +1,12 @@
+
+-- دالة النقر العامة
+local function clickNormally(object)
+    local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
+    if clickDetector then
+        pcall(fireclickdetector, clickDetector)
+    end
+end
+
 local laptopPath = workspace:FindFirstChild("WorkspaceCom")
                 and workspace.WorkspaceCom:FindFirstChild("001_GiveTools")
                 and workspace.WorkspaceCom["001_GiveTools"]:FindFirstChild("Laptop")
