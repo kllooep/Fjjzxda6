@@ -2,11 +2,11 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Defjrfnxl/main/تج ا رب ري دز ajsjhshzjz"))()
 
-local splib = loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd0/SP_Hub/refs/heads/main/splibv2"))()
+local splib = loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd5/SP_Hub/refs/heads/main/splibv2"))()
 
 local Window = splib:MakeWindow({
  Name = "NetroZ  Hub",
- SubTitle = "By Rami",
+ SubTitle = "By Rami&ghali",
  HidePremium = false,
  SaveConfig = true,
  Setting = true,
