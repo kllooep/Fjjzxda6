@@ -7338,6 +7338,8 @@ Tablag:AddButton({
 -- استخدام جدول مركزي للتحكم
 loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main/Tahakom74"))()
 
+local LagToggles = { Laptop = false, Phone = false, Bomb = false }
+
 -- ==================== قسم: لاق بالابتوب ====================
 Tablag:AddSection("لاق بالابتوب")
 
