@@ -250,73 +250,116 @@ Players.PlayerAdded:Connect(function(player)
     end
 end)
 
--- ==================== إنشاء التبويب "الأسماء" ====================
-local NameTab = Window:MakeTab({
-Title = "الأسماء",
-})
--- قيم السرعات للخيار slider (أصغر قيمة = أسرع)
-local speeds = {0.5, 0.4, 0.3, 0.25, 0.2, 0.15, 0.1, 0.07, 0.05, 0.03} 
-local currentSpeed = 0.2 -- القيمة الافتراضية
+local Tab = Window:MakeTab({ 
+Title = "الأسماء", 
+Icon = "paper" })
 
--- Slider للتحكم بالسرعة
-NameTab:AddSlider({
-    Name = "سرعة التلوين",
-    Min = 1,
-    Max = 10,
-    Increment = 1,
-    Default = 5, -- القيمة الافتراضية: 0.2
-    ValueName = "Speed",
-    Callback = function(Value)
-        currentSpeed = speeds[Value]
+local isNameActive = false
+local isBioActive = false
+
+local SectionRGBName = Tab:AddSection({
+    Name = "اسم RGB"
+})
+
+Tab:AddToggle({
+    Name = "تلوين الاسم",
+    Description = "تلوين اسمك الوات تدريجية",
+    Default = false,
+    Callback = function(value)
+        isNameActive = value
+        print(value and "RGB Name ativado" or "RGB Name desativado")
     end
 })
 
--- Toggle لتلوين البايو
-local bioToggleActive = false
-NameTab:AddToggle({
-    Name = "بايو",
+
+local SectionRGBBio = Tab:AddSection({
+    Name = "RGB بايو"
+})
+
+Tab:AddToggle({
+    Name = "بايو ملون",
+    Description = "تلوين البايو",
     Default = false,
-    Callback = function(Value)
-        bioToggleActive = Value
-        if not Value then
-            local args = {"PickingRPBioColor", Color3.fromRGB(255,255,255)}
-            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
-        else
-            spawn(function()
-                local hue = 0
-                while bioToggleActive do
-                    local color = Color3.fromHSV(hue, 1, 1)
-                    local args = {"PickingRPBioColor", color}
-                    game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
-                    hue = hue + 0.002
-                    if hue > 1 then hue = 0 end
-                    task.wait(currentSpeed)
-                end
-            end)
+    Callback = function(value)
+        isBioActive = value
+        print(value and "RGB BIO ativado" or "RGB BIO desativado")
+    end
+})
+
+local SectionSpam = Tab:AddSection({
+    Name = "(new)سبام اسماء"
+})
+
+
+-- متغيرات
+local names = {"", "", ""}
+local execSpeed = 1
+local toggleActive = false
+
+-- إنشاء TextBox للأسماء الثلاثة
+for i = 1, 3 do
+Tab:AddTextBox({
+        Name = "أدخل الاسم " .. i,
+        Default = "",
+        TextDisappear = false,
+        Callback = function(value)
+            names[i] = value
         end
+    })
+end
+
+-- Slider لتحديد السرعة
+Tab:AddSlider({
+    Name = "سرعة السبام",
+    Min = 1,
+    Max = 3,
+    Default = 1,
+    Increment = 1,
+    ValueName = "x",
+    Callback = function(value)
+        execSpeed = value
     end
 })
 
--- Toggle لتلوين الاسم
-local nameToggleActive = false
-NameTab:AddToggle({
-    Name = "الاسم",
+-- Toggle للتشغيل مع الحماية
+Tab:AddToggle({
+    Name = "تشغيل السبام",
     Default = false,
-    Callback = function(Value)
-        nameToggleActive = Value
-        if not Value then
-            local args = {"PickingRPNameColor", Color3.fromRGB(255,255,255)}
-            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
-        else
-            spawn(function()
-                local hue = 0
-                while nameToggleActive do
-                    local color = Color3.fromHSV(hue, 1, 1)
-                    local args = {"PickingRPNameColor", color}
-                    game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
-                    hue = hue + 0.002
-                    if hue > 1 then hue = 0 end
-                    task.wait(currentSpeed)
+    Callback = function(state)
+        toggleActive = state
+        if toggleActive then
+            -- تحقق أن فيه على الأقل اسم واحد مكتوب
+            local hasName = false
+            for _, name in ipairs(names) do
+                if name ~= "" then
+                    hasName = true
+                    break
+                end
+            end
+
+            if not hasName then
+                game:GetService("StarterGui"):SetCore("SendNotification", {
+                    Title = "تحذير",
+                    Text = "يجب إدخال اسم واحد على الأقل قبل التشغيل"
+                })
+                toggleActive = false
+                return
+            end
+
+            -- بدء التشغيل
+            task.spawn(function()
+                while toggleActive do
+                    for _, name in ipairs(names) do
+                        if not toggleActive then break end
+                        if name ~= "" then
+                            local args = {
+                                "RolePlayName",
+                                name
+                            }
+                            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
+                            task.wait((4 - execSpeed) * 0.5)
+                        end
+                    end
                 end
             end)
         end
