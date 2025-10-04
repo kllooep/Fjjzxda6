@@ -12,6 +12,7 @@ Window:AddMinimizeButton({
 })
 
 local InfoTab = Window:MakeTab({ 
+Title = "الحقوق والرتب", 
 Icon = "rbxassetid://10723415903" })
 
 InfoTab:AddSection({
@@ -35,7 +36,13 @@ InfoTab:AddButton({
     end
 })
 
-InfoTab:AddSection({Name = "عرض الرتب"}) -- يمكنك تغيير الاسم
+InfoTab:AddSection({ "الرتب" })
+
+InfoTab:AddParagraph({"مطور"})
+InfoTab:AddParagraph({"ادمن"})
+InfoTab:AddParagraph({"عضو"})
+
+InfoTab:AddSection({ "عرض الرتب" })
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -442,10 +449,10 @@ shadersTab:AddButton({
     end
 })
 
-local FreezTab = Window:MakeTab({
-Name = "Superتجميدات",
-Icon = "moon"
-})
+local FreezTab = Window:MakeTab({ 
+Title = "Superتجميدات", 
+Icon = "moon" })
+
 
 
 -- === الخدمات والمتغيرات الأساسية ===
@@ -1531,123 +1538,6 @@ end)
     end
 })
 
-TrollTab:AddSection({ "اختفاء" })
-
-TrollTab:AddButton({
-    Name = "اختفاء",
-    Description = "سكن مخفي حقيقي",
-Callback = function()
-        
-        local args = {
-    [1] = {
-        [1] = 102344834840946,
-        [2] = 70400527171038,
-        [3] = 0,
-        [4] = 0,
-        [5] = 0,
-        [6] = 0
-    }
-}
-
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(111858803548721)
-local allaccessories = {}
-
-for zxcwefwfecas, xcaefwefas in ipairs({
-    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.BackAccessory,
-    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.FaceAccessory,
-    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.FrontAccessory,
-    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.NeckAccessory,
-    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.HatAccessory,
-    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.HairAccessory,
-    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.ShouldersAccessory,
-    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.WaistAccessory,
-    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.GraphicTShirt
-}) do
-    for scacvdfbdb in string.gmatch(xcaefwefas, "%d+") do
-        table.insert(allaccessories, tonumber(scacvdfbdb))
-    end
-end
-
-wait()
-
-for asdwr,asderg in ipairs(allaccessories) do
-    task.spawn(function()
-        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(asderg)
-        print(asderg)
-    end)
-end
-    end
-})
-
-
-TrollTab:AddSection({ "بشرة ملونة" })
-
-local colors = { "Bright red", "Lime green", "Bright blue", "Bright yellow", "Bright cyan", "Hot pink", "Royal purple" }
-local rgbEnabled = false
-
-local function changeColor(color)
-    local args = { color }
-    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeBodyColor"):FireServer(unpack(args))
-end
-
-local function toggleRGBCharacter(enabled)
-    rgbEnabled = enabled
-    if rgbEnabled then
-        while rgbEnabled do
-            for _, color in ipairs(colors) do
-                if not rgbEnabled then return end
-                changeColor(color)
-                wait(0.5)
-            end
-        end
-    end
-end
-
-TrollTab:AddToggle({
-    Name = "تلوين البشرة",
-    Description = "RGB",
-    Default = false,
-    Callback = function(value)
-        toggleRGBCharacter(value)
-    end
-})
-
-
-TrollTab:AddSection({ "تلوين الشعر" })
-local hairColors = {
-    Color3.new(1, 1, 0), Color3.new(0, 0, 1), Color3.new(1, 0, 1), Color3.new(1, 1, 1),
-    Color3.new(0, 1, 0), Color3.new(0.5, 0, 1), Color3.new(1, 0.647, 0), Color3.new(0, 1, 1)
-}
-local isActive = false
-
-
-local function changeHairColor()
-    local i = 1
-    while isActive do
-        if not isActive then break end
-        local args = { [1] = "ChangeHairColor2", [2] = hairColors[i] }
-        game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Max1y"):FireServer(unpack(args))
-        wait(0.1)
-        i = i % #hairColors + 1
-    end
-end
-
-
-TrollTab:AddToggle({
-    Name = "شعر ملون",
-    Description = "",
-    Default = false,
-    Callback = function(value)
-        isActive = value
-        if isActive then
-            changeHairColor()
-        end
-    end
-})
-
-
--- Tab 4: Anti Sit
 TrollTab:AddSection({ "مضاد جلوس" })
 TrollTab:AddToggle({
     Name = "مضاد جلوس",
@@ -5579,6 +5469,112 @@ Tab:AddButton({
                 end
             end
         end
+    end
+})
+local hairColors = {
+    Color3.new(1, 1, 0), Color3.new(0, 0, 1), Color3.new(1, 0, 1), Color3.new(1, 1, 1),
+    Color3.new(0, 1, 0), Color3.new(0.5, 0, 1), Color3.new(1, 0.647, 0), Color3.new(0, 1, 1)
+}
+local isActive = false
+
+
+local function changeHairColor()
+    local i = 1
+    while isActive do
+        if not isActive then break end
+        local args = { [1] = "ChangeHairColor2", [2] = hairColors[i] }
+        game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Max1y"):FireServer(unpack(args))
+        wait(0.1)
+        i = i % #hairColors + 1
+    end
+end
+
+
+TrollTab:AddToggle({
+    Name = "شعر ملون",
+    Description = "",
+    Default = false,
+    Callback = function(value)
+        isActive = value
+        if isActive then
+            changeHairColor()
+        end
+    end
+})
+local colors = { "Bright red", "Lime green", "Bright blue", "Bright yellow", "Bright cyan", "Hot pink", "Royal purple" }
+local rgbEnabled = false
+
+local function changeColor(color)
+    local args = { color }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeBodyColor"):FireServer(unpack(args))
+end
+
+local function toggleRGBCharacter(enabled)
+    rgbEnabled = enabled
+    if rgbEnabled then
+        while rgbEnabled do
+            for _, color in ipairs(colors) do
+                if not rgbEnabled then return end
+                changeColor(color)
+                wait(0.5)
+            end
+        end
+    end
+end
+
+TrollTab:AddToggle({
+    Name = "تلوين البشرة",
+    Description = "RGB",
+    Default = false,
+    Callback = function(value)
+        toggleRGBCharacter(value)
+    end
+})
+
+TrollTab:AddButton({
+    Name = "👻اختفاء",
+    Description = "سكن مخفي حقيقي",
+Callback = function()
+        
+        local args = {
+    [1] = {
+        [1] = 102344834840946,
+        [2] = 70400527171038,
+        [3] = 0,
+        [4] = 0,
+        [5] = 0,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(111858803548721)
+local allaccessories = {}
+
+for zxcwefwfecas, xcaefwefas in ipairs({
+    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.BackAccessory,
+    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.FaceAccessory,
+    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.FrontAccessory,
+    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.NeckAccessory,
+    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.HatAccessory,
+    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.HairAccessory,
+    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.ShouldersAccessory,
+    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.WaistAccessory,
+    game.Players.LocalPlayer.Character.Humanoid.HumanoidDescription.GraphicTShirt
+}) do
+    for scacvdfbdb in string.gmatch(xcaefwefas, "%d+") do
+        table.insert(allaccessories, tonumber(scacvdfbdb))
+    end
+end
+
+wait()
+
+for asdwr,asderg in ipairs(allaccessories) do
+    task.spawn(function()
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(asderg)
+        print(asderg)
+    end)
+end
     end
 })
 
