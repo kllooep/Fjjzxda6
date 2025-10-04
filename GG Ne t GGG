@@ -261,22 +261,29 @@ local Tab = Window:MakeTab({
 Title = "الأسماء", 
 Icon = "paper" })
 
+local speeds = {
+    [1] = 0.4,   
+    [2] = 0.25,  
+    [3] = 0.15, 
+    [4] = 0.08,  
+    [5] = 0.04  
+}
 
-local speeds = {0.5, 0.4, 0.3, 0.25, 0.2, 0.15, 0.1, 0.07, 0.05, 0.03} 
-local currentSpeed = 0.2 -- القيمة الافتراضية
+local currentSpeed = speeds[2] -- القيمة الافتراضية: عادية
 
 Tab:AddSlider({
     Name = "سرعة التلوين",
     Min = 1,
-    Max = 10,
+    Max = 5,
     Increment = 1,
-    Default = 5, -- القيمة الافتراضية: 0.2
+    Default = 2, -- الافتراضي: عادية
     ValueName = "Speed",
     Callback = function(Value)
         currentSpeed = speeds[Value]
     end
 })
 
+-- Toggle لتلوين البايو
 local bioToggleActive = false
 Tab:AddToggle({
     Name = "بايو",
@@ -302,6 +309,7 @@ Tab:AddToggle({
     end
 })
 
+-- Toggle لتلوين الاسم
 local nameToggleActive = false
 Tab:AddToggle({
     Name = "الاسم",
@@ -326,7 +334,6 @@ Tab:AddToggle({
         end
     end
 })
-
 
 local SectionSpam = Tab:AddSection({
     Name = "(new)سبام اسماء"
@@ -7557,21 +7564,21 @@ end
 ScriptsTab:AddButton({
     Name = "InfiniteYield - ادمن انفنتي",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")))
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end
 })
 
 ScriptsTab:AddButton({
     Name = "Namelesسكربت ادمن",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source")))
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source"))()
     end
 })
 
 ScriptsTab:AddButton({
     Name = "طيران",
     Callback = function()
-        loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Fly-v3-7412")))
+        loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Fly-v3-7412"))()
     end
 })
 
