@@ -7293,14 +7293,6 @@ ScriptsTab:AddButton({
         pcall(loadstring(game:HttpGet("https://pastebin.com/raw/N2tiHgyv")))
     end
 })
-
-ScriptsTab:AddButton({
-    Name = "Ghost Hub سكربت الشبح",
-    Callback = function()
-        pcall(loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-GhostHub-16534")))
-    end
-})
-
 ScriptsTab:AddButton({
     Name = "InfiniteYield - ادمن انفنتي",
     Callback = function()
