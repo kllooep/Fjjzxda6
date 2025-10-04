@@ -7291,27 +7291,27 @@ ScriptsTab:AddSection({
 ScriptsTab:AddButton({
     Name = "سكربت قفل",
     Callback = function()
-        pcall(loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main/SHتft Loوc7k74"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main/SHتft Loوc7k74"))()
 end
 })
 ScriptsTab:AddButton({
     Name = "InfiniteYield - ادمن انفنتي",
     Callback = function()
-        pcall(loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")))
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")))
     end
 })
 
 ScriptsTab:AddButton({
     Name = "Namelesسكربت ادمن",
     Callback = function()
-        pcall(loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source")))
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source")))
     end
 })
 
 ScriptsTab:AddButton({
     Name = "طيران",
     Callback = function()
-        pcall(loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Fly-v3-7412")))
+        loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Fly-v3-7412")))
     end
 })
 
