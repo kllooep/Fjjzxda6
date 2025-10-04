@@ -7290,8 +7290,8 @@ ScriptsTab:AddSection({
 ScriptsTab:AddButton({
     Name = "سكربت قفل",
     Callback = function()
-        pcall(loadstring(game:HttpGet("https://pastebin.com/raw/N2tiHgyv")))
-    end
+        pcall(loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main/SHتft Loوc7k74"))()
+end
 })
 ScriptsTab:AddButton({
     Name = "InfiniteYield - ادمن انفنتي",
