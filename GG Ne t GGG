@@ -6402,6 +6402,231 @@ function startAutoUnban()
     end
 end
 
+local Tab = Window:MakeTab({ 
+Title = "الاغاني المجانية", 
+Icon = "radio" })
+
+
+local audios = {
+    {Name = "صراخ", ID = 5710016194},
+    {Name = "مخيف", ID = 85435253347146},
+    {Name = "صوت عالي ضخم", ID = 6855150757},
+    {Name = "تشويش", ID = 120034877160791},
+    {Name = "صراخ 2", ID = 110637995610528},
+    {Name = "صوت ساحرة ماينكرافت", ID = 116214940486087},
+    {Name = "لعبان نفس", ID = 137177653817621},
+    {Name = "صوت مخابيل", ID = 128669424001766},
+    {Name = "انذار", ID = 9068077052},
+    {Name = "صوت واحد ضرب أصبع رجله الصغير", ID = 80156405968805},
+    {Name = "اااااااه", ID = 9084006093},
+    {Name = "امونق اس", ID = 6651571134},
+    {Name = "صدمه", ID = 6701126635},
+    {Name = "(واحد يتنفس بسرعة (مخبل", ID = 5853668794},
+    {Name = "تلوث سمعي", ID = 7056720271},
+    {Name = "سوس٢", ID = 7153419575},
+    {Name = "Sonic.exeفايروس", ID = 2496367477},
+    {Name = "صراخ مزعج", ID = 270145703},
+    {Name = "ضحكة هكر", ID = 18131809532},
+    {Name = "ضحكة هكر،2", ID = 130759239},
+    {Name = "صوت مزعج", ID = 6549021381},
+    {Name = "مادري شنو بكيفك انت سميه", ID = 7705506391},
+    {Name = "اااااع", ID = 7772283448},
+    {Name = "Gay, گي", ID = 18786647417},
+    {Name = "تينق", ID = 7129073354},
+    {Name = "فايروس سيرين", ID = 675587093},
+    {Name = "واحد ضرب اصبع رجله في الشتاء", ID = 7520729342},
+    {Name = "تعذيب", ID = 91412024101709},
+    {Name = "دارك ويب", ID = 268116333},
+    {Name = "توما جاك", ID = 132603645477541},
+    {Name = "بيدي فودي", ID = 133843750864059},
+    {Name = "آي غوست", ID = 84663543883498},
+    {Name = "گومبي", ID = 8747441609},
+    {Name = "ا كي نوچو", ID = 103440368630269},
+    {Name = "ساي داي لافا برادو", ID = 101232400175829},
+    {Name = "سيلوووك", ID = 78442476709262},
+    {Name = "(NEW) نغمة موبايل ترند", ID = 118939739460633},
+    {Name = "(NEW) (وت ذا هيل (ترند", ID = 100656590080703},
+    {Name = "(NEW) لا أفهم شيئًا", ID = 7962533987}
+}
+
+local selectedAudioID
+
+-- Adicionar uma textbox para inserir o ID do áudio
+Tab:AddTextBox({
+    Name = "ادخال صوت الموسيقى",
+    Description = "الموسيقىIDاكتب ",
+    PlaceholderText = "ID do áudio",
+    Callback = function(value)
+        selectedAudioID = tonumber(value)
+    end
+})
+
+-- Adicionar uma dropdown para selecionar o áudio
+local audioNames = {}
+for _, audio in ipairs(audios) do
+    table.insert(audioNames, audio.Name)
+end
+
+Tab:AddDropdown({
+    Name = "اختار صوت",
+    Description = "اختيار صوت من القائمة",
+    Options = audioNames,
+    Default = audioNames[1],
+    Flag = "selected_audio",
+    Callback = function(value)
+        for _, audio in ipairs(audios) do
+            if audio.Name == value then
+                selectedAudioID = audio.ID
+                break
+            end
+        end
+    end
+})
+
+-- Controle do loop
+local audioLoop = false
+
+-- Nova seção para loop de áudio
+Tab:AddSection({"تكرار أو سبام الصوت"})
+
+-- Função para tocar o áudio repetidamente
+local function playLoopedAudio()
+    while audioLoop do
+        if selectedAudioID then
+            local args = {
+                [1] = game:GetService("Workspace"),
+                [2] = selectedAudioID,
+                [3] = 1,
+            }
+            game:GetService("ReplicatedStorage").RE:FindFirstChild("1Gu1nSound1s"):FireServer(unpack(args))
+
+            -- Criar e tocar o áudio
+            local sound = Instance.new("Sound")
+            sound.SoundId = "rbxassetid://" .. selectedAudioID
+            sound.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+            sound:Play()
+        else
+            warn("Nenhum áudio selecionado!")
+        end
+
+        task.wait(0.5) -- Pequeno delay para evitar sobrecarga
+    end
+end
+
+-- Toggle para loop de áudio
+Tab:AddToggle({
+    Name = "تفعيل اغنية تلقائي",
+    Description = "سبام اغنية",
+    Default = false,
+    Flag = "audio_loop",
+    Callback = function(value)
+        audioLoop = value
+        if audioLoop then
+            task.spawn(playLoopedAudio) -- Inicia o loop em uma nova thread
+        end
+    end
+})
+
+-- Adicionar um parágrafo como label
+Tab:AddParagraph({"Info", "تكرار الصوت (كل اللاعبين يسمعوه)"})
+
+-- Função para tocar o áudio normal
+local function playAudio()
+    if selectedAudioID then
+        local args = {
+            [1] = game:GetService("Workspace"),
+            [2] = selectedAudioID,
+            [3] = 1,
+        }
+        game:GetService("ReplicatedStorage").RE:FindFirstChild("1Gu1nSound1s"):FireServer(unpack(args))
+
+        -- Criar e tocar o áudio
+        local sound = Instance.new("Sound")
+        sound.SoundId = "rbxassetid://" .. selectedAudioID
+        sound.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+        sound:Play()
+    else
+        warn("Nenhum áudio selecionado!")
+    end
+end
+
+-- Nova seção para tocar áudio
+Tab:AddSection({"تشغيل الصوت(مرة1) "})
+
+-- Botão para tocar o áudio
+Tab:AddButton({"تشغيل", function()
+    playAudio()
+end})
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local audioID = 6314880174 -- ID fixo do áudio
+
+local function Audio_All_ClientSide(ID)
+    local function CheckFolderAudioAll()
+        local FolderAudio = workspace:FindFirstChild("Audio all client")
+        if not FolderAudio then
+            FolderAudio = Instance.new("Folder")
+            FolderAudio.Name = "Audio all client"
+            FolderAudio.Parent = workspace
+        end
+        return FolderAudio
+    end
+
+    local function CreateSound(ID)
+        if type(ID) ~= "number" then
+            print("Insira um número válido!")
+            return nil
+        end
+
+        local Folder_Audio = CheckFolderAudioAll()
+        if Folder_Audio then
+            local Sound = Instance.new("Sound")
+            Sound.SoundId = "rbxassetid://" .. ID
+            Sound.Volume = 1
+            Sound.Looped = false
+            Sound.Parent = Folder_Audio
+            Sound:Play()
+            task.wait(1) -- Tempo de espera antes de remover o som
+            Sound:Destroy()
+        end
+    end
+
+    CreateSound(ID)
+end
+
+local function Audio_All_ServerSide(ID)
+    if type(ID) ~= "number" then
+        print("Insira um número válido!")
+        return nil
+    end
+
+    local GunSoundEvent = ReplicatedStorage:FindFirstChild("1Gu1nSound1s", true)
+    if GunSoundEvent then
+        GunSoundEvent:FireServer(workspace, ID, 1)
+    end
+end
+
+-- Toggle para "Estorar ouvido de geral"
+Tab:AddToggle({
+    Name = "صوت يشگ الاذان",
+    Description = "صوت قوي متكرر",
+    Default = false,
+    Flag = "audio_spam",
+    Callback = function(value)
+        getgenv().Audio_All_loop_fast = value
+
+        while getgenv().Audio_All_loop_fast do
+            Audio_All_ServerSide(audioID)
+            task.spawn(function()
+                Audio_All_ClientSide(audioID)
+            end)
+            task.wait(0.03) -- Delay extremamente rápido (0.03 segundos)
+        end
+    end
+})
+
+Tab:AddParagraph({"Info", "صوت للكل"})
+
 local TabSp = Window:MakeTab({
     Name = "[EXTRA]مباني+سبام",
     Icon = "hammer"
