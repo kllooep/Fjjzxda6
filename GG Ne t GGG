@@ -5086,9 +5086,9 @@ workspace.CurrentCamera.CameraSubject=game.Players.LocalPlayer.Character:WaitFor
   end
 })
 
-local Tab = Window:MakeTab({"السكن", "rbxassetid://10734952036"})
+local TabSk = Window:MakeTab({"السكن", "rbxassetid://10734952036"})
 
-Tab:AddSection({ Name = "نسخ السكن" })
+TabSk:AddSection({ Name = "نسخ السكن" })
 
 
 
@@ -5108,7 +5108,7 @@ local function GetPlayerNames()
 end
 
 -- Dropdown de seleÃ§Ã£o de jogador
-local Dropdown = Tab:AddDropdown({
+local Dropdown = TabSk:AddDropdown({
     Name = "اختار لاعب",
     Options = GetPlayerNames(),
     Default = Target,
@@ -5125,7 +5125,7 @@ end
 Players.PlayerAdded:Connect(UpdateDropdown)
 Players.PlayerRemoving:Connect(UpdateDropdown)
 
-Tab:AddButton({
+TabSk:AddButton({
     Name = "نسخ السكن",
     Callback = function()
         if not Target then return end
@@ -5240,7 +5240,7 @@ Tab:AddButton({
     end
 })
 
-Tab:AddButton({
+TabSk:AddButton({
     Name = "نسخ سكن لاعب قريب",
     Callback = function()
         local LP = Players.LocalPlayer
@@ -5364,7 +5364,7 @@ Tab:AddButton({
     end
 })
 
-Tab:AddButton({
+TabSk:AddButton({
     Name = "نسخ لاعب عشوائي",
     Callback = function()
         local LP = Players.LocalPlayer
@@ -5471,6 +5471,7 @@ Tab:AddButton({
         end
     end
 })
+
 local hairColors = {
     Color3.new(1, 1, 0), Color3.new(0, 0, 1), Color3.new(1, 0, 1), Color3.new(1, 1, 1),
     Color3.new(0, 1, 0), Color3.new(0.5, 0, 1), Color3.new(1, 0.647, 0), Color3.new(0, 1, 1)
@@ -5489,8 +5490,7 @@ local function changeHairColor()
     end
 end
 
-
-TrollTab:AddToggle({
+TabSk:AddToggle({
     Name = "شعر ملون",
     Description = "",
     Default = false,
@@ -5501,6 +5501,7 @@ TrollTab:AddToggle({
         end
     end
 })
+
 local colors = { "Bright red", "Lime green", "Bright blue", "Bright yellow", "Bright cyan", "Hot pink", "Royal purple" }
 local rgbEnabled = false
 
@@ -5522,7 +5523,7 @@ local function toggleRGBCharacter(enabled)
     end
 end
 
-TrollTab:AddToggle({
+TabSk:AddToggle({
     Name = "تلوين البشرة",
     Description = "RGB",
     Default = false,
@@ -5531,7 +5532,7 @@ TrollTab:AddToggle({
     end
 })
 
-TrollTab:AddButton({
+TabSk:AddButton({
     Name = "👻اختفاء",
     Description = "سكن مخفي حقيقي",
 Callback = function()
@@ -5578,7 +5579,7 @@ end
     end
 })
 
-Tab:AddToggle({
+TabSk:AddToggle({
     Name = "🌫️دخان تلقائي",
     Default = false,
     Callback = function(Value)
@@ -5600,7 +5601,7 @@ Tab:AddToggle({
     end
 })
 
-Tab:AddToggle({
+TabSk:AddToggle({
     Name = "🔥نار تلقائية في السكن",
     Description = "من اقتراح:Ahmed_Nokia", 
     Default = false,
@@ -5630,7 +5631,7 @@ Tab:AddToggle({
     end
 })
 
-Tab:AddButton({
+TabSk:AddButton({
     Name = "تفعيل نار في اليد",
     Callback = function()
         local Player = game.Players.LocalPlayer
