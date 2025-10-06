@@ -7545,8 +7545,7 @@ Tablag:AddParagraph({
     Text = "انتظر 35 ثانية لظهور تأثير اللاق"
 })
 
-
-wait(4)
+task.wait(3)
 
 local args = {
 	"RolePlayName",
