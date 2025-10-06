@@ -7545,49 +7545,6 @@ Tablag:AddParagraph({
     Text = "انتظر 35 ثانية لظهور تأثير اللاق"
 })
 
--- ==================== 7. تبويب: سكربتات متنوعة ====================
-local ScriptsTab = Window:MakeTab({
-    Name = "سكربتات متنوعة",
-    Icon = "plane"
-})
-
-ScriptsTab:AddSection({
-    Name = "سكربتات مفيدة"
-})
-
-ScriptsTab:AddButton({
-    Name = "سكربت قفل",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main/SHتft Loوc7k74"))()
-end
-})
-ScriptsTab:AddButton({
-    Name = "InfiniteYield - ادمن انفنتي",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-    end
-})
-
-ScriptsTab:AddButton({
-    Name = "Namelesسكربت ادمن",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source"))()
-    end
-})
-
-ScriptsTab:AddButton({
-    Name = "طيران",
-    Callback = function()
-        loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Fly-v3-7412"))()
-    end
-})
-
-ScriptsTab:AddButton({
-    Name = "تحكم بالسيارات",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
-    end
-})
 
 wait(4)
 
