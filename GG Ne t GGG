@@ -7191,13 +7191,13 @@ ChildTab:AddButton({
 
 -- ==================== تحديث تلقائي ====================
 game.Players.PlayerAdded:Connect(function(player)
-    task.wait(0.2)
+    task.wait(400)
     local newPlayers = getPlayerList()
     playerChild:Set(newPlayers)
 end)
 
 game.Players.PlayerRemoving:Connect(function(player)
-    task.wait(0.2)
+    task.wait(400)
     local newPlayers = getPlayerList()
     playerChild:Set(newPlayers)
     if selectedPlayerName == player.Name then
