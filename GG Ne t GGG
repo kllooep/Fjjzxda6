@@ -6794,6 +6794,226 @@ TabSp:AddToggle({
 
 TabSp:AddSection({"المباني"})
 
+local function organizarItensEmCuboAcima()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local backpack = player.Backpack
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- جمع جميع أدوات FireX من الشخصية والمخزن
+    local itens = {}
+
+    for _, item in pairs(character:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+
+    -- التحقق من وجود أدوات
+    if #itens == 0 then
+        warn("لا توجد أدوات FireX للتنظيم.")
+        return
+    end
+
+    -- مركز المكعب: فوق الرأس
+    local head = character:FindFirstChild("Head") or rootPart
+    local center = head.Position + Vector3.new(0, 15, 0) -- 15 وحدة فوق الرأس
+
+    -- أبعاد المكعب العملاق
+    local cubeSize = 30 -- 30 × 30 × 30 وحدة (مكعب ضخم)
+
+    -- عدد النقاط في كل اتجاه
+    local steps = 15 -- نقسم المكعب إلى 15×15×15 = 3375 نقطة كحد أقصى
+
+    -- التباعد بين كل نقطة
+    local spacing = cubeSize / steps
+
+    -- توزيع الأدوات في شبكة مكعبة ثلاثية الأبعاد
+    local count = 1
+    for ix = 0, steps - 1 do
+        for iy = 0, steps - 1 do
+            for iz = 0, steps - 1 do
+                if count > #itens then break end
+
+                -- حساب الموضع النسبي
+                local x = (ix - steps/2) * spacing
+                local y = (iy - steps/2) * spacing
+                local z = (iz - steps/2) * spacing
+
+                local pos = center + Vector3.new(x, y, z)
+
+                -- تجهيز الأداة
+                local item = itens[count]
+                item.Parent = character
+                item.GripPos = pos - rootPart.Position
+
+                task.wait(0.001) -- تأخير بسيط لتجنب التجميد
+
+                -- إعادة الأداة إلى المخزن
+                item.Parent = backpack
+
+                count = count + 1
+            end
+        end
+    end
+
+    -- تجهيز جميع أدوات FireX مرة أخيرة (لترى المكعب)
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            item.Parent = character
+        end
+    end
+
+    -- إشعار بالنجاح
+    print("تم إنشاء مكعب عملاق من " .. (count - 1) .. " أداة FireX!")
+end
+
+TabSp:AddButton({
+    Name = "🔥 FireX: مكعب عملاق فوق الرأس",
+    Callback = function()
+        local Player = game.Players.LocalPlayer 
+        local Character = Player.Character or Player.CharacterAdded:Wait()
+        local RootPart = Character:WaitForChild("HumanoidRootPart")
+        
+        -- البحث عن الكائن
+        local Clone = game:GetService("Workspace"):FindFirstChild("WorkspaceCom") 
+            and game:GetService("Workspace").WorkspaceCom:FindFirstChild("001_GiveTools")
+            and game:GetService("Workspace").WorkspaceCom["001_GiveTools"]:FindFirstChild("FireX")
+
+        if Clone and Clone:FindFirstChild("ClickDetector") then
+            local OldPos = RootPart.CFrame
+
+            -- جمع 2000 أداة (أو أكثر إذا أمكن)
+            for i = 1, 2000 do
+                RootPart.CFrame = Clone.CFrame
+                pcall(fireclickdetector, Clone.ClickDetector) -- آمن ضد الأخطاء
+                task.wait(0.005) -- تأخير بسيط
+            end
+
+            -- العودة إلى المكان الأصلي
+            RootPart.CFrame = OldPos
+
+            -- تنفيذ تنظيم المكعب
+            organizarItensEmCuboAcima()
+        else
+            warn("FireX أو ClickDetector غير موجود!")
+            Tab:AddNotification({
+                Name = "خطأ",
+                Content = "لم يتم العثور على FireX!",
+                Time = 5
+            })
+        end
+    end
+})
+
+-- دالة لتنظيم الأدوات في شكل كرة فوق الرأس
+local function organizarItensEmBolaAcima()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local backpack = player.Backpack
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- جمع جميع أدوات FireX من الشخصية والمخزن
+    local itens = {}
+
+    for _, item in pairs(character:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+
+    -- التحقق من وجود أدوات
+    if #itens == 0 then
+        warn("لا توجد أدوات FireX للتنظيم.")
+        return
+    end
+
+    -- مركز الكرة: فوق الرأس (نستخدم الرأس أو HumanoidRootPart)
+    local head = character:FindFirstChild("Head") or rootPart
+    local center = head.Position + Vector3.new(0, -5, 0) -- 5 وحدات فوق الرأس
+
+    -- نصف قطر الكرة
+    local radius = 8
+
+    -- زاوية عشوائية لتوزيع متساوٍ تقريبًا (Spherical Distribution)
+    for i, item in pairs(itens) do
+        -- زوايا عشوائية
+        local phi = math.acos(1 - 2 * (i / (#itens + 1))) -- توزيع متساوٍ على المحور Y
+        local theta = 7.777 * i -- رقم غير منطقي يقلل من التكرار (مثل 7.777)
+
+        -- التحويل إلى إحداثيات كروية
+        local x = math.cos(theta) * math.sin(phi)
+        local y = math.cos(phi)
+        local z = math.sin(theta) * math.sin(phi)
+
+        -- تحديد الموضع على سطح الكرة
+        local pos = center + Vector3.new(x, y, z) * radius
+
+        -- تجهيز الأداة لتعديل GripPos
+        item.Parent = character
+
+        -- ضبط GripPos بحيث تظهر الأداة في الموضع المطلوب
+        item.GripPos = pos - rootPart.Position
+
+        task.wait(0.01) -- تأخير بسيط لرؤية التأثير
+
+        -- إعادة الأداة إلى المخزن (حتى لا تعيق اللاعب)
+        item.Parent = backpack
+    end
+
+    -- تجهيز جميع أدوات FireX مرة أخيرة (لترى الكرة)
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            item.Parent = character
+        end
+    end
+end
+
+TabSp:AddButton({
+    Name = "Firex كرة عملاقة فوق الرأس",
+    Callback = function()
+        local Player = game.Players.LocalPlayer 
+        local Character = Player.Character or Player.CharacterAdded:Wait()
+        local RootPart = Character:WaitForChild("HumanoidRootPart")
+        
+        -- البحث عن الكائن
+        local Clone = game:GetService("Workspace"):FindFirstChild("WorkspaceCom") 
+            and game:GetService("Workspace").WorkspaceCom:FindFirstChild("001_GiveTools")
+            and game:GetService("Workspace").WorkspaceCom["001_GiveTools"]:FindFirstChild("FireX")
+
+        if Clone and Clone:FindFirstChild("ClickDetector") then
+            local OldPos = RootPart.CFrame
+
+            -- جمع 600 أداة
+            for i = 1, 600 do
+                RootPart.CFrame = Clone.CFrame
+                fireclickdetector(Clone.ClickDetector)
+                task.wait()
+            end
+
+            -- العودة
+            RootPart.CFrame = OldPos
+
+            -- تنفيذ تنظيم الكرة
+            organizarItensEmBolaAcima()
+        else
+            warn("FireX أو ClickDetector غير موجود!")
+        end
+    end
+})
+
 local BNumber = 600 -- Valor fixo
 local distanciaEntreItens = 3 -- DistÃ¢ncia entre os itens ao longo do bastÃ£o
 
@@ -7544,26 +7764,3 @@ Tablag:AddParagraph({
     Title = "ملاحظة",
     Text = "انتظر 35 ثانية لظهور تأثير اللاق"
 })
-
-task.wait(3)
-
-local args = {
-	"RolePlayName",
-	"NetroZHub"
-}
-game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
-local args = {
-	"PickingRPNameColor",
-	Color3.new(0.7556330561637878, 0, 0.00002125852188328281)
-}
-game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
-local args = {
-	"RolePlayBio",
-	"(V0.6)التحديث المعزز"
-}
-game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
-local args = {
-	"PickingRPBioColor",
-	Color3.new(0.7050058841705322, 0, 0.000019834207705571316)
-}
-game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args)) 
