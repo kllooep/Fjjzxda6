@@ -5954,10 +5954,10 @@ AccessoriesTab:AddButton({
 task.wait(0.1)
 
 
-local HeadBodyTab = Window:MakeTab({
-    Name = "الرؤوس و الاجسام",
-    Icon = "shirt"
-})
+local HeadBodyTab = Window:MakeTab({ 
+Title = "الرؤوس والاجسام", 
+Icon = "shirt" })
+
 
 local function SafeInvoke(remotePath, args)
     pcall(function()
@@ -6497,7 +6497,7 @@ local selectedAudioID
 Tab:AddTextBox({
     Name = "ادخال صوت الموسيقى",
     Description = "الموسيقىIDاكتب ",
-    PlaceholderText = "ID do áudio",
+    PlaceholderText = "ادخل كود الاغنية",
     Callback = function(value)
         selectedAudioID = tonumber(value)
     end
@@ -7502,11 +7502,9 @@ ChildTab:AddToggle({
     end
 })
 
--- ==================== 3. تبويب: لاق للسيرفر (Tablag) ====================
-local Tablag = Window:MakeTab({
-    Name = "لاق للسيرفر",
-    Icon = "bomb"
-})
+local Tablag = Window:MakeTab({ 
+Title = "لاق السيرفر", 
+Icon = "bomb" })
 
 Tablag:AddSection({"ايقاف السيرفر[Beta]"})
 
