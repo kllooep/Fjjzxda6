@@ -7670,11 +7670,6 @@ Tablag:AddParagraph({
     Text = "انتظر 40 ثانية لظهور تأثير اللاق"
 }) 
 
-local RedzTab = Window:MakeTab({
-    Title = "(EXTRA)الحماية",
-    Icon = "shield"
-})
-
 local voidProtectionEnabled = false
 
 local function ActivateVoidProtection()
@@ -7687,7 +7682,7 @@ local function DeactivateVoidProtection()
     game.Workspace.FallenPartsDestroyHeight = -500
 end
 
-RedzTab:AddToggle({
+Tablag:AddToggle({
     Name = "مضاد موت",
     Default = false,
     Callback = function(state)
@@ -7702,7 +7697,7 @@ RedzTab:AddToggle({
 local player = game:GetService("Players").LocalPlayer
 local scriptToToggle = player:WaitForChild("PlayerScripts"):WaitForChild("BulletVisualizerScript")
 
-RedzTab:AddToggle({
+Tablag:AddToggle({
 	Name = "مضاد تجميد",
 	Default = false,
 	Callback = function(state)
