@@ -7762,3 +7762,31 @@ Tablag:AddParagraph({
     Title = "ملاحظة",
     Text = "انتظر 35 ثانية لظهور تأثير اللاق"
 })
+local RedzTab = Window:MakeTab({
+    Title = "(EXTRA)الحماية",
+    Icon = "shield"
+})
+
+local voidProtectionEnabled = false
+
+local function ActivateVoidProtection()
+    voidProtectionEnabled = true
+    game.Workspace.FallenPartsDestroyHeight = 0/0
+end
+
+local function DeactivateVoidProtection()
+    voidProtectionEnabled = false
+    game.Workspace.FallenPartsDestroyHeight = -500
+end
+
+RedzTab:AddToggle({
+    Name = "Anti Void Protection [V9]",
+    Default = false,
+    Callback = function(state)
+        if state then
+            ActivateVoidProtection()
+        else
+            DeactivateVoidProtection()
+        end
+    end
+})
