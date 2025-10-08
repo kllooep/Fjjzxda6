@@ -495,6 +495,16 @@ local FreezTab = Window:MakeTab({
 Title = "Superتجميدات", 
 Icon = "moon" })
 
+local player = game:GetService("Players").LocalPlayer
+local scriptToToggle = player:WaitForChild("PlayerScripts"):WaitForChild("BulletVisualizerScript")
+
+FreezTab:AddToggle({
+	Name = "Bullet Visualizer",
+	Default = false,
+	Callback = function(state)
+		scriptToToggle.Disabled = state
+	end
+})
 
 
 -- === الخدمات والمتغيرات الأساسية ===
