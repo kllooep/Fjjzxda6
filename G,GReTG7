@@ -495,18 +495,6 @@ local FreezTab = Window:MakeTab({
 Title = "Superتجميدات", 
 Icon = "moon" })
 
-local player = game:GetService("Players").LocalPlayer
-local scriptToToggle = player:WaitForChild("PlayerScripts"):WaitForChild("BulletVisualizerScript")
-
-FreezTab:AddToggle({
-	Name = "Bullet Visualizer",
-	Default = false,
-	Callback = function(state)
-		scriptToToggle.Disabled = state
-	end
-})
-
-
 -- === الخدمات والمتغيرات الأساسية ===
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -1590,72 +1578,16 @@ end)
     end
 })
 
-TrollTab:AddSection({ "مضاد جلوس" })
+TrollTab:AddSection({ "مضاد تجميد" })
+local player = game:GetService("Players").LocalPlayer
+local scriptToToggle = player:WaitForChild("PlayerScripts"):WaitForChild("BulletVisualizerScript")
+
 TrollTab:AddToggle({
-    Name = "مضاد جلوس",
-    Description = "",
-    Default = false,
-    Callback = function(Value)
-        local player = game.Players.LocalPlayer
-        local connections = {}
-        local runService = game:GetService("RunService")
-
-
-        local function preventSitting(humanoid)
-            if humanoid then
-                humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
-                local sitConnection = humanoid.StateChanged:Connect(function(_, newState)
-                    if newState == Enum.HumanoidStateType.Seated then
-                        humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-                    end
-                end)
-                table.insert(connections, sitConnection)
-            end
-        end
-
-
-        local function monitorCharacter()
-            local function onCharacterAdded(character)
-                local humanoid = character:WaitForChild("Humanoid")
-                preventSitting(humanoid)
-            end
-
-
-            local characterAddedConnection = player.CharacterAdded:Connect(onCharacterAdded)
-            table.insert(connections, characterAddedConnection)
-
-
-            if player.Character then
-                onCharacterAdded(player.Character)
-            end
-        end
-
-
-        local function resetSitting()
-            for _, connection in ipairs(connections) do
-                connection:Disconnect()
-            end
-            connections = {}
-            local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
-            end
-        end
-
-
-        if Value then
-            monitorCharacter()
-            local heartbeatConnection = runService.Heartbeat:Connect(function()
-                local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-                if humanoid then
-                    humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
-                end
-            end)
-            table.insert(connections, heartbeatConnection)
-        else
-            resetSitting()
-        end
-    end
+	Name = "مضاد تجميد",
+	Default = false,
+	Callback = function(state)
+		scriptToToggle.Disabled = state
+	end
 })
 
 local Troll = Window:MakeTab({ Title = "تخريب على اللاعبين", Icon = "rbxassetid://131153193945220" })
