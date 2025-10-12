@@ -1447,32 +1447,6 @@ function redzlib:MakeWindow(Configs)
 	local Components = Create("Folder", MainFrame, {
 		Name = "Components"
 	})
-
--- 🔥 إضافة شرارات نار متحركة داخل النافذة
-local FireSparks = Instance.new("ParticleEmitter")
-FireSparks.Name = "FireSparks"
-FireSparks.Parent = MainFrame
-FireSparks.Texture = "rbxassetid://242342235" -- نار/شرارات
-FireSparks.LightEmission = 1
-FireSparks.LightInfluence = 0.5
-FireSparks.Rate = 30 -- كمية الشرارات في الثانية
-FireSparks.Lifetime = NumberRange.new(0.8, 1.5)
-FireSparks.Speed = NumberRange.new(10, 30)
-FireSparks.VelocitySpread = 20
-FireSparks.Rotation = NumberRange.new(-180, 180)
-FireSparks.RotSpeed = NumberRange.new(-100, 100)
-FireSparks.Size = NumberSequence.new{
-	NumberSequenceKeypoint.new(0, 0),
-	NumberSequenceKeypoint.new(0.5, 8),
-	NumberSequenceKeypoint.new(1, 0)
-}
-FireSparks.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 100, 0)),
-	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 200, 0)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 50, 0))
-}
-FireSparks.ZIndex = 10
-FireSparks.Enabled = true
 	
 	local DropdownHolder = Create("Folder", ScreenGui, {
 		Name = "Dropdown"
