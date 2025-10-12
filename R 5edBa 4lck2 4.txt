@@ -1092,9 +1092,11 @@ local GetFlag, SetFlag, CheckFlag do
 	end)
 end
 
+local UniqueName = "redzV5_" .. HttpService:GenerateGUID(false):gsub("-", "")
 local ScreenGui = Create("ScreenGui", CoreGui, {
-	Name = "redz Library V5",
+	Name = UniqueName,
 }, {
+
 	Create("UIScale", {
 		Scale = UIScale,
 		Name = "Scale"
