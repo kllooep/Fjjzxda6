@@ -1092,16 +1092,23 @@ local GetFlag, SetFlag, CheckFlag do
 	end)
 end
 
-local UniqueName = "redzV5_" .. HttpService:GenerateGUID(false):gsub("-", "")
+local UniqueName =
+"MyScriptDemoZ_RedzV5"
+
 local ScreenGui = Create("ScreenGui", CoreGui, {
 	Name = UniqueName,
 }, {
-
 	Create("UIScale", {
 		Scale = UIScale,
 		Name = "Scale"
 	})
 })
+
+
+local Existing = CoreGui:FindFirstChild(UniqueName)
+if Existing and Existing ~= ScreenGui then
+	Existing:Destroy()
+end
 
 local ScreenFind = CoreGui:FindFirstChild(ScreenGui.Name)
 if ScreenFind and ScreenFind ~= ScreenGui then
