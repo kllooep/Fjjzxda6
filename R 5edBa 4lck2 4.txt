@@ -1434,32 +1434,6 @@ function redzlib:MakeWindow(Configs)
 		Name = "Hub"
 	}), "Main")
 
--- 🔥 Fire Sparks Effect
-local FireSparks = Instance.new("ParticleEmitter")
-FireSparks.Name = "FireSparks"
-FireSparks.Parent = MainFrame
-FireSparks.Texture = "rbxassetid://242342235" -- Fire/Sparks texture
-FireSparks.LightEmission = 1
-FireSparks.LightInfluence = 0.5
-FireSparks.Rate = 25
-FireSparks.Lifetime = NumberRange.new(0.7, 1.4)
-FireSparks.Speed = NumberRange.new(15, 35)
-FireSparks.VelocitySpread = 30
-FireSparks.Rotation = NumberRange.new(-180, 180)
-FireSparks.RotSpeed = NumberRange.new(-120, 120)
-FireSparks.Size = NumberSequence.new{
-	NumberSequenceKeypoint.new(0, 0),
-	NumberSequenceKeypoint.new(0.4, 6),
-	NumberSequenceKeypoint.new(1, 0)
-}
-FireSparks.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 100, 0)),
-	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 220, 50)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 60, 0))
-}
-FireSparks.ZIndex = 5
-FireSparks.Enabled = true
-😈😈😈😈😈😈😈😈😈😈
 	Make("Gradient", MainFrame, {
 		Rotation = 45
 	})MakeDrag(MainFrame)
