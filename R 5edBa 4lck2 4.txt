@@ -1559,27 +1559,32 @@ function redzlib:MakeWindow(Configs)
 	local ButtonsFolder = Create("Folder", TopBar, {
 		Name = "Buttons"
 	})
-	
-	local CloseButton = Create("ImageButton", {
-		Size = UDim2.new(0, 14, 0, 14),
-		Position = UDim2.new(1, -10, 0.5),
-		AnchorPoint = Vector2.new(1, 0.5),
-		BackgroundTransparency = 1,
-		Image = "rbxassetid://10747384394",
-		AutoButtonColor = false,
-		Name = "Close"
-	})
-	
-	local MinimizeButton = SetProps(CloseButton:Clone(), {
-		Position = UDim2.new(1, -35, 0.5),
-		Image = "rbxassetid://10734896206",
-		Name = "Minimize"
-	})
-	
-	SetChildren(ButtonsFolder, {
-		CloseButton,
-		MinimizeButton
-	})
+
+	_الازرار____
+local CloseButton = Create("ImageButton", {
+	Size = UDim2.new(0, 14, 0, 14),
+	Position = UDim2.new(1, -10, 0.5),
+	AnchorPoint = Vector2.new(1, 0.5),
+	BackgroundTransparency = 1,
+	Image = "rbxassetid://10747384394",
+	AutoButtonColor = false,
+	Name = "Close"
+})
+local MinimizeButton = SetProps(CloseButton:Clone(), {
+	Position = UDim2.new(1, -35, 0.5),
+	Image = "rbxassetid://10734896206",
+	Name = "Minimize"
+})
+local SettingsButton = SetProps(CloseButton:Clone(), {
+	Position = UDim2.new(1, -60, 0.5),
+	Image = "rbxassetid://10734950309", Settings icon
+	Name = "Settings"
+})
+SetChildren(ButtonsFolder, {
+	CloseButton,
+	MinimizeButton,
+	SettingsButton
+}) ____⚙️_
 	
 	local Minimized, SaveSize, WaitClick
 	local Window, FirstTab = {}, false
@@ -2700,7 +2705,90 @@ function redzlib:MakeWindow(Configs)
 		end
 		return Tab
 	end
-	
+
+-- 🔧 زر الإعدادات وتاب الإعدادات
+local SettingsTab = Window:MakeTab({
+	Title = "Settings",
+	Icon = "settings"
+})
+SettingsTab:Visible(false) -- مخفي حتى يُطلب
+
+-- 🎨 اختيار الثيم
+local ThemeDropdown = SettingsTab:AddDropdown({
+	"UI Theme",
+	{"Darker", "Dark", "Purple"},
+	redzlib.Save.Theme,
+	function(Selected)
+		redzlib:SetTheme(Selected)
+	end
+})
+
+-- 📏 التحكم بالعرض
+local WidthSlider = SettingsTab:AddSlider({
+	"Window Width",
+	400, 800, 10,
+	redzlib.Save.UISize[1],
+	function(Value)
+		redzlib.Save.UISize[1] = Value
+		MainFrame.Size = UDim2.fromOffset(Value, MainFrame.Size.Y.Offset)
+		SaveJson("redz library V5.json", redzlib.Save)
+	end
+})
+
+-- 📏 التحكم بالطول
+local HeightSlider = SettingsTab:AddSlider({
+	"Window Height",
+	250, 600, 10,
+	redzlib.Save.UISize[2],
+	function(Value)
+		redzlib.Save.UISize[2] = Value
+		MainFrame.Size = UDim2.fromOffset(MainFrame.Size.X.Offset, Value)
+		SaveJson("redz library V5.json", redzlib.Save)
+	end
+})
+
+-- 🌈 إطار RGB
+local RainbowFrame = Create("Frame", MainFrame, {
+	Size = UDim2.new(1, 2, 1, 2),
+	Position = UDim2.new(0.5, 0, 0.5, 0),
+	AnchorPoint = Vector2.new(0.5, 0.5),
+	BackgroundColor3 = Color3.fromRGB(255, 0, 0),
+	BorderSizePixel = 0,
+	ZIndex = -1,
+	Name = "RainbowBorder"
+})
+Make("Corner", RainbowFrame)
+
+local RainbowEnabled = false
+local function UpdateRainbow()
+	if RainbowEnabled then
+		RainbowFrame.Visible = true
+		task.spawn(function()
+			while RainbowEnabled and RainbowFrame and RainbowFrame.Parent do
+				local hue = (tick() * 0.5) % 1
+				RainbowFrame.BackgroundColor3 = Color3.fromHSV(hue, 1, 1)
+				task.wait(0.03)
+			end
+			RainbowFrame.Visible = false
+		end)
+	else
+		RainbowFrame.Visible = false
+	end
+end
+
+local RainbowToggle = SettingsTab:AddToggle({
+	"RGB Rainbow Border",
+	false,
+	function(State)
+		RainbowEnabled = State
+		UpdateRainbow()
+	end
+})
+
+-- 🖱️ ربط زر ⚙️ بفتح التاب
+SettingsButton.Activated:Connect(function()
+	Window:SelectTab(SettingsTab)
+end) النهاية
 	CloseButton.Activated:Connect(Window.CloseBtn)
 	MinimizeButton.Activated:Connect(Window.MinimizeBtn)
 	return Window
