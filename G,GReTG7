@@ -5963,7 +5963,7 @@ end
 
 local Tab = Window:MakeTab({ 
 Title = "الاغاني المجانية", 
-Icon = "radio" })
+Icon = "music" })
 
 
 local audios = {
@@ -6086,10 +6086,6 @@ Tab:AddToggle({
     end
 })
 
--- Adicionar um parágrafo como label
-Tab:AddParagraph({"Info", "تكرار الصوت (كل اللاعبين يسمعوه)"})
-
--- Função para tocar o áudio normal
 local function playAudio()
     if selectedAudioID then
         local args = {
@@ -6109,8 +6105,6 @@ local function playAudio()
     end
 end
 
--- Nova seção para tocar áudio
-Tab:AddSection({"تشغيل الصوت(مرة1) "})
 
 -- Botão para tocar o áudio
 Tab:AddButton({"تشغيل", function()
@@ -6187,7 +6181,7 @@ Tab:AddToggle({
 Tab:AddParagraph({"Info", "صوت للكل"})
 
 local TabSp = Window:MakeTab({
-    Name = "[EXTRA]مباني+سبام",
+    Title = "[EXTRA]مباني+سبام",
     Icon = "hammer"
 })
 
@@ -7297,7 +7291,7 @@ local function DeactivateVoidProtection()
 end
 
 RedzTab:AddToggle({
-    Name = "Anti Void Protection [V9]",
+    Name = "مضاد موت(مدمر💀)",
     Default = false,
     Callback = function(state)
         if state then
