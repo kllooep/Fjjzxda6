@@ -1,649 +1,696 @@
--- ==================== 1. تحميل مكتبة splibv2 ====================
-local splib = loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd0/SP_Hub/refs/heads/main/splibv2"))()
-if not splib then
-    warn("فشل في تحميل المكتبة!")
-    return
-end
+local Libary = loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/refs/heads/main/DovEn529"))()
 
--- ==================== 2. إنشاء النافذة ====================
-local Window = splib:MakeWindow({
-    Name = "خليفه HUB",
-    SubTitle = "by Khalifa",
-    HidePremium = false,
-    SaveConfig = true,
-    Setting = true,
-    RainbowMainFrame = false,
-    RainbowTitle = false,
-    RainbowSubTitle = false,
-    ToggleIcon = "rbxassetid://83114982417764",
-    ConfigFolder = "KhalifaConfigs",
-    CloseCallback = function()
-        print("تم إغلاق واجهة خليفه")
-    end
+local Window = Libary:MakeWindow({
+    Title = "👹NetroZHub- فريق",
+    SubTitle = "by: مطورين Developers (Ghali, , EV_Rami)",
+    LoadText = "NetroZHubDevelopers",
+    Flags = "NetroZ_Brookhaven"
+})
+Window:AddMinimizeButton({
+    Button = { Image = "rbxassetid://132069262307646", BackgroundTransparency = 0 },
+    Corner = { CornerRadius = UDim.new(35, 1) },
 })
 
--- منع التزامن
-task.wait(0.1)
-
--- ==================== 3. تبويب: لاق للسيرفر (Tablag) ====================
-local Tablag = Window:MakeTab({
-    Name = "لاق للسيرفر",
-    Icon = "rbxassetid://83114982417764"
+local TabSp = Window:MakeTab({
+    Title = "[EXTRA]مباني+سبام",
+    Icon = "hammer"
 })
 
--- ==================== قسم: لاق باص ====================
-Tablag:AddSection({
-    Name = "لاق مؤقت (باص)"
-})
+TabSp:AddSection({ "تدبيل/مباني" })
 
-local runLag = false
-local lagCoroutine
+local BNumber = 2000 -- Initial default value
 
-Tablag:AddToggle({
-    Name = "لاق باص",
+TabSp:AddToggle({
+    Name = "تدبيل كرات سلة",
     Default = false,
-    Flag = "lag_bus",
     Callback = function(Value)
-        runLag = Value
-
-        if runLag then
-            local Players = game:GetService("Players")
-            local ReplicatedStorage = game:GetService("ReplicatedStorage")
-            local LocalPlayer = Players.LocalPlayer
-
-            if not LocalPlayer then
-                warn("LocalPlayer غير موجود!")
-                runLag = false
-                return
-            end
-
-            local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-            local humanoidRootPart = character:WaitForChild("HumanoidRootPart", 5)
-            if not humanoidRootPart then
-                warn("HumanoidRootPart غير موجود!")
-                runLag = false
-                return
-            end
-
-            local function GetBus()
-                local vehicles = workspace:FindFirstChild("Vehicles")
-                if vehicles then
-                    return vehicles:FindFirstChild(LocalPlayer.Name .. "Car")
-                end
-                return nil
-            end
-
-            local remoteEvent = ReplicatedStorage:FindFirstChild("RE")
-            if not remoteEvent then
-                warn("RemoteEvent 'RE' غير موجود!")
-                runLag = false
-                return
-            end
-
-            if not remoteEvent:FindFirstChild("1Ca1r") then
-                warn("الحدث '1Ca1r' غير موجود داخل 'RE'!")
-                runLag = false
-                return
-            end
-
-            lagCoroutine = coroutine.wrap(function()
-                while runLag do
-                    local success, err = pcall(function()
-                        humanoidRootPart.CFrame = CFrame.new(1118.81, 75.998, -1138.61)
-                        local bus = GetBus()
-                        if bus then
-                            remoteEvent["1Ca1r"]:FireServer({ "PickingCar", "SchoolBus" }) -- ✅ تم التصحيح
-                        end
-                    end)
-
-                    if not success then
-                        warn("خطأ في تنفيذ لاق الباص: " .. tostring(err))
-                        runLag = false
-                    end
-
-                    task.wait(0)
-                end
-            end)
-            lagCoroutine()
-        end
-    end
-})
-
--- ==================== قسم: لاق بالابتوب ====================
-Tablag:AddSection({
-    Name = "لاق بالابتوب"
-})
-
-local LagToggles = { Laptop = false, Phone = false, Bomb = false }
-
-local function clickNormally(object)
-    local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
-    if clickDetector then
-        fireclickdetector(clickDetector)
-    end
-end
-
-local function lagarJogoLaptop(laptopPath, maxTeleports)
-    if laptopPath then
-        local teleportCount = 0
-        while teleportCount < maxTeleports and LagToggles.Laptop do
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = laptopPath.CFrame
-            clickNormally(laptopPath)
-            teleportCount = teleportCount + 1
-            task.wait(0.0001)
-        end
-    else
-        warn("الابتوب غير موجود!")
-    end
-end
-
-Tablag:AddToggle({
-    Name = "لاق بالابتوب",
-    Default = false,
-    Flag = "lag_laptop",
-    Callback = function(state)
-        LagToggles.Laptop = state
-        if state then
-            local laptopPath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_GiveTools"):FindFirstChild("Laptop")
-            if laptopPath then
-                task.spawn(function()
-                    lagarJogoLaptop(laptopPath, 999999999)
-                end)
-            else
-                warn("الابتوب غير موجود!")
-            end
-        else
-            print("تم إيقاف لاق الابتوب")
-        end
-    end
-})
-
-Tablag:AddParagraph("تشغيل لاق لابتوب", "انتظر حوالي 20 ثانية ليبدأ تأثير اللاق")
-
--- ==================== قسم: لاق بالهاتف ====================
-Tablag:AddSection({
-    Name = "لاق بالهاتف"
-})
-
-local function lagarJogoPhone(phonePath, maxTeleports)
-    if phonePath then
-        local teleportCount = 0
-        while teleportCount < maxTeleports and LagToggles.Phone do
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = phonePath.CFrame
-            clickNormally(phonePath)
-            teleportCount = teleportCount + 1
-            task.wait(0.01)
-        end
-    else
-        warn("الهاتف غير موجود!")
-    end
-end
-
-Tablag:AddToggle({
-    Name = "تشغيل اللاق",
-    Default = false,
-    Flag = "lag_phone",
-    Callback = function(state)
-        LagToggles.Phone = state
-        if state then
-            local phonePath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_CommercialStores"):FindFirstChild("CommercialStorage1"):FindFirstChild("Store"):FindFirstChild("Tools"):FindFirstChild("Iphone")
-            if phonePath then
-                task.spawn(function()
-                    lagarJogoPhone(phonePath, 999999)
-                end)
-            else
-                warn("الهاتف غير موجود!")
-            end
-        else
-            print("تم إيقاف لاق الهاتف")
-        end
-    end
-})
-
-Tablag:AddParagraph("تشغيل لاق الهاتف", "انتظر حوالي 20 ثانية ليبدأ تأثير اللاق")
-
--- ==================== قسم: لاق قنابل ====================
-Tablag:AddSection({
-    Name = "لاق قنابل"
-})
-
-Tablag:AddToggle({
-    Name = "تشغيل لاق القنابل",
-    Default = false,
-    Flag = "lag_bomb",
-    Callback = function(Value)
-        LagToggles.Bomb = Value
-
-        if LagToggles.Bomb then
+        BasketToggleH = Value
+        if BasketToggleH then
             local Player = game.Players.LocalPlayer
-            local Character = Player.Character or Player.CharacterAdded:Wait()
-            local RootPart = Character:WaitForChild("HumanoidRootPart")
-            local ReplicatedStorage = game:GetService("ReplicatedStorage")
-            local Bomb = workspace:WaitForChild("WorkspaceCom"):WaitForChild("001_CriminalWeapons"):WaitForChild("GiveTools"):WaitForChild("Bomb")
+            local Backpack = Player.Backpack
+            local Mouse = Player:GetMouse()
+            local Character = Player.Character
+            local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+            local RootPart = Character:FindFirstChild("HumanoidRootPart")
+            local OldPosition = RootPart.CFrame
+            local Clone = Workspace.WorkspaceCom["001_GiveTools"].Basketball
 
-            task.spawn(function()
-                while LagToggles.Bomb and Bomb and RootPart do
-                    RootPart.CFrame = Bomb.CFrame
-                    fireclickdetector(Bomb.ClickDetector)
-                    task.wait(0.00001)
-                end
-            end)
+            for i = 1, BNumber do
+                task.wait()
+                RootPart.CFrame = Clone.CFrame
+                fireclickdetector(Clone.ClickDetector)
+            end
+            task.wait()
+            RootPart.CFrame = OldPosition
 
-            task.spawn(function()
-                while LagToggles.Bomb do
-                    if Bomb and RootPart then
-                        local VirtualInputManager = game:GetService("VirtualInputManager")
-                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, true, game, 0)
-                        task.wait(1.5)
-                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, false, game, 0)
-
-                        local args = { [1] = "Bomb" .. Player.Name }
-                        local BombServer = ReplicatedStorage:FindFirstChild("RE"):FindFirstChild("1Blo1wBomb1sServe1r")
-                        if BombServer then
-                            BombServer:FireServer(unpack(args))
-                        end
+            while BasketToggleH do
+                task.wait()
+                for i, v in ipairs(Character:GetChildren()) do
+                    if v.Name == "Basketball" then
+                        task.wait()
+                        local args = {
+                            [1] = Mouse.Hit.p
+                        }
+                        v.ClickEvent:FireServer(unpack(args))
                     end
-                    task.wait(1.5)
+                end
+            end
+        end
+    end
+})
+
+TabSp:AddSlider({
+    Name = "كمية مرات السلة",
+    MinValue = 1,
+    MaxValue = 2000, -- Adjust as needed
+    Default = BNumber,
+    Increase = 1,
+    Callback = function(Value)
+        BNumber = Value
+    end
+})
+
+local duplicarAtivo = false
+local duplicarThread = nil
+
+TabSp:AddToggle({
+    Name = "اخذ قنابل",
+    Default = false,
+    Callback = function(v)
+        duplicarAtivo = v
+        if duplicarAtivo then
+            duplicarThread = task.spawn(function()
+                local Player = game.Players.LocalPlayer
+                local Character = Player.Character or Player.CharacterAdded:Wait()
+                local RootPart = Character:WaitForChild("HumanoidRootPart")
+                local OldPos = RootPart.CFrame
+
+                local Bomb = game:GetService("Workspace"):FindFirstChild("WorkspaceCom")
+                    and game:GetService("Workspace").WorkspaceCom["001_CriminalWeapons"]:FindFirstChild("GiveTools")
+                    and game:GetService("Workspace").WorkspaceCom["001_CriminalWeapons"].GiveTools:FindFirstChild("Bomb")
+
+                if not Bomb or not Bomb:FindFirstChild("ClickDetector") then
+                    warn("Erro ao encontrar a Bomb! Tente novamente.")
+                    duplicarAtivo = false
+                    return
+                end
+
+                while duplicarAtivo do
+                    for i = 1, 12 do
+                        RootPart.CFrame = Bomb.CFrame
+                        fireclickdetector(Bomb.ClickDetector)
+                        task.wait(0)
+                    end
+                    task.wait(0.001)
+                end
+
+                -- Quando desativar, volta para a posição original
+                RootPart.CFrame = OldPos
+            end)
+        end
+    end
+})
+
+local spam = false
+local playerName = game.Players.LocalPlayer.Name -- pega automaticamente o nome do player local
+
+TabSp:AddToggle({
+    Name = "سبام تفجير قنابل",
+    Default = false,
+    Callback = function(v)
+        spam = v
+        if spam then
+            task.spawn(function()
+                while spam do
+                    local args = {
+                        [1] = "Bomb" .. playerName
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Blo1wBomb1sServe1r"):FireServer(unpack(args))
+                    task.wait(0.1) -- intervalo de 0.1 segundo entre cada spam
                 end
             end)
         end
     end
 })
 
-Tablag:AddParagraph("ملاحظات اللاق", "انتظر حوالي 35 ثانية ليبدأ تأثير اللاق")
 
--- ==================== 4. تبويب: الرؤوس والأجسام ====================
-local HeadBodyTab = Window:MakeTab({
-    Name = "الرؤوس و الاجسام",
-    Icon = "rbxassetid://4483345998"
-})
+TabSp:AddSection({"المباني"})
 
-local function SafeInvoke(remotePath, args)
-    pcall(function()
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local Remote = ReplicatedStorage:WaitForChild(remotePath[1], 10):WaitForChild(remotePath[2], 10)
-        Remote:InvokeServer(unpack(args))
-    end)
-end
+local function organizarItensEmCuboAcima()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local backpack = player.Backpack
+    local rootPart = character:WaitForChild("HumanoidRootPart")
 
-HeadBodyTab:AddSection({
-    Name = "الرؤوس"
-})
+    -- جمع جميع أدوات FireX من الشخصية والمخزن
+    local itens = {}
 
-local HeadList = {
-    "رأس روبـوت",
-    "رأس بـنـت كـيـوت",
-    "رأس مـخـفـي",
-    "رأس كـوبـي| رول",
-    "رأس عـيـون زرقـاء"
-}
-
-local HeadIds = {
-    ["رأس روبـوت"] = 3210773801,
-    ["رأس بـنـت كـيـوت"] = 140991,
-    ["رأس مـخـفـي"] = 134082579,
-    ["رأس كـوبـي| رول"] = 746767604,
-    ["رأس عـيـون زرقـاء"] = 16580493236
-}
-
-local SelectedHead = HeadList[1]
-
-HeadBodyTab:AddDropdown({
-    Name = "اختر رأسًا",
-    Options = HeadList,
-    Default = SelectedHead,
-    Callback = function(value)
-        SelectedHead = value
-    end
-})
-
-HeadBodyTab:AddButton({
-    Name = "تفعيل الرأس",
-    Callback = function()
-        if not SelectedHead then return end
-        SafeInvoke({"Remotes", "Wear"}, { HeadIds[SelectedHead] })
-    end
-})
-
-HeadBodyTab:AddSection({
-    Name = "الأجسام"
-})
-
-local BodyList = {
-    "رجـل مـقـطـوعـة لـلـبـنـات",
-    "جـسـم ولـد كـيـوت",
-    "جـسـم ولـد رول",
-    "جـسـم ولـد مـعـضـل",
-    "جـسـم بـنـت 1",
-    "جـسـم بـنـت 2",
-    "جـسـم بـنـت 3",
-    "جـسـم بـنـت 4",
-    "جـسـم بـنـت 5",
-    "جـسـم بـنـت 6",
-    "جـسـم بـنـت 7",
-    "جـسـم بـنـت 8",
-    "جـسـم بـنـت 9",
-    "جـسـم ولـد 1",
-    "جـسـم ولـد 2",
-    "جـسـم ولـد 3",
-    "جـسـم ولـد 4",
-    "جـسـم ولـد 5",
-    "جـسـم ولـد 6",
-    "جـسـم ولـد 7",
-    "جـسـم ولـد 8",
-    "جـسـم ولـد 9",
-    "جـسـم ولـد 10",
-    "جـسـم ولـد 11",
-    "جـسـم قـزم الـمـربـع"
-}
-
-local BodyData = {
-    ["رجـل مـقـطـوعـة لـلـبـنـات"] = {96491916349570, 76683091425509, 75159926897589, 139607718, 1, 1},
-    ["جـسـم ولـد كـيـوت"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
-    ["جـسـم ولـد رول"] = {27112025, 27112039, 27112052, 3230472745, 3230470862, 1},
-    ["جـسـم ولـد مـعـضـل"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
-    ["جـسـم بـنـت 1"] = {96491916349570, 76683091425509, 75159926897589, 1, 1, 1},
-    ["جـسـم بـنـت 2"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
-    ["جـسـم بـنـت 3"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
-    ["جـسـم بـنـت 4"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
-    ["جـسـم بـنـت 5"] = {96491916349570, 76683091425509, 75159926897589, 111571034664628, 1, 1},
-    ["جـسـم بـنـت 6"] = {96491916349570, 76683091425509, 75159926897589, 1, 1, 1},
-    ["جـسـم بـنـت 7"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
-    ["جـسـم بـنـت 8"] = {96491916349570, 76683091425509, 75159926897589, 18839824178, 18839824209, 1},
-    ["جـسـم بـنـت 9"] = {14861800638, 14861800626, 14861801452, 14861800627, 14861801454, 1},
-    ["جـسـم ولـد 1"] = {17754346388, 1, 1, 1, 1, 1},
-    ["جـسـم ولـد 2"] = {17754346388, 1, 1, 1, 1, 1},
-    ["جـسـم ولـد 3"] = {17754346388, 1, 1, 1, 1, 1},
-    ["جـسـم ولـد 4"] = {17754346388, 1, 1, 1, 1, 1},
-    ["جـسـم ولـد 5"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
-    ["جـسـم ولـد 6"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
-    ["جـسـم ولـد 7"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
-    ["جـسـم ولـد 8"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
-    ["جـسـم ولـد 9"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
-    ["جـسـم ولـد 10"] = {27112025, 27112039, 27112052, 27112068, 27112056, 1},
-    ["جـسـم ولـد 11"] = {120973199097564, 118345433416023, 112849465115864, 78321005147549, 106586789635639, 1},
-    ["جـسـم قـزم الـمـربـع"] = {126267841602936, 77530451194918, 123471958406889, 117042768644173, 131948590344338, 1}
-}
-
-local SelectedBody = BodyList[1]
-
-HeadBodyTab:AddDropdown({
-    Name = "اختر جسمًا",
-    Options = BodyList,
-    Default = SelectedBody,
-    Callback = function(value)
-        SelectedBody = value
-    end
-})
-
-HeadBodyTab:AddButton({
-    Name = "تفعيل الجسم",
-    Callback = function()
-        if not SelectedBody then return end
-        SafeInvoke({"Remotes", "ChangeCharacterBody"}, { BodyData[SelectedBody] })
-    end
-})
-
--- ==================== 5. تبويب: الأماكن ====================
-local PlacesTab = Window:MakeTab({
-    Name = "الأماكن",
-    Icon = "rbxassetid://1234567890" -- يمكنك تغيير الأيقونة
-})
-
-local teleportButtons = {
-    {"فندق", CFrame.new(192, 4, 272)},
-    {"ساحة المطعم", CFrame.new(136, 4, 117)},
-    {"مقر سري تحت الارض", CFrame.new(-119, -28, 235)},
-    {"بيت مهجور", CFrame.new(986, 4, 63)},
-    {"كهف", CFrame.new(672, 4, -296)},
-    {"تحت الماب", CFrame.new(505, -75, 143)},
-    {"المدرسة", CFrame.new(-312, 4, 211)},
-    {"المطعم", CFrame.new(161, 8, 52)},
-    {"البداية", CFrame.new(-26, 4, -23)},
-    {"فوق الجسر", CFrame.new(-589, 141, -59)},
-    {"مستشفى", CFrame.new(-309, 4, 71)},
-    {"مختبر سري", CFrame.new(179, 4, -464)},
-    {"تحت الماب1", CFrame.new(0, 4, -495)},
-    {"تحت الماب2", CFrame.new(-343, 4, -613)},
-    {"الجزيرة", CFrame.new(-1925, 23, 127)},
-    {"ساحة الفنادق", CFrame.new(182, 4, 150)},
-    {"الجبل الثلجي", CFrame.new(-670, 251, 765)},
-    {"البنك", CFrame.new(2.28, 4.65, 254.58)},
-    {"محل الملابس", CFrame.new(-46.15, 4.65, 253.20)},
-    {"متجر الحيوانات", CFrame.new(-88.48, 22.05, 262.34)},
-    {"العيادة", CFrame.new(-53.58, 22.15, 265.61)},
-    {"الكافتيريا", CFrame.new(-97.12, 4.65, 254.99)}
-}
-
-for _, btn in ipairs(teleportButtons) do
-    PlacesTab:AddButton({
-        Name = btn[1],
-        Callback = function()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = btn[2]
+    for _, item in pairs(character:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
         end
-    })
+    end
+
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+
+    -- التحقق من وجود أدوات
+    if #itens == 0 then
+        warn("لا توجد أدوات FireX للتنظيم.")
+        return
+    end
+
+    -- مركز المكعب: فوق الرأس
+    local head = character:FindFirstChild("Head") or rootPart
+    local center = head.Position + Vector3.new(0, 15, 0) -- 15 وحدة فوق الرأس
+
+    -- أبعاد المكعب العملاق
+    local cubeSize = 30 -- 30 × 30 × 30 وحدة (مكعب ضخم)
+
+    -- عدد النقاط في كل اتجاه
+    local steps = 15 -- نقسم المكعب إلى 15×15×15 = 3375 نقطة كحد أقصى
+
+    -- التباعد بين كل نقطة
+    local spacing = cubeSize / steps
+
+    -- توزيع الأدوات في شبكة مكعبة ثلاثية الأبعاد
+    local count = 1
+    for ix = 0, steps - 1 do
+        for iy = 0, steps - 1 do
+            for iz = 0, steps - 1 do
+                if count > #itens then break end
+
+                -- حساب الموضع النسبي
+                local x = (ix - steps/2) * spacing
+                local y = (iy - steps/2) * spacing
+                local z = (iz - steps/2) * spacing
+
+                local pos = center + Vector3.new(x, y, z)
+
+                -- تجهيز الأداة
+                local item = itens[count]
+                item.Parent = character
+                item.GripPos = pos - rootPart.Position
+
+                task.wait(0.001) -- تأخير بسيط لتجنب التجميد
+
+                -- إعادة الأداة إلى المخزن
+                item.Parent = backpack
+
+                count = count + 1
+            end
+        end
+    end
+
+    -- تجهيز جميع أدوات FireX مرة أخيرة (لترى المكعب)
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            item.Parent = character
+        end
+    end
+
+    -- إشعار بالنجاح
+    print("تم إنشاء مكعب عملاق من " .. (count - 1) .. " أداة FireX!")
 end
 
--- ==================== 6. تبويب: الأغراض ====================
-local PropsTab = Window:MakeTab({
-    Name = "الأغراض",
-    Icon = "rbxassetid://1234567890"
+TabSp:AddButton({
+    Name = "🔥 FireX: مكعب عملاق فوق الرأس",
+    Callback = function()
+        local Player = game.Players.LocalPlayer 
+        local Character = Player.Character or Player.CharacterAdded:Wait()
+        local RootPart = Character:WaitForChild("HumanoidRootPart")
+        
+        -- البحث عن الكائن
+        local Clone = game:GetService("Workspace"):FindFirstChild("WorkspaceCom") 
+            and game:GetService("Workspace").WorkspaceCom:FindFirstChild("001_GiveTools")
+            and game:GetService("Workspace").WorkspaceCom["001_GiveTools"]:FindFirstChild("FireX")
+
+        if Clone and Clone:FindFirstChild("ClickDetector") then
+            local OldPos = RootPart.CFrame
+
+            -- جمع 2000 أداة (أو أكثر إذا أمكن)
+            for i = 1, 2000 do
+                RootPart.CFrame = Clone.CFrame
+                pcall(fireclickdetector, Clone.ClickDetector) -- آمن ضد الأخطاء
+                task.wait(0.005) -- تأخير بسيط
+            end
+
+            -- العودة إلى المكان الأصلي
+            RootPart.CFrame = OldPos
+
+            -- تنفيذ تنظيم المكعب
+            organizarItensEmCuboAcima()
+        else
+            warn("FireX أو ClickDetector غير موجود!")
+            Tab:AddNotification({
+                Name = "خطأ",
+                Content = "لم يتم العثور على FireX!",
+                Time = 5
+            })
+        end
+    end
 })
 
-local function PickTool(ToolName)
-    local args = {
-        [1] = "PickingTools",
-        [2] = ToolName
-    }
-    local ToolRemote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1Too1l")
-    if ToolRemote then
-        ToolRemote:InvokeServer(unpack(args))
+-- دالة لتنظيم الأدوات في شكل كرة فوق الرأس
+local function organizarItensEmBolaAcima()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local backpack = player.Backpack
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- جمع جميع أدوات FireX من الشخصية والمخزن
+    local itens = {}
+
+    for _, item in pairs(character:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+
+    -- التحقق من وجود أدوات
+    if #itens == 0 then
+        warn("لا توجد أدوات FireX للتنظيم.")
+        return
+    end
+
+    -- مركز الكرة: فوق الرأس (نستخدم الرأس أو HumanoidRootPart)
+    local head = character:FindFirstChild("Head") or rootPart
+    local center = head.Position + Vector3.new(0, -5, 0) -- 5 وحدات فوق الرأس
+
+    -- نصف قطر الكرة
+    local radius = 8
+
+    -- زاوية عشوائية لتوزيع متساوٍ تقريبًا (Spherical Distribution)
+    for i, item in pairs(itens) do
+        -- زوايا عشوائية
+        local phi = math.acos(1 - 2 * (i / (#itens + 1))) -- توزيع متساوٍ على المحور Y
+        local theta = 7.777 * i -- رقم غير منطقي يقلل من التكرار (مثل 7.777)
+
+        -- التحويل إلى إحداثيات كروية
+        local x = math.cos(theta) * math.sin(phi)
+        local y = math.cos(phi)
+        local z = math.sin(theta) * math.sin(phi)
+
+        -- تحديد الموضع على سطح الكرة
+        local pos = center + Vector3.new(x, y, z) * radius
+
+        -- تجهيز الأداة لتعديل GripPos
+        item.Parent = character
+
+        -- ضبط GripPos بحيث تظهر الأداة في الموضع المطلوب
+        item.GripPos = pos - rootPart.Position
+
+        task.wait(0.01) -- تأخير بسيط لرؤية التأثير
+
+        -- إعادة الأداة إلى المخزن (حتى لا تعيق اللاعب)
+        item.Parent = backpack
+    end
+
+    -- تجهيز جميع أدوات FireX مرة أخيرة (لترى الكرة)
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            item.Parent = character
+        end
     end
 end
 
-local function ClearAllProps()
-    local args = { [1] = "ClearAllProps" }
-    local ClearRemote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1Clea1rTool1s")
-    if ClearRemote then
-        ClearRemote:FireServer(unpack(args))
+TabSp:AddButton({
+    Name = "Firex كرة عملاقة فوق الرأس",
+    Callback = function()
+        local Player = game.Players.LocalPlayer 
+        local Character = Player.Character or Player.CharacterAdded:Wait()
+        local RootPart = Character:WaitForChild("HumanoidRootPart")
+        
+        -- البحث عن الكائن
+        local Clone = game:GetService("Workspace"):FindFirstChild("WorkspaceCom") 
+            and game:GetService("Workspace").WorkspaceCom:FindFirstChild("001_GiveTools")
+            and game:GetService("Workspace").WorkspaceCom["001_GiveTools"]:FindFirstChild("FireX")
+
+        if Clone and Clone:FindFirstChild("ClickDetector") then
+            local OldPos = RootPart.CFrame
+
+            -- جمع 600 أداة
+            for i = 1, 600 do
+                RootPart.CFrame = Clone.CFrame
+                fireclickdetector(Clone.ClickDetector)
+                task.wait()
+            end
+
+            -- العودة
+            RootPart.CFrame = OldPos
+
+            -- تنفيذ تنظيم الكرة
+            organizarItensEmBolaAcima()
+        else
+            warn("FireX أو ClickDetector غير موجود!")
+        end
+    end
+})
+
+local BNumber = 600 -- Valor fixo
+local distanciaEntreItens = 3 -- DistÃ¢ncia entre os itens ao longo do bastÃ£o
+
+-- FunÃ§Ã£o para organizar itens em forma de bastÃ£o gigante para baixo
+local function organizarItensEmBastaoParaBaixo()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local backpack = player.Backpack
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- Coleta todos os Tools no personagem e na mochila
+    local itens = {}
+
+    -- Procura Tools no personagem
+    for _, item in pairs(character:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+
+    -- Procura Tools na mochila
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+
+    -- Verifica duplicatas e organiza por nome
+    local duplicatas = {}
+    for _, item in pairs(itens) do
+        if not duplicatas[item.Name] then
+            duplicatas[item.Name] = {}
+        end
+        table.insert(duplicatas[item.Name], item)
+    end
+
+    -- Para cada grupo de duplicatas, organize-os em formato de bastÃ£o
+    local yOffset = 0 -- Offset inicial no eixo Y
+    for _, grupo in pairs(duplicatas) do
+        local total = #grupo
+        if total > 1 then
+            for i, item in pairs(grupo) do
+                -- Equipa o item para ajustar o GripPos
+                item.Parent = character
+
+                -- Define a posiÃ§Ã£o vertical para o item no bastÃ£o (para baixo no eixo Y)
+                item.GripPos = Vector3.new(0, -yOffset, 0)
+
+                -- Incrementa o offset no eixo Y para "descer"
+                yOffset = yOffset + distanciaEntreItens
+
+                -- Aguarda um pouco para o efeito ser visÃ­vel
+                task.wait()
+
+                -- Solta o item colocando de volta na mochila
+                item.Parent = backpack
+            end
+        end
+    end
+
+    -- Equipa todos os itens "FireX" da mochila
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            item.Parent = character
+        end
     end
 end
 
-local function ClearAllTools()
-    local args = { [1] = "ClearAllTools" }
-    local ClearRemote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1Clea1rTool1s")
-    if ClearRemote then
-        ClearRemote:FireServer(unpack(args))
+
+TabSp:AddButton({
+  Name = "عصا طويلة طفاية حريق[FireX]",
+  Callback = function()
+    local Player = game.Players.LocalPlayer
+        local Character = Player.Character or Player.CharacterAdded:Wait()
+        local RootPart = Character:WaitForChild("HumanoidRootPart")
+
+        -- AtualizaÃ§Ã£o da hierarquia para FireX
+        local Clone = game:GetService("Workspace"):FindFirstChild("WorkspaceCom")
+            and game:GetService("Workspace").WorkspaceCom:FindFirstChild("001_GiveTools")
+            and game:GetService("Workspace").WorkspaceCom["001_GiveTools"]:FindFirstChild("FireX")
+
+        if Clone and Clone:FindFirstChild("ClickDetector") then
+            local OldPos = RootPart.CFrame -- Armazena a posiÃ§Ã£o original
+
+            -- Loop para pegar os itens repetidamente
+            local processed = 0
+            while processed < BNumber do
+                RootPart.CFrame = Clone.CFrame -- Teletransporta para o clone
+                fireclickdetector(Clone.ClickDetector) -- Clica no detector
+                processed = processed + 1
+                task.wait() -- Pausa para evitar travamento
+            end
+
+            -- Retorna Ã  posiÃ§Ã£o original
+            RootPart.CFrame = OldPos
+
+            -- Executa a funÃ§Ã£o de organizaÃ§Ã£o ao final do loop
+            organizarItensEmBastaoParaBaixo()
+        else
+            warn("FireX ou ClickDetector nÃ£o encontrado!")
+        end
+  end
+})
+
+
+local BNumber = 600 -- Valor fixo
+local raioCirculo = 5 -- DistÃ¢ncia do cÃ­rculo em relaÃ§Ã£o ao personagem
+
+-- FunÃ§Ã£o para organizar itens em formato de cÃ­rculo
+local function organizarItensEmCirculo()
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local backpack = player.Backpack
+local rootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Coleta todos os Tools no personagem e na mochila  
+local itens = {}  
+  
+-- Procura Tools no personagem  
+for _, item in pairs(character:GetChildren()) do  
+    if item:IsA("Tool") and item.Name == "FireX" then  
+        table.insert(itens, item)  
+    end  
+end  
+  
+-- Procura Tools na mochila  
+for _, item in pairs(backpack:GetChildren()) do  
+    if item:IsA("Tool") and item.Name == "FireX" then  
+        table.insert(itens, item)  
+    end  
+end  
+  
+-- Verifica duplicatas e organiza por nome  
+local duplicatas = {}  
+for _, item in pairs(itens) do  
+    if not duplicatas[item.Name] then  
+        duplicatas[item.Name] = {}  
+    end  
+    table.insert(duplicatas[item.Name], item)  
+end  
+  
+-- Para cada grupo de duplicatas, organize-os em formato de cÃ­rculo  
+for _, grupo in pairs(duplicatas) do  
+    local total = #grupo  
+    if total > 1 then  
+        for i, item in pairs(grupo) do  
+            -- Equipa o item para ajustar o GripPos  
+            item.Parent = character  
+              
+            -- Calcula o Ã¢ngulo de cada item no cÃ­rculo  
+            local angulo = (i / total) * (2 * math.pi)  
+              
+            -- Calcula a posiÃ§Ã£o circular atrÃ¡s do jogador  
+            local offsetX = math.cos(angulo) * raioCirculo  
+            local offsetZ = math.sin(angulo) * raioCirculo  
+              
+            -- Define a posiÃ§Ã£o atrÃ¡s do HumanoidRootPart  
+            item.GripPos = Vector3.new(-offsetX, 0, -offsetZ - raioCirculo)  
+              
+            -- Aguarda um pouco para o efeito ser visÃ­vel  
+            task.wait()  
+              
+            -- Solta o item colocando de volta na mochila  
+            item.Parent = backpack  
+        end  
+    end  
+end  
+  
+-- Equipa todos os itens "FireX" da mochila  
+for _, item in pairs(backpack:GetChildren()) do  
+    if item:IsA("Tool") and item.Name == "FireX" then  
+        item.Parent = character  
+    end  
+end
+
+end
+
+
+TabSp:AddButton({
+  Name = "[FireX]دائرة",
+  Callback = function()
+    local Player = game.Players.LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local RootPart = Character:WaitForChild("HumanoidRootPart")
+
+-- AtualizaÃ§Ã£o da hierarquia para FireX  
+    local Clone = game:GetService("Workspace"):FindFirstChild("WorkspaceCom")   
+        and game:GetService("Workspace").WorkspaceCom:FindFirstChild("001_GiveTools")  
+        and game:GetService("Workspace").WorkspaceCom["001_GiveTools"]:FindFirstChild("FireX")  
+
+    if Clone and Clone:FindFirstChild("ClickDetector") then  
+        local OldPos = RootPart.CFrame -- Armazena a posiÃ§Ã£o original  
+
+        -- Loop para pegar os itens repetidamente  
+        local processed = 0  
+        while processed < BNumber do  
+            RootPart.CFrame = Clone.CFrame -- Teletransporta para o clone  
+            fireclickdetector(Clone.ClickDetector) -- Clica no detector  
+            processed = processed + 1  
+            task.wait() -- Pausa para evitar travamento  
+        end  
+
+        -- Retorna Ã  posiÃ§Ã£o original  
+        RootPart.CFrame = OldPos   
+
+        -- Executa a funÃ§Ã£o de organizaÃ§Ã£o ao final do loop  
+        organizarItensEmCirculo()  
+    else  
+        warn("FireX ou ClickDetector nÃ£o encontrado!")  
+    end  
+  end
+})
+
+
+local BNumber = 600 -- Valor fixo
+local distanciaAtras = 5 -- DistÃ¢ncia da parede em relaÃ§Ã£o ao personagem
+local espacamentoX = 3 -- EspaÃ§amento horizontal entre itens
+local espacamentoY = 3 -- EspaÃ§amento vertical entre itens
+
+-- FunÃ§Ã£o para organizar itens em formato de parede
+local function organizarItensEmParede()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local backpack = player.Backpack
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- Coleta todos os Tools no personagem e na mochila
+    local itens = {}
+    
+    -- Procura Tools no personagem
+    for _, item in pairs(character:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+    
+    -- Procura Tools na mochila
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            table.insert(itens, item)
+        end
+    end
+    
+    -- Verifica duplicatas e organiza por nome
+    local duplicatas = {}
+    for _, item in pairs(itens) do
+        if not duplicatas[item.Name] then
+            duplicatas[item.Name] = {}
+        end
+        table.insert(duplicatas[item.Name], item)
+    end
+    
+    -- Organiza os itens em formato de parede
+    for _, grupo in pairs(duplicatas) do
+        local total = #grupo
+        
+        -- Calcula o nÃºmero de colunas e linhas necessÃ¡rias
+        local colunas = math.ceil(math.sqrt(total))
+        local linhas = math.ceil(total / colunas)
+        
+        for i, item in pairs(grupo) do
+            -- Calcula a posiÃ§Ã£o na grade
+            local linha = math.floor((i-1) / colunas)
+            local coluna = (i-1) % colunas
+            
+            -- Equipa o item para ajustar o GripPos
+            item.Parent = character
+            
+            -- Ajusta a posiÃ§Ã£o na parede atrÃ¡s do jogador
+            item.GripPos = Vector3.new(coluna * espacamentoX, -linha * espacamentoY, -distanciaAtras)
+            
+            -- Aguarda um pouco para o efeito ser visÃ­vel
+            task.wait()
+            
+            -- Solta o item colocando de volta na mochila
+            item.Parent = backpack
+        end
+    end
+    
+    -- Equipa todos os itens "FireX" da mochila
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.Name == "FireX" then
+            item.Parent = character
+        end
     end
 end
 
-PropsTab:AddSection({
-    Name = "أدوات ومقاعد"
+
+TabSp:AddButton({
+  Name = "[Firex]جدار عملاق",
+  Callback = function()
+    local Player = game.Players.LocalPlayer 
+        local Character = Player.Character or Player.CharacterAdded:Wait()
+        local RootPart = Character:WaitForChild("HumanoidRootPart")
+        
+        -- AtualizaÃ§Ã£o da hierarquia para FireX
+        local Clone = game:GetService("Workspace"):FindFirstChild("WorkspaceCom") 
+            and game:GetService("Workspace").WorkspaceCom:FindFirstChild("001_GiveTools")
+            and game:GetService("Workspace").WorkspaceCom["001_GiveTools"]:FindFirstChild("FireX")
+
+        if Clone and Clone:FindFirstChild("ClickDetector") then
+            local OldPos = RootPart.CFrame -- Armazena a posiÃ§Ã£o original
+
+            -- Loop para pegar os itens repetidamente
+            local processed = 0
+            while processed < BNumber do
+                RootPart.CFrame = Clone.CFrame -- Teletransporta para o clone
+                fireclickdetector(Clone.ClickDetector) -- Clica no detector
+                processed = processed + 1
+                task.wait() -- Pausa para evitar travamento
+            end
+
+            -- Retorna Ã  posiÃ§Ã£o original
+            RootPart.CFrame = OldPos 
+
+            -- Executa a funÃ§Ã£o de organizaÃ§Ã£o ao final do loop
+            organizarItensEmParede()
+        else
+            warn("FireX ou ClickDetector nÃ£o encontrado!")
+        end
+  end
 })
 
-PropsTab:AddButton({
-    Name = "اخذ كنبة",
-    Callback = function()
-        PickTool("Couch")
+TabSp:AddSection({"مسك الاغراض"})
+
+TabSp:AddButton({
+  Name = "مسك جميع الاغراض",
+  Callback = function()
+    local function equiptool()
+  for i,v in ipairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+    if v:IsA("Tool") then
+      v.Parent = game.Players.LocalPlayer.Character
     end
-})
-
-PropsTab:AddButton({
-    Name = "اخذ كيس ناري",
-    Callback = function()
-        PickTool("PaperbagFire")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "اخذ ايباد",
-    Callback = function()
-        PickTool("Ipad")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "اخذ قنبلة",
-    Callback = function()
-        PickTool("Bomb")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "سيف",
-    Callback = function()
-        PickTool("SwordWood")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "قوس",
-    Callback = function()
-        PickTool("Bow")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "Gloukمسدس",
-    Callback = function()
-        PickTool("Glock")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "سنايبر",
-    Callback = function()
-        PickTool("Sniper")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "سنايبر ريفيل",
-    Callback = function()
-        PickTool("Assault")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "حذف كل الاغراض",
-    Callback = function()
-        ClearAllProps()
-    end
-})
-
-PropsTab:AddSection({
-    Name = "أغراض البنك"
-})
-
-PropsTab:AddButton({
-    Name = "حقيبة بيتكوين",
-    Callback = function()
-        PickTool("DuffleBagBitcoin")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "حقيبة الماس",
-    Callback = function()
-        PickTool("DuffleBagDiamonds")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "حقيبة ذهب",
-    Callback = function()
-        PickTool("DuffleBagGold")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "بطاقة صفراء",
-    Callback = function()
-        PickTool("BankGateKey")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "بطاقة بيضاء",
-    Callback = function()
-        PickTool("KeyCardWhite")
-    end
-})
-
-PropsTab:AddButton({
-    Name = "حذف كل الأدوات",
-    Callback = function()
-        ClearAllTools()
-    end
-})
-
-PropsTab:AddButton({
-    Name = "انتقال فوري (يعمل بالنقر)",
-    Callback = function()
-        local Player = game.Players.LocalPlayer
-        local Mouse = Player:GetMouse()
-
-        local Tool = Instance.new("Tool")
-        Tool.Name = "Equip to Click TP"
-        Tool.RequiresHandle = false
-        Tool.Parent = Player.Backpack
-
-        Tool.Activated:Connect(function()
-            local Pos = Mouse.Hit.p + Vector3.new(0, 2.5, 0)
-            Player.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(Pos)
-        end)
-    end
-})
-
--- ==================== 7. تبويب: سكربتات متنوعة ====================
-local ScriptsTab = Window:MakeTab({
-    Name = "سكربتات متنوعة",
-    Icon = "rbxassetid://1234567890"
-})
-
-ScriptsTab:AddSection({
-    Name = "سكربتات مفيدة"
-})
-
-ScriptsTab:AddButton({
-    Name = "سكربت قفل",
-    Callback = function()
-        pcall(loadstring(game:HttpGet("https://pastebin.com/raw/N2tiHgyv")))
-    end
-})
-
-ScriptsTab:AddButton({
-    Name = "Ghost Hub سكربت الشبح",
-    Callback = function()
-        pcall(loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-GhostHub-16534")))
-    end
-})
-
-ScriptsTab:AddButton({
-    Name = "InfiniteYield - ادمن انفنتي",
-    Callback = function()
-        pcall(loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")))
-    end
-})
-
-ScriptsTab:AddButton({
-    Name = "Namelesسكربت ادمن",
-    Callback = function()
-        pcall(loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source")))
-    end
-})
-
-ScriptsTab:AddButton({
-    Name = "طيران",
-    Callback = function()
-        pcall(loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Fly-v3-7412")))
-    end
-})
-
-ScriptsTab:AddButton({
-    Name = "تحكم بالسيارات",
-    Callback = function()
-        warn("رابط التحكم بالسيارات غير متوفر")
-        -- لم يتم تحميل الملف من الرابط
-    end
+  end
+end
+equiptool()
+  end
 })
