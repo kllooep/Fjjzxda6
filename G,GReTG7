@@ -904,6 +904,89 @@ end)
 })
 
 TrollTab:AddSection({ "🌋الكوارث" })
+
+local Rep = game:GetService("ReplicatedStorage")
+local StarterGui = game:GetService("StarterGui")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- Remotes
+local ChangeBodyRemote = Rep.Remotes:FindFirstChild("ChangeCharacterBody")
+local ResetAppearanceRemote = Rep.Remotes:FindFirstChild("ResetCharacterAppearance")
+
+-- Animation IDs
+local SKYBOX_ANIMATION_ID = 101852027997337
+local SKYBOX_BODY_ID = 100839513065432
+
+-- Play animation function
+local function playAnimation(animId)
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+
+    local anim = Instance.new("Animation")
+    anim.AnimationId = "rbxassetid://" .. animId
+
+    local track = humanoid:LoadAnimation(anim)
+    track.Priority = Enum.AnimationPriority.Action4
+    track:Play(0.1, 1, 1)
+
+    return track
+end
+
+-- Notification function
+local function notify(title, text)
+    StarterGui:SetCore("SendNotification", {
+        Title = title,
+        Text = text,
+        Duration = 4
+    })
+end
+-----------------------------------------------------
+-- زر: تفعيل السكاي بوكس
+-----------------------------------------------------
+TrollTab:AddButton({
+    Name = "تشغيل اختراق السماء🌌",
+    Description = "تلوين السماء بالتيشرت الخاص بك🌫️",
+    
+    Callback = function()
+        if ChangeBodyRemote then
+            ChangeBodyRemote:InvokeServer({SKYBOX_BODY_ID})
+        end
+        
+        playAnimation(SKYBOX_ANIMATION_ID)
+        
+        notify("Skybox", "تم تفعيل اختراق السماء🌌")
+    end
+})
+-----------------------------------------------------
+-- زر: إيقاف السكاي بوكس
+-----------------------------------------------------
+TrollTab:AddButton({
+    Name = "إيقاف اختراق السماء🌌",
+    Description = "ارجاع اللاعب للوضع الاصلي",
+
+    Callback = function()
+        if ResetAppearanceRemote then
+            pcall(function()
+                ResetAppearanceRemote:FireServer()
+            end)
+        end
+
+        -- إيقاف الأنيميشينات
+        local char = LocalPlayer.Character
+        if char then
+            local humanoid = char:FindFirstChild("Humanoid")
+            if humanoid then
+                for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                    track:Stop()
+                end
+            end
+        end
+
+        notify("اختراق السماء", "تم الإيقاف")
+    end
+})
+
 TrollTab:AddButton({
     Name = "[⚠️ MUITO OP] سفينة ترگع ام السيرفر",
     Description = "",
