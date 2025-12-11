@@ -904,21 +904,32 @@ end)
 })
 
 TrollTab:AddSection({ "🌋الكوارث" })
-
-local Rep = game:GetService("ReplicatedStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- Remotes
-local ChangeBodyRemote = Rep.Remotes:FindFirstChild("ChangeCharacterBody")
-local ResetAppearanceRemote = Rep.Remotes:FindFirstChild("ResetCharacterAppearance")
+-----------------------------------------------------
+-- IDs التيشيرتات
+-----------------------------------------------------
+local TshirtIDs = {
+    ["الافتراضي"] = nil, -- الافتراضي
+    ["colkid"] = 98679358331654, -- نفس الموجود في السكربت القديم
+    ["T-Shirt 3"] = 100000000000003,
+    ["T-Shirt 4"] = 100000000000004,
+    ["T-Shirt 5"] = 100000000000005,
+    ["T-Shirt 6"] = 100000000000006,
+    ["T-Shirt 7"] = 100000000000007,
+    ["T-Shirt 8"] = 100000000000008,
+    ["T-Shirt 9"] = 100000000000009,
+    ["T-Shirt 10"] = 100000000000010
+}
 
--- Animation IDs
-local SKYBOX_ANIMATION_ID = 101852027997337
-local SKYBOX_BODY_ID = 100839513065432
+local SelectedTshirtID = nil -- تيشرت مختار
 
--- Play animation function
+-----------------------------------------------------
+-- دالة تشغيل الأنيميشن
+-----------------------------------------------------
 local function playAnimation(animId)
     local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
     local humanoid = character:WaitForChild("Humanoid")
@@ -933,7 +944,9 @@ local function playAnimation(animId)
     return track
 end
 
--- Notification function
+-----------------------------------------------------
+-- دالة إرسال إشعار
+-----------------------------------------------------
 local function notify(title, text)
     StarterGui:SetCore("SendNotification", {
         Title = title,
@@ -941,49 +954,86 @@ local function notify(title, text)
         Duration = 4
     })
 end
+
 -----------------------------------------------------
--- زر: تفعيل السكاي بوكس
+-- DropDown اختيار التيشيرت
 -----------------------------------------------------
-TrollTab:AddButton({
-    Name = "تشغيل اختراق السماء🌌",
-    Description = "تلوين السماء بالتيشرت الخاص بك🌫️",
-    
-    Callback = function()
-        if ChangeBodyRemote then
-            ChangeBodyRemote:InvokeServer({SKYBOX_BODY_ID})
-        end
-        
-        playAnimation(SKYBOX_ANIMATION_ID)
-        
-        notify("Skybox", "تم تفعيل اختراق السماء🌌")
+Tab18:AddDropdown({
+    Name = "اختر التيشرت",
+    Description = "اختر تيشيرت لتطبيقه مع السكاي بوكس",
+    Options = {"الافتراضي","colkid","T-Shirt 3","T-Shirt 4","T-Shirt 5","T-Shirt 6","T-Shirt 7","T-Shirt 8","T-Shirt 9","T-Shirt 10"},
+    Default = "الافتراضي",
+    Callback = function(option)
+        SelectedTshirtID = TshirtIDs[option]
+        notify("T-Shirt Selected", "تم اختيار: " .. option)
     end
 })
------------------------------------------------------
--- زر: إيقاف السكاي بوكس
------------------------------------------------------
-TrollTab:AddButton({
-    Name = "إيقاف اختراق السماء🌌",
-    Description = "ارجاع اللاعب للوضع الاصلي",
 
+-----------------------------------------------------
+-- زر تفعيل السكاي بوكس
+-----------------------------------------------------
+Tab18:AddButton({
+    Name = "تشغيل اختراق السماء🌌",
+    Description = "تلوين السماء بالتيشيرت الخاصة باللاعب",
     Callback = function()
-        if ResetAppearanceRemote then
+        -- تغيير التيشرت إذا لم يكن الافتراضي
+        if SelectedTshirtID then
+            local WearShirt = ReplicatedStorage.Remotes:FindFirstChild("WearShirt")
+            local ChangeBody = ReplicatedStorage.Remotes:FindFirstChild("ChangeCharacterBody")
+
+            if WearShirt then
+                pcall(function()
+                    WearShirt:InvokeServer(SelectedTshirtID)
+                end)
+            end
+
+            if ChangeBody then
+                pcall(function()
+                    ChangeBody:InvokeServer({100839513065432})
+                end)
+            end
+        else
+            -- إذا الافتراضي فقط طبق السكاي بوكس بدون تغيير التيشرت
+            local ChangeBody = ReplicatedStorage.Remotes:FindFirstChild("ChangeCharacterBody")
+            if ChangeBody then
+                pcall(function()
+                    ChangeBody:InvokeServer({100839513065432})
+                end)
+            end
+        end
+
+        -- تشغيل الأنيميشن
+        playAnimation(101852027997337)
+        notify("Skybox", "تم تفعيل السكاي بوكس بنجاح!")
+    end
+})
+
+-----------------------------------------------------
+-- زر إيقاف السكاي بوكس
+-----------------------------------------------------
+Tab18:AddButton({
+    Name = "إيقاف اختراق السماء🌌",
+    Description = "إرجاع اللاعب للوضع الطبيعي",
+    Callback = function()
+        local ResetRemote = ReplicatedStorage.Remotes:FindFirstChild("ResetCharacterAppearance")
+        if ResetRemote then
             pcall(function()
-                ResetAppearanceRemote:FireServer()
+                ResetRemote:FireServer()
             end)
         end
 
-        -- إيقاف الأنيميشينات
+        -- إيقاف أي أنيميشنات
         local char = LocalPlayer.Character
         if char then
-            local humanoid = char:FindFirstChild("Humanoid")
+            local humanoid = char:FindFirstChildOfClass("Humanoid")
             if humanoid then
-                for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                for _, track in pairs(humanoid:GetPlayingAnimationTracks()) do
                     track:Stop()
                 end
             end
         end
 
-        notify("اختراق السماء", "تم الإيقاف")
+        notify("اختراق السماء", "تم إيقاف التلوين")
     end
 })
 
