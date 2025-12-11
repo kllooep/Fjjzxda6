@@ -904,6 +904,7 @@ end)
 })
 
 TrollTab:AddSection({ "🌋الكوارث" })
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
@@ -958,7 +959,7 @@ end
 -----------------------------------------------------
 -- DropDown اختيار التيشيرت
 -----------------------------------------------------
-Tab18:AddDropdown({
+TrollTab:AddDropdown({
     Name = "اختر التيشرت",
     Description = "اختر تيشيرت لتطبيقه مع السكاي بوكس",
     Options = {"الافتراضي","colkid","T-Shirt 3","T-Shirt 4","T-Shirt 5","T-Shirt 6","T-Shirt 7","T-Shirt 8","T-Shirt 9","T-Shirt 10"},
@@ -972,7 +973,7 @@ Tab18:AddDropdown({
 -----------------------------------------------------
 -- زر تفعيل السكاي بوكس
 -----------------------------------------------------
-Tab18:AddButton({
+TrollTab:AddButton({
     Name = "تشغيل اختراق السماء🌌",
     Description = "تلوين السماء بالتيشيرت الخاصة باللاعب",
     Callback = function()
@@ -1011,7 +1012,7 @@ Tab18:AddButton({
 -----------------------------------------------------
 -- زر إيقاف السكاي بوكس
 -----------------------------------------------------
-Tab18:AddButton({
+TrollTab:AddButton({
     Name = "إيقاف اختراق السماء🌌",
     Description = "إرجاع اللاعب للوضع الطبيعي",
     Callback = function()
