@@ -975,32 +975,25 @@ TrollTab:AddDropdown({
 -----------------------------------------------------
 TrollTab:AddButton({
     Name = "تشغيل اختراق السماء🌌",
-    Description = "تلوين السماء بالتيشيرت الخاصة باللاعب",
+    Description = "تلوين السماء بتيشيرت اللاعب(تظهر للناس)",
     Callback = function()
+        local WearShirt = ReplicatedStorage.Remotes:FindFirstChild("WearShirt")
+        local ChangeBody = ReplicatedStorage.Remotes:FindFirstChild("ChangeCharacterBody")
+
         -- تغيير التيشرت إذا لم يكن الافتراضي
         if SelectedTshirtID then
-            local WearShirt = ReplicatedStorage.Remotes:FindFirstChild("WearShirt")
-            local ChangeBody = ReplicatedStorage.Remotes:FindFirstChild("ChangeCharacterBody")
-
             if WearShirt then
                 pcall(function()
                     WearShirt:InvokeServer(SelectedTshirtID)
                 end)
             end
+        end
 
-            if ChangeBody then
-                pcall(function()
-                    ChangeBody:InvokeServer({100839513065432})
-                end)
-            end
-        else
-            -- إذا الافتراضي فقط طبق السكاي بوكس بدون تغيير التيشرت
-            local ChangeBody = ReplicatedStorage.Remotes:FindFirstChild("ChangeCharacterBody")
-            if ChangeBody then
-                pcall(function()
-                    ChangeBody:InvokeServer({100839513065432})
-                end)
-            end
+        -- تطبيق السكاي بوكس
+        if ChangeBody then
+            pcall(function()
+                ChangeBody:InvokeServer({100839513065432})
+            end)
         end
 
         -- تشغيل الأنيميشن
@@ -1014,7 +1007,7 @@ TrollTab:AddButton({
 -----------------------------------------------------
 TrollTab:AddButton({
     Name = "إيقاف اختراق السماء🌌",
-    Description = "إرجاع اللاعب للوضع الطبيعي",
+    Description = "ارجاع اللاعب للوضع الطبيعي",
     Callback = function()
         local ResetRemote = ReplicatedStorage.Remotes:FindFirstChild("ResetCharacterAppearance")
         if ResetRemote then
@@ -1034,7 +1027,7 @@ TrollTab:AddButton({
             end
         end
 
-        notify("اختراق السماء", "تم إيقاف التلوين")
+        notify("Skybox", "تم إيقاف السكاي بوكس!")
     end
 })
 
