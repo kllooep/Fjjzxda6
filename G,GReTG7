@@ -262,81 +262,98 @@ local Tab = Window:MakeTab({
 Title = "الأسماء", 
 Icon = "paper" })
 
-local speeds = {
-    [1] = 0.4,   
-    [2] = 0.25,  
-    [3] = 0.15, 
-    [4] = 0.08,  
-    [5] = 0.04  
-}
+local RE = game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r")
 
-local currentSpeed = speeds[2] -- القيمة الافتراضية: عادية
+-- تحضير 300 لون
+local rainbowColors = {}
+for i = 1, 300 do
+    rainbowColors[i] = Color3.fromHSV(i/300, 1, 1)
+end
 
-Tab:AddSlider({
-    Name = "سرعة التلوين",
+-- متغيرات التحكم
+local NameRainbowEnabled = false
+local BioRainbowEnabled = false
+local NameSpeed = 1
+local BioSpeed = 1
+
+-- وظيفة إرسال لون الاسم
+local function SetNameColor(c)
+    RE:FireServer("PickingRPNameColor", c)
+end
+
+-- وظيفة إرسال لون البايو
+local function SetBioColor(c)
+    RE:FireServer("PickingRPBioColor", c)
+end
+
+----------------------------------------------------------------
+-- 🔵 Rainbow Name Toggle
+----------------------------------------------------------------
+TabNM:AddToggle({
+    Name = "Rainbow Name",
+    Default = false,
+    Callback = function(v)
+        NameRainbowEnabled = v
+
+        task.spawn(function()
+            while NameRainbowEnabled do
+                for i = 1, #rainbowColors do
+                    if not NameRainbowEnabled then break end
+                    SetNameColor(rainbowColors[i])
+                    task.wait(0.015 / NameSpeed)
+                end
+            end
+        end)
+    end
+})
+
+-- Slider سرعة الاسم
+TabNM:AddSlider({
+    Name = "Name Speed",
     Min = 1,
     Max = 5,
-    Increment = 1,
-    Default = 2, -- الافتراضي: عادية
-    ValueName = "Speed",
-    Callback = function(Value)
-        currentSpeed = speeds[Value]
+    Increase = 1,
+    Default = 1,
+    Callback = function(v)
+        NameSpeed = v
     end
 })
 
--- Toggle لتلوين البايو
-local bioToggleActive = false
-Tab:AddToggle({
-    Name = "بايو",
+----------------------------------------------------------------
+-- 🟣 Rainbow Bio Toggle
+----------------------------------------------------------------
+
+TabNM:AddToggle({
+    Name = "Rainbow Bio",
     Default = false,
-    Callback = function(Value)
-        bioToggleActive = Value
-        if not Value then
-            local args = {"PickingRPBioColor", Color3.fromRGB(255,255,255)}
-            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
-        else
-            spawn(function()
-                local hue = 0
-                while bioToggleActive do
-                    local color = Color3.fromHSV(hue, 1, 1)
-                    local args = {"PickingRPBioColor", color}
-                    game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
-                    hue = hue + 0.002
-                    if hue > 1 then hue = 0 end
-                    task.wait(currentSpeed)
+    Callback = function(v)
+        BioRainbowEnabled = v
+
+        task.spawn(function()
+            while BioRainbowEnabled do
+                for i = 1, #rainbowColors do
+                    if not BioRainbowEnabled then break end
+                    SetBioColor(rainbowColors[i])
+                    task.wait(0.015 / BioSpeed)
                 end
-            end)
-        end
+            end
+        end)
     end
 })
 
--- Toggle لتلوين الاسم
-local nameToggleActive = false
-Tab:AddToggle({
-    Name = "الاسم",
-    Default = false,
-    Callback = function(Value)
-        nameToggleActive = Value
-        if not Value then
-            local args = {"PickingRPNameColor", Color3.fromRGB(255,255,255)}
-            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
-        else
-            spawn(function()
-                local hue = 0
-                while nameToggleActive do
-                    local color = Color3.fromHSV(hue, 1, 1)
-                    local args = {"PickingRPNameColor", color}
-                    game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
-                    hue = hue + 0.002
-                    if hue > 1 then hue = 0 end
-                    task.wait(currentSpeed)
-                end
-            end)
-        end
+-- Slider سرعة البايو
+TabNM:AddSlider({
+    Name = "Bio Speed",
+    Min = 1,
+    Max = 5,
+    Increase = 1,
+    Default = 1,
+    Callback = function(v)
+        BioSpeed = v
     end
 })
 
-local SectionSpam = Tab:AddSection({
+local SectionSpam = TabNM:AddSection({
     Name = "(new)سبام اسماء"
 })
 
@@ -348,7 +365,7 @@ local toggleActive = false
 
 -- إنشاء TextBox للأسماء الثلاثة
 for i = 1, 3 do
-Tab:AddTextBox({
+TabNM:AddTextBox({
         Name = "أدخل الاسم " .. i,
         Default = "",
         TextDisappear = false,
@@ -359,7 +376,7 @@ Tab:AddTextBox({
 end
 
 -- Slider لتحديد السرعة
-Tab:AddSlider({
+TabNM:AddSlider({
     Name = "سرعة السبام",
     Min = 1,
     Max = 3,
@@ -372,7 +389,7 @@ Tab:AddSlider({
 })
 
 -- Toggle للتشغيل مع الحماية
-Tab:AddToggle({
+TabNM:AddToggle({
     Name = "تشغيل السبام",
     Default = false,
     Callback = function(state)
