@@ -18,6 +18,12 @@ Icon = "rbxassetid://10723415903" })
 InfoTab:AddSection({
 Name = "NetroZمعلومات سكربت"
 })
+InfoTab:AddDiscordInvite({
+    Name = "DemozXمطورين",
+    Description = "تليجرام",
+    Logo = "rbxassetid://109596885589960",
+    Invite = "https://t.me/R_amI11",
+})
 
 InfoTab:AddParagraph({ "المالك / المطورين:", "Rami (TikTok: .q.kn,)" })
 InfoTab:AddParagraph({ "فريق:", ", المطور رآمي, المطور غالي " })
