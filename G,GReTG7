@@ -258,7 +258,7 @@ Players.PlayerAdded:Connect(function(player)
     end
 end)
 
-local Tab = Window:MakeTab({ 
+local TabNM = Window:MakeTab({ 
 Title = "الأسماء", 
 Icon = "paper" })
 
