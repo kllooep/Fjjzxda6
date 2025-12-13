@@ -6375,3 +6375,38 @@ RedzTab:AddToggle({
         end
     end
 })
+RedzTab:AddToggle({
+  Name = "(V2)مضاد جلوس",
+  Default = false,
+  Callback = function(r0_108)
+    -- line: [0, 0] id: 108
+    if r0_108 then
+      _G.AntiSitEnabled = true
+      (function()
+        -- line: [0, 0] id: 110
+        for r3_110, r4_110 in ipairs(workspace:GetDescendants()) do
+          if r4_110:IsA("Seat") or r4_110:IsA("VehicleSeat") then
+            r4_110.Disabled = true
+          end
+        end
+      end)()
+      _G.AntiSitConnection = workspace.DescendantAdded:Connect(function(r0_109)
+        -- line: [0, 0] id: 109
+        if _G.AntiSitEnabled and (r0_109:IsA("Seat") or r0_109:IsA("VehicleSeat")) then
+          r0_109.Disabled = true
+        end
+      end)
+    else
+      _G.AntiSitEnabled = false
+      if _G.AntiSitConnection then
+        _G.AntiSitConnection:Disconnect()
+        _G.AntiSitConnection = nil
+      end
+      for r4_108, r5_108 in ipairs(workspace:GetDescendants()) do
+        if r5_108:IsA("Seat") or r5_108:IsA("VehicleSeat") then
+          r5_108.Disabled = false
+        end
+      end
+    end
+  end,
+})
