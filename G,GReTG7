@@ -290,7 +290,7 @@ end
 -- 🔵 Rainbow Name Toggle
 ----------------------------------------------------------------
 TabNM:AddToggle({
-    Name = "Rainbow Name",
+    Name = "تلوين اسم(VIP)",
     Default = false,
     Callback = function(v)
         NameRainbowEnabled = v
@@ -324,7 +324,7 @@ TabNM:AddSlider({
 ----------------------------------------------------------------
 
 TabNM:AddToggle({
-    Name = "Rainbow Bio",
+    Name = "تلوين بايو(VIP)",
     Default = false,
     Callback = function(v)
         BioRainbowEnabled = v
