@@ -1,4 +1,3 @@
--- ==================== الخدمات ====================
 local workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
 local RunService = game:GetService("RunService")
@@ -8,18 +7,18 @@ local SoundService = game:GetService("SoundService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
--- ==================== تحميل الشخصية ====================
+
 local character = player.Character or player.CharacterAdded:Wait()
 local hrp = character:WaitForChild("HumanoidRootPart")
 
--- ==================== صوت التفعيل ====================
+
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://131644923"
 sound.Volume = 1
 sound.Parent = SoundService
 sound:Play()
 
--- ==================== تطبيق المواد على الخريطة ====================
+
 local model = workspace:FindFirstChild("Model")
 if model then
     local function setMat(obj)
@@ -57,7 +56,7 @@ if model then
     end)
 end
 
--- ==================== صوت الطيور والذئاب ====================
+
 local soundPart = Instance.new("Part")
 soundPart.Size = Vector3.new(1,1,1)
 soundPart.Transparency = 1
@@ -78,20 +77,20 @@ wolfSound.Volume = 0.05
 wolfSound.Looped = false
 wolfSound.Parent = workspace
 
--- تتبع موقع اللاعب
+
 RunService.Heartbeat:Connect(function()
     if hrp and hrp.Parent then
         soundPart.Position = hrp.Position + Vector3.new(0,10,0)
     end
 end)
 
--- التحقق من وقت الليل
+
 local function isNight()
     local t = Lighting.ClockTime
     return (t >= 18 or t <= 6)
 end
 
--- إدارة الأصوات
+
 task.spawn(function()
     while true do
         if isNight() then
@@ -106,7 +105,7 @@ task.spawn(function()
     end
 end)
 
--- ==================== صوت النافورة ====================
+
 local fountainPart = Instance.new("Part")
 fountainPart.Anchored = true
 fountainPart.CanCollide = false
@@ -130,7 +129,7 @@ fountainSound.MaxDistance = 100
 fountainSound.Parent = attachment
 fountainSound:Play()
 
--- ==================== صوت مخصص ====================
+
 local customSound = Instance.new("Sound")
 customSound.Name = "MyCustomSound"
 customSound.SoundId = "rbxassetid://9048659736"
@@ -139,7 +138,7 @@ customSound.Looped = true
 customSound.Parent = workspace
 customSound:Play()
 
--- ==================== سماء الليل والنجوم ====================
+
 local active = false
 local stars = {}
 local shootingStarsFolder = Instance.new("Folder", workspace)
@@ -157,7 +156,7 @@ spaceSound.Looped = true
 spaceSound.Name = "SpaceAmbience"
 spaceSound.Parent = workspace
 
--- إنشاء نجم عادي
+
 local function createStar()
     local star = Instance.new("Part")
     local size = math.random(1,3)*0.5
@@ -183,7 +182,7 @@ local function createStar()
     table.insert(stars, star)
 end
 
--- إنشاء شهاب
+
 local function createShootingStar()
     if not active then return end
     local startPos = Vector3.new(math.random(-1000,1000), math.random(350,600), math.random(-1000,1000))
@@ -240,7 +239,7 @@ local function createShootingStar()
     Debris:AddItem(star, 4)
 end
 
--- تحديث السماء حسب الوقت
+
 local function updateSky()
     local hour = Lighting.ClockTime
     local shouldBeActive = hour >= 18 or hour < 6
@@ -266,7 +265,7 @@ local function updateSky()
     end
 end
 
--- تشغيل الشهب
+
 task.spawn(function()
     while true do
         if active then
@@ -280,7 +279,7 @@ task.spawn(function()
     end
 end)
 
--- تحديث السماء كل ثانية
+
 task.spawn(function()
     while true do
         updateSky()
@@ -288,7 +287,6 @@ task.spawn(function()
     end
 end)
 
--- ==================== المطر والرعد ====================
 local rainFolder = Instance.new("Folder", workspace)
 rainFolder.Name = "FakeRain"
 local isRaining = false
@@ -355,14 +353,14 @@ local function lightningStrike()
     flash:Destroy()
 end
 
--- تطبيق الانعكاس على الأسطح
+
 for _,part in pairs(workspace:GetDescendants()) do
     if part:IsA("BasePart") and part.Material == Enum.Material.SmoothPlastic then
         part.Reflectance = 0.25
     end
 end
 
--- تشغيل المطر والرعد
+
 task.spawn(function()
     while true do
         spawnRain()
@@ -373,7 +371,7 @@ task.spawn(function()
     end
 end)
 
--- ==================== الإضاءة والسماء العامة ====================
+
 Lighting.Brightness = 2
 Lighting.GlobalShadows = true
 Lighting.OutdoorAmbient = Color3.fromRGB(70, 70, 70)
