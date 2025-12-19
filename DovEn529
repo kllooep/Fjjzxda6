@@ -808,7 +808,16 @@ function redzlib:MakeWindow(Configs)
 	local Components = Create("Folder", MainFrame, {
 		Name = "Components"
 	})
-	
+
+local BorderFrame = Instance.new("Frame")
+BorderFrame.Name = "RedBorder"
+BorderFrame.Parent = MainFrame
+BorderFrame.Size = UDim2.new(1, 12, 1, 12)
+BorderFrame.Position = UDim2.new(0, -6, 0, -6)
+BorderFrame.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
+BorderFrame.BorderSizePixel = 0
+BorderFrame.Visible = true
+
 	local DropdownHolder = Create("Folder", ScreenGui, {
 		Name = "Dropdown"
 	})
