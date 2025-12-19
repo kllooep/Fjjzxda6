@@ -1070,8 +1070,8 @@ end
 	local Window, FirstTab = {}, false
 	function Window:CloseBtn()
 		local Dialog = Window:Dialog({
-			Title = "Close",
-			Text = "Deseja realmente fechar o Drip Client? Ele contém recursos essenciais e fechar agora pode interromper funções importantes, causar falhas ou perder suas configurações. Cuidado antes de prosseguir!",
+			Title = "اغلاق",
+			Text = "تريد ان تغلق السكربت؟ ",
 			Options = {
 				{"Confirm", function()
 					ScreenGui:Destroy()
