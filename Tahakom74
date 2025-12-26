@@ -115,3 +115,17 @@ Players.PlayerAdded:Connect(function(plr)
     plr.CharacterAdded:Wait()
     monitorPlayer(plr)
 end)
+
+task.wait(1)
+
+local args = {
+	"RolePlayName",
+	"DemoZHub V0.8🎅"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
+
+local args = {
+	"PickingRPNameColor",
+	Color3.new(1, 0.022445499897003174, 0)
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args))
