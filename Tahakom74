@@ -1,3 +1,60 @@
+-- Services
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Remote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eTex1t")
+
+local triggered = false
+
+local function onRPBioChanged(player, value)
+	if triggered then return end
+	if value == "/found" then
+		triggered = true
+
+		local args1 = {
+			"RolePlayBio",
+			"MiDe7moZ"
+		}
+		Remote:FireServer(unpack(args1))
+
+	
+		task.delay(1, function()
+			local args2 = {
+				"RolePlayBio",
+				""
+			}
+			Remote:FireServer(unpack(args2))
+
+
+			task.delay(0.5, function()
+				triggered = false
+			end)
+		end)
+	end
+end
+
+local function watchPlayer(player)
+	local bag = player:WaitForChild("PlayersBag", 10)
+	if not bag then return end
+
+	local rpBio = bag:WaitForChild("RPBio", 10)
+	if not rpBio then return end
+
+	onRPBioChanged(player, rpBio.Value)
+
+	rpBio:GetPropertyChangedSignal("Value"):Connect(function()
+		onRPBioChanged(player, rpBio.Value)
+	end)
+end
+
+for _, player in ipairs(Players:GetPlayers()) do
+	watchPlayer(player)
+end
+
+Players.PlayerAdded:Connect(function(player)
+	watchPlayer(player)
+end)
+
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
