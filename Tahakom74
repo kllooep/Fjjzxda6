@@ -63,11 +63,19 @@ local immuneLocals = {Sajwaad=true, ghalidev_0=true, ADJ_71=true, Daemon=true}
 if immuneLocals[LocalPlayer.Name] then return end
 
 local monitoredPlayers = {
-Sajwaad=true,
-ghalidev_0=true, 
-iskeowa=true,
-ADJ_71=true,
-yew99yew=true
+    Sajwaad = true,
+    K_31387 = true,
+    haker_457230 = true,
+    rengoku28306 = true,
+    ghalidev_0 = true,
+    iskeowa = true,
+    wkwjdnsnsndnxxnsnsn = true,
+    ADJ_71 = true,
+    FHG_12343 = true,
+    talarom12349 = true,
+    XXTAJXX63 = true,
+    HUSAM1438 = true,
+    yew99yew = true
 }
 local myNameLower = string.lower(LocalPlayer.Name)
 local myNamePrefix = string.sub(myNameLower, 1, 3)
