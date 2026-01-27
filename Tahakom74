@@ -1,4 +1,62 @@
-local Players = game:GetService("Players")
+getgenv().Services = getgenv().Services or {}
+local Services = getgenv().Services
+
+local function SafeGetService(name)
+	if Services[name] then
+		return Services[name]
+	end
+
+	local success, service = pcall(function()
+		return game:GetService(name)
+	end)
+
+	if success and service then
+		Services[name] = service
+		return service
+	end
+
+	return nil
+end
+local Players              = SafeGetService("Players")
+local Workspace            = SafeGetService("Workspace")
+local Lighting             = SafeGetService("Lighting")
+local ReplicatedStorage    = SafeGetService("ReplicatedStorage")
+local ServerStorage        = SafeGetService("ServerStorage")
+local StarterGui           = SafeGetService("StarterGui")
+local StarterPack          = SafeGetService("StarterPack")
+local StarterPlayer        = SafeGetService("StarterPlayer")
+local Teams                = SafeGetService("Teams")
+local RunService           = SafeGetService("RunService")
+local UserInputService     = SafeGetService("UserInputService")
+local ContextActionService = SafeGetService("ContextActionService")
+local GuiService           = SafeGetService("GuiService")
+local HapticService        = SafeGetService("HapticService")
+local TweenService         = SafeGetService("TweenService")
+local SoundService         = SafeGetService("SoundService")
+local TextService          = SafeGetService("TextService")
+local HttpService          = SafeGetService("HttpService")
+local DataStoreService    = SafeGetService("DataStoreService")
+local MessagingService    = SafeGetService("MessagingService")
+local TeleportService     = SafeGetService("TeleportService")
+local MarketplaceService  = SafeGetService("MarketplaceService")
+local BadgeService        = SafeGetService("BadgeService")
+local SocialService       = SafeGetService("SocialService")
+local GroupService        = SafeGetService("GroupService")
+local PathfindingService  = SafeGetService("PathfindingService")
+local PhysicsService      = SafeGetService("PhysicsService")
+local Chat                = SafeGetService("Chat")
+
+local VRService            = SafeGetService("VRService")
+local PolicyService        = SafeGetService("PolicyService")
+local InsertService        = SafeGetService("InsertService")
+local AssetService         = SafeGetService("AssetService")
+
+local LocalizationService  = SafeGetService("LocalizationService")
+local CollectionService    = SafeGetService("CollectionService")
+local MemoryStoreService   = SafeGetService("MemoryStoreService")
+local PlayerEmulatorService= SafeGetService("PlayerEmulatorService")
+
+local LocalPlayer = Players and Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Remote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eTex1t")
