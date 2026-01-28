@@ -1,119 +1,218 @@
-local gui = Instance.new("ScreenGui", game.CoreGui)
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 300, 0, 200)
-frame.Position = UDim2.new(0.4, 0, 0.3, 0)
-frame.BackgroundColor3 = Color3.fromRGB(110, 0, 0)
-frame.Active = true
-frame.Draggable = true
+تسرق بدون حقوق نيكمك
+مافيني حيل اشفر
+Write My Rights
 
-local nameBox = Instance.new("TextBox", frame)
-nameBox.Size = UDim2.new(0, 280, 0, 30)
-nameBox.Position = UDim2.new(0, 10, 0, 10)
-nameBox.PlaceholderText = "اكتب اسم اللاعب"
-nameBox.TextScaled = true
+Players = game:GetService("Players")
+RunService = game:GetService("RunService")
+Workspace = game:GetService("Workspace")
+LocalPlayer = Players.LocalPlayer
 
-local radiusBox = Instance.new("TextBox", frame)
-radiusBox.Size = UDim2.new(0, 280, 0, 30)
-radiusBox.Position = UDim2.new(0, 10, 0, 50)
-radiusBox.PlaceholderText = "اكتب نصف القطر"
-radiusBox.Text = "10"
-radiusBox.TextScaled = true
+local Gui = Instance.new("ScreenGui")
+Gui.Name = "RGB_Bring_UI"
+Gui.Parent = gethui and gethui() or game.CoreGui
+Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-local toggleButton = Instance.new("TextButton", frame)
-toggleButton.Size = UDim2.new(0, 280, 0, 30)
-toggleButton.Position = UDim2.new(0, 10, 0, 90)
-toggleButton.Text = "Bring | مطفي"
-toggleButton.TextScaled = true
+local ToggleButton = Instance.new("ImageButton", Gui)
+ToggleButton.Size = UDim2.new(0, 45, 0, 45)
+ToggleButton.Position = UDim2.new(0.02, 0, 0.45, 0)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(30,30,30)
+ToggleButton.Image = "rbxassetid://107728948792167"
+ToggleButton.BorderSizePixel = 0
+ToggleButton.Active = true
+ToggleButton.Draggable = true
 
-local modeButton = Instance.new("TextButton", frame)
-modeButton.Size = UDim2.new(0, 280, 0, 30)
-modeButton.Position = UDim2.new(0, 10, 0, 130)
-modeButton.Text = "الوضع : تجميع"
-modeButton.TextScaled = true
+local ToggleStroke = Instance.new("UIStroke", ToggleButton)
+ToggleStroke.Thickness = 2
 
-local parts, active, rotateMode, connection = {}, false, false, nil
-local targetPlayer, hrp
+task.spawn(function()
+	local h = 0
+	while true do
+		ToggleStroke.Color = Color3.fromHSV(h,1,1)
+		h = (h + 0.004) % 1
+		task.wait()
+	end
+end)
 
-local function getPlayer(name)
-	for _, p in ipairs(Players:GetPlayers()) do
-		if p.Name:lower():find(name:lower()) or p.DisplayName:lower():find(name:lower()) then
+local Main = Instance.new("Frame", Gui)
+Main.Size = UDim2.new(0, 210, 0, 210)
+Main.Position = UDim2.new(0.4, 0, 0.35, 0)
+Main.BackgroundColor3 = Color3.fromRGB(20,20,20)
+Main.BorderSizePixel = 0
+Main.Active = true
+Main.Draggable = true
+
+local UIStroke = Instance.new("UIStroke", Main)
+UIStroke.Thickness = 2
+
+task.spawn(function()
+	local h = 0
+	while true do
+		UIStroke.Color = Color3.fromHSV(h,1,1)
+		h = (h + 0.002) % 1
+		task.wait()
+	end
+end)
+
+local Title = Instance.new("TextLabel", Main)
+Title.Size = UDim2.new(1,0,0,24)
+Title.BackgroundTransparency = 1
+Title.Text = "هالة الابواب🌪️"
+Title.Font = Enum.Font.GothamBold
+Title.TextColor3 = Color3.new(1,1,1)
+Title.TextSize = 14
+
+local TargetBox = Instance.new("TextBox", Main)
+TargetBox.Text = ""
+TargetBox.PlaceholderText = "ادخل اسم اللاعب"
+TargetBox.Size = UDim2.new(0.9,0,0,24)
+TargetBox.Position = UDim2.new(0.05,0,0.15,0)
+TargetBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+TargetBox.TextColor3 = Color3.new(1,1,1)
+TargetBox.PlaceholderColor3 = Color3.fromRGB(180,180,180)
+TargetBox.Font = Enum.Font.Gotham
+TargetBox.TextSize = 13
+TargetBox.BorderSizePixel = 0
+TargetBox.ClearTextOnFocus = false
+
+local ModeButton = Instance.new("TextButton", Main)
+ModeButton.Size = UDim2.new(0.9,0,0,24)
+ModeButton.Position = UDim2.new(0.05,0,0.29,0)
+ModeButton.BackgroundColor3 = Color3.fromRGB(50,50,50)
+ModeButton.Text = "MODE : سحب"
+ModeButton.Font = Enum.Font.GothamBold
+ModeButton.TextColor3 = Color3.new(1,1,1)
+ModeButton.TextSize = 13
+
+
+local RadiusBox = Instance.new("TextBox", Main)
+RadiusBox.PlaceholderText = "حجم الدوران"
+RadiusBox.Text = "12"
+RadiusBox.Size = UDim2.new(0.9,0,0,22)
+RadiusBox.Position = UDim2.new(0.05,0,0.43,0)
+RadiusBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+RadiusBox.TextColor3 = Color3.new(1,1,1)
+RadiusBox.Font = Enum.Font.Gotham
+RadiusBox.TextSize = 12
+RadiusBox.BorderSizePixel = 0
+
+local SpeedBox = Instance.new("TextBox", Main)
+SpeedBox.PlaceholderText = "السرعة"
+SpeedBox.Text = "2"
+SpeedBox.Size = UDim2.new(0.9,0,0,22)
+SpeedBox.Position = UDim2.new(0.05,0,0.55,0)
+SpeedBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+SpeedBox.TextColor3 = Color3.new(1,1,1)
+SpeedBox.Font = Enum.Font.Gotham
+SpeedBox.TextSize = 12
+SpeedBox.BorderSizePixel = 0
+
+local Toggle = Instance.new("TextButton", Main)
+Toggle.Size = UDim2.new(0.9,0,0,28)
+Toggle.Position = UDim2.new(0.05,0,0.7,0)
+Toggle.BackgroundColor3 = Color3.fromRGB(80,0,0)
+Toggle.Text = "مطفئ"
+Toggle.Font = Enum.Font.GothamBold
+Toggle.TextColor3 = Color3.new(1,1,1)
+Toggle.TextSize = 14
+
+ToggleButton.MouseButton1Click:Connect(function()
+	Main.Visible = not Main.Visible
+end)
+
+local Active = false
+local Mode = "سحب"
+local TargetPlayer
+local HRP
+local Angle = 0
+
+local AnchorPart = Instance.new("Part", Workspace)
+AnchorPart.Anchored = true
+AnchorPart.Transparency = 1
+AnchorPart.CanCollide = false
+local Attach1 = Instance.new("Attachment", AnchorPart)
+
+getgenv().Network = {
+	Parts = {},
+	Velocity = Vector3.new(999,999,999)
+}
+
+RunService.Heartbeat:Connect(function()
+	sethiddenproperty(LocalPlayer,"SimulationRadius",math.huge)
+	for _,p in ipairs(Network.Parts) do
+		if p:IsDescendantOf(Workspace) then
+			p.Velocity = Network.Velocity
+		end
+	end
+end)
+
+local function ForcePart(v)
+	if v:IsA("BasePart") and not v.Anchored and TargetPlayer and v.Parent ~= TargetPlayer.Character then
+		table.insert(Network.Parts, v)
+		v.CanCollide = false
+		v.CustomPhysicalProperties = PhysicalProperties.new(0,0,0,0,0)
+
+		for _,x in ipairs(v:GetChildren()) do
+			if x:IsA("BodyMover") then
+				x:Destroy()
+			end
+		end
+
+		local att = Instance.new("Attachment", v)
+		local ap = Instance.new("AlignPosition", v)
+		ap.Attachment0 = att
+		ap.Attachment1 = Attach1
+		ap.MaxForce = math.huge
+		ap.Responsiveness = 500
+	end
+end
+
+local function GetPlayer(name)
+	name = name:lower()
+	for _,p in ipairs(Players:GetPlayers()) do
+		if p.Name:lower():find(name) or p.DisplayName:lower():find(name) then
 			return p
 		end
 	end
 end
 
-local function forcePart(part)
-	if part:IsA("BasePart") and not part.Anchored and not part.Parent:FindFirstChildOfClass("Humanoid") and part.Name ~= "Handle" then
-		for _, c in ipairs(part:GetChildren()) do
-			if c:IsA("BodyMover") or c:IsA("AlignPosition") then
-				c:Destroy()
-			end
-		end
-		part.CanCollide = false
-		local att = Instance.new("Attachment", part)
-		local align = Instance.new("AlignPosition", part)
-		align.Attachment0 = att
-		align.RigidityEnabled = false
-		align.Mode = Enum.PositionAlignmentMode.OneAttachment
-		align.MaxForce = 1e9
-		align.Responsiveness = 200
-		table.insert(parts, {part=part, att=att, align=align})
+TargetBox.FocusLost:Connect(function()
+	TargetPlayer = GetPlayer(TargetBox.Text)
+	if TargetPlayer then
+		TargetBox.Text = TargetPlayer.Name
+		HRP = TargetPlayer.Character and TargetPlayer.Character:WaitForChild("HumanoidRootPart")
 	end
-end
+end)
 
-local function startBring()
-	active = true
-	toggleButton.Text = "Bring | شغال"
-	for _, v in ipairs(Workspace:GetDescendants()) do forcePart(v) end
-	connection = Workspace.DescendantAdded:Connect(forcePart)
-end
+ModeButton.MouseButton1Click:Connect(function()
+	Mode = (Mode == "سحب") and "دوران" or "سحب"
+	ModeButton.Text = "MODE : "..Mode
+end)
 
-local function stopBring()
-	active = false
-	toggleButton.Text = "Bring | مطفي"
-	if connection then connection:Disconnect() end
-	for _, p in ipairs(parts) do
-		if p.part and p.part:IsDescendantOf(Workspace) then
-			p.part.CanCollide = true
-			p.att:Destroy()
-			p.align:Destroy()
-		end
-	end
-	parts = {}
-end
+Toggle.MouseButton1Click:Connect(function()
+	Active = not Active
+	Toggle.Text = Active and "شغال" or "منطفئ"
+	Toggle.BackgroundColor3 = Active and Color3.fromRGB(0,120,0) or Color3.fromRGB(80,0,0)
 
-toggleButton.MouseButton1Click:Connect(function()
-	targetPlayer = getPlayer(nameBox.Text)
-	if targetPlayer then
-		hrp = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-		if hrp then
-			if not active then
-				startBring()
-			else
-				stopBring()
-			end
+	if Active and TargetPlayer then
+		for _,v in ipairs(Workspace:GetDescendants()) do
+			ForcePart(v)
 		end
 	end
 end)
 
-modeButton.MouseButton1Click:Connect(function()
-	rotateMode = not rotateMode
-	modeButton.Text = rotateMode and "الوضع : دوران" or "الوضع : تجميع"
-end)
-
-RunService.Heartbeat:Connect(function()
-	if active and hrp then
-		local radius = tonumber(radiusBox.Text) or 10
-		local timeNow = tick()
-		for i, data in ipairs(parts) do
-			local part, att, align = data.part, data.att, data.align
-			if rotateMode then
-				local angle = (2 * math.pi / #parts) * i + timeNow*1.5
-				local pos = hrp.Position + Vector3.new(math.cos(angle)*radius, 3, math.sin(angle)*radius)
-				align.Position = pos
-			else
-				align.Position = hrp.Position + Vector3.new(0, 3, 0)
-			end
+RunService.RenderStepped:Connect(function(dt)
+	if Active and HRP then
+		if Mode == "سحب" then
+			Attach1.WorldCFrame = HRP.CFrame
+		else
+			local radius = tonumber(RadiusBox.Text) or 12
+			local speed = tonumber(SpeedBox.Text) or 2
+			Angle += dt * speed
+			Attach1.WorldPosition = HRP.Position + Vector3.new(
+				math.cos(Angle) * radius,
+				0,
+				math.sin(Angle) * radius
+			)
 		end
 	end
-end) 
+end)
