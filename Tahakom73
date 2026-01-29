@@ -1,7 +1,3 @@
-تسرق بدون حقوق نيكمك
-مافيني حيل اشفر
-Write My Rights
-
 Players = game:GetService("Players")
 RunService = game:GetService("RunService")
 Workspace = game:GetService("Workspace")
