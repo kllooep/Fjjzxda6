@@ -116,13 +116,14 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 
-local immuneLocals = {Sajwaad=true, ghalidev_0=true, FeeFaa7 = true, azabozhra1 = true, ADJ_71=true, Daemon=true}
+local immuneLocals = {Sajwaad=true, ghalidev_0=true}
 if immuneLocals[LocalPlayer.Name] then return end
 
 local monitoredPlayers = {
     Sajwaad = true,
     FeeFaa7 = true,
-azabozhra1 = true,
+    1l3_1081 = true,
+    azabozhra1 = true,
     Nykysaf = true,
     alskndrany91 = true,
     imane_pink54 = true,
