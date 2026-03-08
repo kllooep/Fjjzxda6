@@ -1,0 +1,308 @@
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local UserInputService = game:GetService("UserInputService")
+
+local LocalPlayer = Players.LocalPlayer
+local Camera = Workspace.CurrentCamera
+
+local TOOL_NAME = "Click Kill Police Boat"
+local toolEquipped = false
+local currentTarget = nil
+local flingActive = false
+
+
+local function SendNotification(title, text)
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = title,
+        Text = text,
+        Duration = 3
+    })
+end
+
+local function IsPlayerSitting(player)
+    local character = player.Character
+    if not character then return false end
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    return humanoid and humanoid.Sit
+end
+
+local function DeleteAllVehicles()
+    local Vehicles = Workspace:FindFirstChild("Vehicles")
+    if not Vehicles then return end
+    
+    for _, vehicle in pairs(Vehicles:GetChildren()) do
+        if vehicle.Name:find(LocalPlayer.Name .. "Car") then
+            pcall(function() vehicle:Destroy() end)
+        end
+    end
+end
+
+
+local backpack = LocalPlayer:WaitForChild("Backpack")
+if not backpack:FindFirstChild(TOOL_NAME) then
+    local tool = Instance.new("Tool")
+    tool.Name = TOOL_NAME
+    tool.RequiresHandle = false
+    tool.CanBeDropped = false
+
+    tool.Equipped:Connect(function()
+        toolEquipped = true
+        SendNotification("Click Kill Police Boat", "Clique em um jogador para eliminar")
+    end)
+
+    tool.Unequipped:Connect(function()
+        toolEquipped = false
+        currentTarget = nil
+    end)
+
+    tool.Parent = backpack
+end
+
+
+
+local function KillPoliceBoatTarget(target)
+    if flingActive then
+        SendNotification("Aguarde", "Fling já está ativo!")
+        return
+    end
+    
+    if IsPlayerSitting(target) then
+        SendNotification("Fling Bloqueado", "Jogador está sentado!")
+        return
+    end
+    
+    flingActive = true
+    currentTarget = target
+    
+    local character = LocalPlayer.Character
+    local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+    
+    if not humanoidRootPart or not humanoid then
+        flingActive = false
+        return
+    end
+    
+    local originalPosition = humanoidRootPart.CFrame
+    local Vehicles = Workspace:FindFirstChild("Vehicles")
+    
+    -- Spawna Police Boat
+    SendNotification("Preparando", "Invocando Police Boat...")
+    humanoidRootPart.CFrame = CFrame.new(1754, -2, 58)
+    task.wait(0.5)
+    
+    pcall(function()
+        local args = {"PickingBoat", "PoliceBoatChangeable"}
+        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Ca1r"):FireServer(unpack(args))
+    end)
+    
+    task.wait(1.5)
+    
+    local vehicle = Vehicles:FindFirstChild(LocalPlayer.Name .. "Car")
+    if not vehicle then
+        humanoidRootPart.CFrame = originalPosition
+        SendNotification("Erro", "Falha ao spawnar Police Boat")
+        flingActive = false
+        return
+    end
+    
+    -- Encontra assento
+    local seat = vehicle:FindFirstChild("Body") and vehicle.Body:FindFirstChild("VehicleSeat")
+    
+    if not seat then
+        DeleteAllVehicles()
+        humanoidRootPart.CFrame = originalPosition
+        SendNotification("Erro", "Assento não encontrado")
+        flingActive = false
+        return
+    end
+    
+    -- Senta no Police Boat
+    local attempts = 0
+    repeat
+        humanoidRootPart.CFrame = seat.CFrame * CFrame.new(0, 2, 0)
+        task.wait(0.1)
+        attempts = attempts + 1
+    until humanoid.Sit or attempts > 50 or not vehicle.Parent
+    
+    if not humanoid.Sit then
+        DeleteAllVehicles()
+        humanoidRootPart.CFrame = originalPosition
+        SendNotification("Erro", "Não foi possível sentar no Police Boat")
+        flingActive = false
+        return
+    end
+    
+    SendNotification("Iniciando", "Fling ativado com spin!")
+    
+    -- Desativa colisão
+    for _, container in pairs({vehicle:FindFirstChild("Body"), vehicle:FindFirstChild("Seats")}) do
+        if container then
+            for _, v in pairs(container:GetChildren()) do
+                if v:IsA("Seat") or v:IsA("VehicleSeat") then
+                    v.CanTouch = false
+                end
+            end
+        end
+    end
+    
+    Workspace.FallenPartsDestroyHeight = 0/0
+    
+    -- Cria spin rotacional
+    local Spin = Instance.new("BodyAngularVelocity")
+    Spin.Parent = vehicle.PrimaryPart
+    Spin.MaxTorque = Vector3.new(0, math.huge, 0)
+    Spin.AngularVelocity = Vector3.new(0, 200, 0)
+    
+    local targetInVoid = false
+    local flingLoop = true
+    
+    -- Loop do fling
+    task.spawn(function()
+        local startTime = tick()
+        local maxTime = 15
+        
+        while flingLoop and vehicle and vehicle.Parent do
+            local targetChar = target.Character
+            if not targetChar then break end
+            
+            local targetRoot = targetChar:FindFirstChild("HumanoidRootPart")
+            local targetHumanoid = targetChar:FindFirstChildOfClass("Humanoid")
+            
+            if not targetRoot or not targetHumanoid or targetHumanoid.Health <= 0 then break end
+            
+            -- Verifica void
+            if targetRoot.Position.Y < -100 then
+                targetInVoid = true
+                break
+            end
+            
+            -- Verifica se sentou
+            if targetHumanoid.Sit then
+                pcall(function()
+                    vehicle:SetPrimaryPartCFrame(CFrame.new(9999, -450, 9999))
+                end)
+                targetInVoid = true
+                task.wait(0.3)
+                break
+            end
+            
+            -- Movimento adaptativo do Police Boat
+            local angle = (tick() - startTime) * 50
+            
+            if targetRoot.Velocity.Magnitude < 50 then
+                -- Padrão para alvos parados/lentos
+                local movePatterns = {
+                    {pos = CFrame.new(0, 1.5, 0) + targetHumanoid.MoveDirection * targetRoot.Velocity.Magnitude / 2, rot = CFrame.Angles(math.rad(angle), 0, 0)},
+                    {pos = CFrame.new(0, -1.5, 0) + targetHumanoid.MoveDirection * targetRoot.Velocity.Magnitude / 2, rot = CFrame.Angles(math.rad(angle), 0, 0)},
+                    {pos = CFrame.new(1.5, 1.5, -1.5) + targetHumanoid.MoveDirection * targetRoot.Velocity.Magnitude / 2, rot = CFrame.Angles(math.rad(angle), 0, 0)},
+                    {pos = CFrame.new(-1.5, -1.5, 1.5) + targetHumanoid.MoveDirection * targetRoot.Velocity.Magnitude / 2, rot = CFrame.Angles(math.rad(angle), 0, 0)},
+                }
+                
+                for _, pattern in ipairs(movePatterns) do
+                    if not flingLoop then break end
+                    pcall(function()
+                        vehicle:SetPrimaryPartCFrame(CFrame.new(targetRoot.Position) * pattern.pos * pattern.rot)
+                    end)
+                    task.wait(0.1)
+                end
+            else
+                -- Padrão para alvos em movimento rápido
+                local speedPatterns = {
+                    CFrame.new(0, 1.5, targetHumanoid.WalkSpeed),
+                    CFrame.new(0, -1.5, -targetHumanoid.WalkSpeed),
+                    CFrame.new(0, 1.5, targetRoot.Velocity.Magnitude / 2),
+                    CFrame.new(0, -1.5, -targetRoot.Velocity.Magnitude / 2),
+                }
+                
+                for _, offset in ipairs(speedPatterns) do
+                    if not flingLoop then break end
+                    pcall(function()
+                        vehicle:SetPrimaryPartCFrame(CFrame.new(targetRoot.Position) * offset * CFrame.Angles(math.rad(90), 0, 0))
+                    end)
+                    task.wait(0.1)
+                end
+            end
+            
+            task.wait(0.05)
+            
+            if tick() - startTime > maxTime then break end
+            RunService.RenderStepped:Wait()
+        end
+        flingLoop = false
+    end)
+    
+    -- Aguarda finalização
+    while flingLoop do task.wait(0.1) end
+    
+    -- Remove spin
+    if Spin then
+        Spin:Destroy()
+    end
+    
+    -- Retorna à posição original
+    task.wait(0.3)
+    if humanoid then
+        humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+    
+    task.wait(0.7)
+    if humanoidRootPart then
+        humanoidRootPart.CFrame = originalPosition
+        humanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+        humanoidRootPart.RotVelocity = Vector3.new(0, 0, 0)
+    end
+    
+    task.wait(0.5)
+    DeleteAllVehicles()
+    Workspace.FallenPartsDestroyHeight = -500
+    
+    if targetInVoid then
+        SendNotification("Sucesso", "Kill executado!")
+    else
+        SendNotification("Concluído", "Fling finalizado")
+    end
+    
+    flingActive = false
+    currentTarget = nil
+end
+
+
+UserInputService.TouchTap:Connect(function(touches, processed)
+    if not toolEquipped or processed or flingActive then return end
+    
+    local pos = touches[1]
+    local ray = Camera:ScreenPointToRay(pos.X, pos.Y)
+    local raycastResult = Workspace:Raycast(ray.Origin, ray.Direction * 1000)
+    
+    if raycastResult and raycastResult.Instance then
+        local model = raycastResult.Instance:FindFirstAncestorOfClass("Model")
+        local player = Players:GetPlayerFromCharacter(model)
+        
+        if player and player ~= LocalPlayer then
+            KillPoliceBoatTarget(player)
+        end
+    end
+end)
+
+-- Suporte para mouse (PC)
+UserInputService.InputBegan:Connect(function(input, processed)
+    if not toolEquipped or processed or flingActive then return end
+    
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        local mousePos = UserInputService:GetMouseLocation()
+        local ray = Camera:ScreenPointToRay(mousePos.X, mousePos.Y)
+        local raycastResult = Workspace:Raycast(ray.Origin, ray.Direction * 1000)
+        
+        if raycastResult and raycastResult.Instance then
+            local model = raycastResult.Instance:FindFirstAncestorOfClass("Model")
+            local player = Players:GetPlayerFromCharacter(model)
+            
+            if player and player ~= LocalPlayer then
+                KillPoliceBoatTarget(player)
+            end
+        end
+    end
+end)
