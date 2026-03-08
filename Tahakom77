@@ -1,0 +1,138 @@
+Players = game:GetService("Players")
+RunService = game:GetService("RunService")
+UserInputService = game:GetService("UserInputService")
+Workspace = game:GetService("Workspace")
+ControlledDoors = {}
+Connections = {}
+LocalPlayer = Players.LocalPlayer
+Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+HRP = Character:WaitForChild("HumanoidRootPart")
+
+BlackHole = Instance.new("Part")
+BlackHole.Size = Vector3.new(99999999,99999999,99999999)
+BlackHole.Transparency = 1
+BlackHole.Anchored = true
+BlackHole.CanCollide = false
+BlackHole.Name = "BlackHoleTarget"
+BlackHole.Parent = Workspace
+
+baseAttachment = Instance.new("Attachment")
+baseAttachment.Name = "Luscaa_BlackHoleAttachment"
+baseAttachment.Parent = BlackHole
+
+table.insert(Connections,RunService.Heartbeat:Connect(function()
+if BlackHole and HRP then
+BlackHole.CFrame = HRP.CFrame
+end
+end))
+
+function SetupPart(part)
+
+if not part:IsA("BasePart") or part.Anchored or not string.find(part.Name,"Door") then return end
+if part:FindFirstChild("Luscaa_Attached") then return end
+
+part.CanCollide = false
+
+for _,obj in ipairs(part:GetChildren()) do
+if obj:IsA("AlignPosition") or obj:IsA("Torque") or obj:IsA("Attachment") then
+obj:Destroy()
+end
+end
+
+marker = Instance.new("BoolValue",part)
+marker.Name = "Luscaa_Attached"
+
+a1 = Instance.new("Attachment",part)
+
+align = Instance.new("AlignPosition",part)
+align.Attachment0 = a1
+align.Attachment1 = baseAttachment
+align.MaxForce = 1e20
+align.MaxVelocity = math.huge
+align.Responsiveness = 99999999
+
+torque = Instance.new("Torque",part)
+torque.Attachment0 = a1
+torque.RelativeTo = Enum.ActuatorRelativeTo.World
+torque.Torque = Vector3.new(
+math.random(-10e5,10e5)*10000,
+math.random(-10e5,10e5)*10000,
+math.random(-10e5,10e5)*10000
+)
+
+table.insert(ControlledDoors,{Part=part,Align=align})
+
+end
+
+for _,obj in ipairs(Workspace:GetDescendants()) do
+if obj:IsA("BasePart") and string.find(obj.Name,"Door") then
+SetupPart(obj)
+end
+end
+
+table.insert(Connections,Workspace.DescendantAdded:Connect(function(obj)
+if obj:IsA("BasePart") and string.find(obj.Name,"Door") then
+SetupPart(obj)
+end
+end))
+
+function FlingPlayer(player)
+
+char = player.Character
+if not char then return end
+
+targetHRP = char:FindFirstChild("HumanoidRootPart")
+if not targetHRP then return end
+
+targetAttachment = targetHRP:FindFirstChild("SHNMAX_TargetAttachment")
+
+if not targetAttachment then
+targetAttachment = Instance.new("Attachment",targetHRP)
+targetAttachment.Name = "SHNMAX_TargetAttachment"
+end
+
+for _,data in ipairs(ControlledDoors) do
+if data.Align then
+data.Align.Attachment1 = targetAttachment
+end
+end
+
+start = tick()
+
+while tick()-start < 10 do
+if targetHRP.Velocity.Magnitude >= 25 then
+break
+end
+RunService.Heartbeat:Wait()
+end
+
+for _,data in ipairs(ControlledDoors) do
+if data.Align then
+data.Align.Attachment1 = baseAttachment
+end
+end
+
+end
+
+table.insert(Connections,UserInputService.TouchTap:Connect(function(touchPositions,processed)
+
+if processed then return end
+
+pos = touchPositions[1]
+camera = Workspace.CurrentCamera
+unitRay = camera:ScreenPointToRay(pos.X,pos.Y)
+
+raycast = Workspace:Raycast(unitRay.Origin,unitRay.Direction*3000)
+
+if raycast and raycast.Instance then
+
+hit = raycast.Instance
+player = Players:GetPlayerFromCharacter(hit:FindFirstAncestorOfClass("Model"))
+
+if player and player~=LocalPlayer then
+FlingPlayer(player)
+end
+
+end
+
+end))
