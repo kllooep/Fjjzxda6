@@ -1,0 +1,12 @@
+Player = game.Players.LocalPlayer
+        Mouse = Player:GetMouse()
+
+        Tool = Instance.new("Tool")
+        Tool.Name = "Click TP"
+        Tool.RequiresHandle = false
+        Tool.Parent = Player.Backpack
+
+        Tool.Activated:Connect(function()
+            Pos = Mouse.Hit.p + Vector3.new(0,2.5,0)
+            Player.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(Pos)
+        end)
