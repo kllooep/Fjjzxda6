@@ -1,0 +1,23 @@
+Players = game:GetService("Players")
+LocalPlayer = Players.LocalPlayer
+
+_G.AntiSitEnabled = false
+
+if _G.AntiSitConnections then
+	for _,c in ipairs(_G.AntiSitConnections) do
+		c:Disconnect()
+	end
+end
+
+for _,v in ipairs(workspace:GetDescendants()) do
+	if v:IsA("Seat") or v:IsA("VehicleSeat") then
+		v.Disabled = false
+	end
+end
+
+if LocalPlayer.Character then
+	hum = LocalPlayer.Character:FindFirstChild("Humanoid")
+	if hum then
+		hum:SetStateEnabled(Enum.HumanoidStateType.Seated,true)
+	end
+end
