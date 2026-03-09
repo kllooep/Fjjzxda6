@@ -1,0 +1,72 @@
+Players = game:GetService("Players")
+Workspace = game:GetService("Workspace")
+LocalPlayer = Players.LocalPlayer
+
+_G.CanoeToggleRunning = true
+_G.CanoeUsed = {}
+
+char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+HRP = char:WaitForChild("HumanoidRootPart")
+Humanoid = char:WaitForChild("Humanoid")
+
+_G.CanoeSavedPos = HRP.CFrame
+
+Button = Workspace.WorkspaceCom["001_CanoeCloneButton"].Button
+ClickDetector = Button.ClickDetector
+Storage = Workspace.WorkspaceCom["001_CanoeStorage"]
+
+minX, maxX = -75.40, 24.75
+minZ, maxZ = -21.44, 50.41
+fixedY = 4.51
+
+task.spawn(function()
+
+while _G.CanoeToggleRunning do
+
+	local canoe
+
+	for _,v in ipairs(Storage:GetChildren()) do
+		if v.Name == "Canoe" and not _G.CanoeUsed[v] then
+			canoe = v
+			break
+		end
+	end
+
+	if not canoe then
+		HRP.CFrame = Button.CFrame * CFrame.new(0,2,0)
+		task.wait(0.25)
+		fireclickdetector(ClickDetector)
+		task.wait(0.4)
+		continue
+	end
+
+	seat = canoe:FindFirstChildWhichIsA("VehicleSeat",true)
+
+	if seat then
+
+		HRP.CFrame = seat.CFrame * CFrame.new(0,2,0)
+		task.wait(0.3)
+
+		seat:Sit(Humanoid)
+		task.wait(0.6)
+
+		randX = math.random()*(maxX-minX)+minX
+		randZ = math.random()*(maxZ-minZ)+minZ
+
+		seat.CFrame = CFrame.new(randX,fixedY,randZ)
+
+		task.wait(0.3)
+
+		seat:Sit(nil)
+		task.wait(0.1)
+
+		Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+
+		_G.CanoeUsed[canoe] = true
+	end
+
+	task.wait(0.5)
+
+end
+
+end)
