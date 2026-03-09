@@ -1,0 +1,16 @@
+_G.CanoeToggleRunning = false
+
+task.wait(0.3)
+
+Players = game:GetService("Players")
+LocalPlayer = Players.LocalPlayer
+
+char = LocalPlayer.Character
+
+if char and _G.CanoeSavedPos then
+	hrp = char:FindFirstChild("HumanoidRootPart")
+
+	if hrp then
+		hrp.CFrame = _G.CanoeSavedPos
+	end
+end
