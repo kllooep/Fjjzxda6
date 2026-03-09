@@ -1,0 +1,55 @@
+Players = game:GetService("Players")
+LocalPlayer = Players.LocalPlayer
+
+if _G.AntiSitConnections then
+	for _,c in ipairs(_G.AntiSitConnections) do
+		c:Disconnect()
+	end
+end
+
+_G.AntiSitConnections = {}
+_G.AntiSitEnabled = true
+
+function protectCharacter(char)
+
+	hum = char:WaitForChild("Humanoid",5)
+	if not hum then return end
+
+	hum:SetStateEnabled(Enum.HumanoidStateType.Seated,false)
+
+	table.insert(_G.AntiSitConnections,
+		hum.StateChanged:Connect(function(_,new)
+			if _G.AntiSitEnabled and new == Enum.HumanoidStateType.Seated then
+				hum.Sit = false
+				hum:ChangeState(Enum.HumanoidStateType.Jumping)
+			end
+		end)
+	)
+
+end
+
+if LocalPlayer.Character then
+	protectCharacter(LocalPlayer.Character)
+end
+
+table.insert(_G.AntiSitConnections,
+	LocalPlayer.CharacterAdded:Connect(protectCharacter)
+)
+
+function disableSeat(obj)
+	if obj:IsA("Seat") or obj:IsA("VehicleSeat") then
+		obj.Disabled = true
+	end
+end
+
+for _,v in ipairs(workspace:GetDescendants()) do
+	disableSeat(v)
+end
+
+table.insert(_G.AntiSitConnections,
+	workspace.DescendantAdded:Connect(function(obj)
+		if _G.AntiSitEnabled then
+			disableSeat(obj)
+		end
+	end)
+)
