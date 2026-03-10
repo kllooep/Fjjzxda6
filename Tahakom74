@@ -1,4 +1,3 @@
--- الخدمات الأساسية
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -81,6 +80,7 @@ if immuneLocals[LocalPlayer.Name] then return end
 local monitoredPlayers = {
     Sajwaad = true,
     FeeFaa7 = true,
+    at_gfj6 = true,
     fatimafati20099 = true,
     azabozhra1 = true,
     Nykysaf = true,
