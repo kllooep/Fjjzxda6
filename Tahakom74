@@ -1,509 +1,205 @@
-Players = game:GetService("Players")
-ReplicatedStorage = game:GetService("ReplicatedStorage")
-RunService = game:GetService("RunService")
+-- الخدمات الأساسية
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local Lighting = game:GetService("Lighting")
+local TweenService = game:GetService("TweenService")
+local Debris = game:GetService("Debris")
+local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
+local StarterPlayer = game:GetService("StarterPlayer")
+local Teams = game:GetService("Teams")
+local Chat = game:GetService("Chat")
+local ContextActionService = game:GetService("ContextActionService")
+local HttpService = game:GetService("HttpService")
+local VirtualUser = game:GetService("VirtualUser")
+local CoreGui = game:GetService("CoreGui")
 
-LocalPlayer = Players.LocalPlayer
+local LocalPlayer = Players and Players.LocalPlayer
 
 local Remote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eTex1t")
 
 local triggered = false
 
-local function onRPBioChanged(player,value)
-
+local function onRPBioChanged(player, value)
 	if triggered then return end
-
 	if value == "/found" then
-
 		triggered = true
 
-		Remote:FireServer("RolePlayBio","MiDe7moZ")
+		local args1 = {
+			"RolePlayBio",
+			"MiDe7moZ"
+		}
+		Remote:FireServer(unpack(args1))
 
-		task.delay(1,function()
+	
+		task.delay(1, function()
+			local args2 = {
+				"RolePlayBio",
+				""
+			}
+			Remote:FireServer(unpack(args2))
 
-			Remote:FireServer("RolePlayBio","")
 
-			task.delay(0.5,function()
+			task.delay(0.5, function()
 				triggered = false
 			end)
-
 		end)
-
 	end
-
 end
 
-
-local function watchBio(player)
-
-	local bag = player:WaitForChild("PlayersBag",10)
+local function watchPlayer(player)
+	local bag = player:WaitForChild("PlayersBag", 10)
 	if not bag then return end
 
-	local rpBio = bag:WaitForChild("RPBio",10)
+	local rpBio = bag:WaitForChild("RPBio", 10)
 	if not rpBio then return end
 
-	onRPBioChanged(player,rpBio.Value)
+	onRPBioChanged(player, rpBio.Value)
 
 	rpBio:GetPropertyChangedSignal("Value"):Connect(function()
-		onRPBioChanged(player,rpBio.Value)
+		onRPBioChanged(player, rpBio.Value)
 	end)
-
 end
 
-
-for _,player in ipairs(Players:GetPlayers()) do
-	watchBio(player)
+for _, player in ipairs(Players:GetPlayers()) do
+	watchPlayer(player)
 end
 
 Players.PlayerAdded:Connect(function(player)
-	watchBio(player)
+	watchPlayer(player)
 end)
 
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
 
+local immuneLocals = {Sajwaad=true, ghalidev_0=true}
+if immuneLocals[LocalPlayer.Name] then return end
 
-Owner = {Sajwaad = true, ghalidev_0 = true}
-
-Admin = {
-	Sajwaad = true,
-	FeeFaa7 = true,
-	fatimafati20099 = true,
-	azabozhra1 = true,
-	Nykysaf = true,
-	alskndrany91 = true,
-	imane_pink54 = true,
-	K_31387 = true,
-	haker_457230 = true,
-	IV_SEE = true,
-	rengoku28306 = true,
-	ghalidev_0 = true,
-	iskeowa = true,
-	wkwjdnsnsndnxxnsnsn = true,
-	ADJ_71 = true,
-	FHG_12343 = true,
-	talarom12349 = true,
-	XXTAJXX63 = true,
-	sajjad2502 = true,
-	HUSAM1438 = true,
-	yew99yew = true
+local monitoredPlayers = {
+    Sajwaad = true,
+    FeeFaa7 = true,
+    fatimafati20099 = true,
+    azabozhra1 = true,
+    Nykysaf = true,
+    alskndrany91 = true,
+    imane_pink54 = true,
+    K_31387 = true,
+    haker_457230 = true,
+    IV_SEE = true,
+    rengoku28306 = true,
+    ghalidev_0 = true,
+    iskeowa = true,
+    wkwjdnsnsndnxxnsnsn = true,
+    ADJ_71 = true,
+    FHG_12343 = true,
+    talarom12349 = true,
+    XXTAJXX63 = true,
+sajjad2502 = true,
+    HUSAM1438 = true,
+    yew99yew = true
 }
-
-
-
-if _G.UserDetectorConnections then
-	for _,c in ipairs(_G.UserDetectorConnections) do
-		pcall(function() c:Disconnect() end)
-	end
-end
-
-
-_G.UserDetectorConnections = {}
-_G.UserDetectorEnabled = true
-
-SavedPlayers = SavedPlayers or {}
-
-TARGET_BIO = "MiDe7moZ"
-FIRE_ON_ENABLE = "/found"
-
-
-
-function fireBio(text)
-
-	if not _G.UserDetectorEnabled then return end
-
-	ReplicatedStorage:WaitForChild("RE")
-	:WaitForChild("1RPNam1eTex1t")
-	:FireServer("RolePlayBio",text)
-
-end
-
-
-
-function fireFoundThenClear()
-
-	if not _G.UserDetectorEnabled then return end
-
-	fireBio(FIRE_ON_ENABLE)
-
-	task.delay(1,function()
-
-		if _G.UserDetectorEnabled then
-			fireBio("")
-		end
-
-	end)
-
-end
-
-
-
-function removeTag(plr)
-
-	if plr.Character then
-		local t = plr.Character:FindFirstChild("NameTag")
-		if t then
-			t:Destroy()
-		end
-	end
-
-end
-
-
-
-function createTag(plr)
-
-	if not _G.UserDetectorEnabled then return end
-	if not SavedPlayers[plr.UserId] then return end
-	if not plr.Character then return end
-
-	local head = plr.Character:FindFirstChild("Head")
-	if not head then return end
-
-	removeTag(plr)
-
-	local role = "عضو"
-
-	if Owner and Owner[plr.Name] then
-		role = "مطور"
-	elseif Admin and Admin[plr.Name] then
-		role = "ادمن"
-	end
-
-
-	local gui = Instance.new("BillboardGui")
-	gui.Name = "NameTag"
-	gui.Adornee = head
-	gui.Parent = head
-	gui.Size = UDim2.new(4,0,1.5,0)
-	gui.StudsOffset = Vector3.new(0,3.5,0)
-	gui.AlwaysOnTop = true
-
-
-	local frame = Instance.new("Frame",gui)
-	frame.Size = UDim2.new(1,0,1,0)
-	frame.BackgroundTransparency = 0.1
-	frame.BorderSizePixel = 0
-
-	Instance.new("UICorner",frame).CornerRadius = UDim.new(0,8)
-
-	local gradient = Instance.new("UIGradient",frame)
-	gradient.Rotation = 90
-
-	local stroke = Instance.new("UIStroke",frame)
-	stroke.Thickness = 1.5
-
-	local label = Instance.new("TextLabel",frame)
-	label.Size = UDim2.new(1,0,1,0)
-	label.BackgroundTransparency = 1
-	label.TextScaled = true
-	label.Font = Enum.Font.GothamBold
-	label.Text = role
-	label.TextColor3 = Color3.new(1,1,1)
-
-
-	if role == "مطور" then
-
-		gradient.Color = ColorSequence.new{
-			ColorSequenceKeypoint.new(0,Color3.fromRGB(255,215,0)),
-			ColorSequenceKeypoint.new(1,Color3.fromRGB(255,170,0))
-		}
-
-		stroke.Color = Color3.fromRGB(255,215,0)
-
-	elseif role == "ادمن" then
-
-		gradient.Color = ColorSequence.new{
-			ColorSequenceKeypoint.new(0,Color3.fromRGB(150,0,0)),
-			ColorSequenceKeypoint.new(1,Color3.fromRGB(255,50,50))
-		}
-
-		stroke.Color = Color3.fromRGB(255,100,100)
-
-	else
-
-		gradient.Color = ColorSequence.new{
-			ColorSequenceKeypoint.new(0,Color3.fromRGB(0,120,170)),
-			ColorSequenceKeypoint.new(1,Color3.fromRGB(0,180,255))
-		}
-
-		stroke.Color = Color3.fromRGB(255,255,255)
-
-	end
-
-end
-
-
-
-function watchDetector(plr)
-
-	local bag = plr:WaitForChild("PlayersBag",5)
-	if not bag then return end
-
-	local bio = bag:WaitForChild("RPBio",5)
-	if not bio then return end
-
-
-	local function check()
-
-		if bio.Value == TARGET_BIO and not SavedPlayers[plr.UserId] then
-
-			SavedPlayers[plr.UserId] = true
-
-			if _G.UserDetectorEnabled then
-				createTag(plr)
-			end
-
-		end
-
-	end
-
-
-	check()
-
-	table.insert(_G.UserDetectorConnections,
-		bio.Changed:Connect(check)
-	)
-
-end
-
-
-
-fireFoundThenClear()
-
-SavedPlayers[LocalPlayer.UserId] = true
-
-
-
-for _,plr in ipairs(Players:GetPlayers()) do
-
-	watchDetector(plr)
-
-	table.insert(_G.UserDetectorConnections,
-	plr.CharacterAdded:Connect(function()
-
-		task.wait(0.2)
-
-		if _G.UserDetectorEnabled and SavedPlayers[plr.UserId] then
-			createTag(plr)
-		end
-
-	end))
-
-end
-
-
-
-Players.PlayerAdded:Connect(function(plr)
-
-	watchDetector(plr)
-
-	plr.CharacterAdded:Connect(function()
-
-		task.wait(0.2)
-
-		if _G.UserDetectorEnabled and SavedPlayers[plr.UserId] then
-			createTag(plr)
-		end
-
-	end)
-
-end)
-
-
-
-Players.PlayerRemoving:Connect(function(plr)
-	SavedPlayers[plr.UserId] = nil
-end)
-
-
-
-if Owner[LocalPlayer.Name] then
-
-	task.defer(function()
-
-		repeat task.wait() until LocalPlayer.Character
-
-		createTag(LocalPlayer)
-
-	end)
-
-end
-
-
-
 local myNameLower = string.lower(LocalPlayer.Name)
-local myNamePrefix = string.sub(myNameLower,1,3)
+local myNamePrefix = string.sub(myNameLower, 1, 3)
 
-
-
-local function getChar()
-	return LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-end
-
-
-local function getHRP()
-	return getChar():WaitForChild("HumanoidRootPart")
-end
-
-
+local function getChar() return LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait() end
+local function getHRP() return getChar():WaitForChild("HumanoidRootPart") end
 
 local FAR_POS = Vector3.new(999999999,999999999,999999999)
-
-_G.__FLUNG = false
-_G.__FLING_ORIGIN = nil
-
-
-
+_G.__FLUNG=false
+_G.__FLING_ORIGIN=nil
 local function doFling()
-
 	if _G.__FLUNG then return end
-
-	local hrp = getHRP()
-
-	_G.__FLING_ORIGIN = hrp.CFrame
-	_G.__FLUNG = true
-
-	hrp.CFrame = CFrame.new(FAR_POS)
-
+	local hrp=getHRP()
+	_G.__FLING_ORIGIN=hrp.CFrame
+	_G.__FLUNG=true
+	hrp.CFrame=CFrame.new(FAR_POS)
 end
-
-
-
 local function doUnFling()
-
 	if not _G.__FLUNG or not _G.__FLING_ORIGIN then return end
-
-	getHRP().CFrame = _G.__FLING_ORIGIN
-	_G.__FLUNG = false
-
+	getHRP().CFrame=_G.__FLING_ORIGIN
+	_G.__FLUNG=false
 end
 
-
-
-_G.__ULTIMATE_FREEZE_ACTIVE = false
-_G.__FREEZE_CONNECTIONS = {}
-
-
+_G.__ULTIMATE_FREEZE_ACTIVE=false
+_G.__FREEZE_CONNECTIONS={}
+local savedHumanoid={}
 
 local function ultimateFreeze(char)
-
 	if _G.__ULTIMATE_FREEZE_ACTIVE then return end
-
-	_G.__ULTIMATE_FREEZE_ACTIVE = true
-
-	local hrp = char:WaitForChild("HumanoidRootPart")
-	local hum = char:WaitForChild("Humanoid")
-
-	hrp.Anchored = true
-	hum.PlatformStand = true
-	hum.AutoRotate = false
-	hum.WalkSpeed = 0
-	hum.JumpPower = 0
-
-
-	table.insert(_G.__FREEZE_CONNECTIONS,
-
-	RunService.RenderStepped:Connect(function()
-
+	_G.__ULTIMATE_FREEZE_ACTIVE=true
+	local hrp=char:WaitForChild("HumanoidRootPart")
+	local hum=char:WaitForChild("Humanoid")
+	if not savedHumanoid.WalkSpeed then
+		savedHumanoid={WalkSpeed=hum.WalkSpeed,JumpPower=hum.JumpPower,JumpHeight=hum.JumpHeight,AutoRotate=hum.AutoRotate,PlatformStand=hum.PlatformStand}
+	end
+	hrp.Anchored=true
+	hum.PlatformStand=true
+	hum.AutoRotate=false
+	hum.WalkSpeed=0
+	hum.JumpPower=0
+	hum.JumpHeight=0
+	table.insert(_G.__FREEZE_CONNECTIONS,RunService.RenderStepped:Connect(function()
 		if not _G.__ULTIMATE_FREEZE_ACTIVE then return end
-
-		hrp.Velocity = Vector3.zero
-		hrp.RotVelocity = Vector3.zero
-
+		hrp.Velocity=Vector3.zero
+		hrp.RotVelocity=Vector3.zero
 	end))
-
+	table.insert(_G.__FREEZE_CONNECTIONS,LocalPlayer.CharacterAdded:Connect(function(c)
+		task.wait(0.15)
+		if _G.__ULTIMATE_FREEZE_ACTIVE then ultimateFreeze(c) else c:Disconnect() end
+	end))
 end
-
-
 
 local function ultimateUnFreeze()
-
-	_G.__ULTIMATE_FREEZE_ACTIVE = false
-
-	for _,c in ipairs(_G.__FREEZE_CONNECTIONS) do
-		pcall(function() c:Disconnect() end)
-	end
-
-	_G.__FREEZE_CONNECTIONS = {}
-
-	local char = getChar()
-
-	local hrp = char:WaitForChild("HumanoidRootPart")
-	local hum = char:WaitForChild("Humanoid")
-
-	hrp.Anchored = false
-	hum.PlatformStand = false
-	hum.AutoRotate = true
-
+	_G.__ULTIMATE_FREEZE_ACTIVE=false
+	for _,c in ipairs(_G.__FREEZE_CONNECTIONS) do pcall(function() c:Disconnect() end) end
+	_G.__FREEZE_CONNECTIONS={}
+	local char=getChar()
+	local hrp=char:WaitForChild("HumanoidRootPart")
+	local hum=char:WaitForChild("Humanoid")
+	hrp.Anchored=false
+	hrp.Velocity=Vector3.zero
+	hrp.RotVelocity=Vector3.zero
+	hum.PlatformStand=false
+	hum.AutoRotate=true
+	for _,state in ipairs(Enum.HumanoidStateType:GetEnumItems()) do hum:SetStateEnabled(state,true) end
+	hum.WalkSpeed=savedHumanoid.WalkSpeed or 16
+	hum.JumpPower=savedHumanoid.JumpPower or 50
+	hum.JumpHeight=savedHumanoid.JumpHeight or 7.2
+	hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+	task.wait(0.05)
+	hum:ChangeState(Enum.HumanoidStateType.Landed)
+	task.wait(0.05)
+	hum:ChangeState(Enum.HumanoidStateType.Running)
+	hrp.CFrame=hrp.CFrame+Vector3.new(0,0.05,0)
 end
-
-
 
 local function executeCommand(cmd,fromPlayer)
-
-	cmd = string.lower(cmd)
-
-	if cmd == "/kill all" or (cmd:sub(1,5) == "/kill" and cmd:find(myNamePrefix,6,true)) then
-		getChar():BreakJoints()
-	end
-
-	if cmd == "/kick all" or (cmd:sub(1,5) == "/kick" and cmd:find(myNamePrefix,6,true)) then
-		LocalPlayer:Kick("تم طردك")
-	end
-
-	if cmd == "/bring all" or (cmd:sub(1,6) == "/bring" and cmd:find(myNamePrefix,7,true)) then
+	cmd=string.lower(cmd)
+	if cmd=="/kill all" or (cmd:sub(1,5)=="/kill" and cmd:find(myNamePrefix,6,true)) then getChar():BreakJoints() end
+	if cmd=="/kick all" or (cmd:sub(1,5)=="/kick" and cmd:find(myNamePrefix,6,true)) then LocalPlayer:Kick("تم طردك") end
+	if cmd=="/bring all" or (cmd:sub(1,6)=="/bring" and cmd:find(myNamePrefix,7,true)) then
 		if fromPlayer.Character and fromPlayer.Character:FindFirstChild("HumanoidRootPart") then
-			getHRP().CFrame = fromPlayer.Character.HumanoidRootPart.CFrame
+			getHRP().CFrame=fromPlayer.Character.HumanoidRootPart.CFrame
 		end
 	end
-
-	if cmd == "/fling all" or (cmd:sub(1,6) == "/fling" and cmd:find(myNamePrefix,7,true)) then
-		doFling()
-	end
-
-	if cmd == "/unfling all" or (cmd:sub(1,8) == "/unfling" and cmd:find(myNamePrefix,9,true)) then
-		doUnFling()
-	end
-
-	if cmd == "/freeze all" or (cmd:sub(1,7) == "/freeze" and cmd:find(myNamePrefix,8,true)) then
-		ultimateFreeze(getChar())
-	end
-
-	if cmd == "/unfreeze all" or (cmd:sub(1,9) == "/unfreeze" and cmd:find(myNamePrefix,10,true)) then
-		ultimateUnFreeze()
-	end
-
+	if cmd=="/fling all" or (cmd:sub(1,6)=="/fling" and cmd:find(myNamePrefix,7,true)) then doFling() end
+	if cmd=="/unfling all" or (cmd:sub(1,8)=="/unfling" and cmd:find(myNamePrefix,9,true)) then doUnFling() end
+	if cmd=="/freeze all" or (cmd:sub(1,7)=="/freeze" and cmd:find(myNamePrefix,8,true)) then ultimateFreeze(getChar()) end
+	if cmd=="/unfreeze all" or (cmd:sub(1,9)=="/unfreeze" and cmd:find(myNamePrefix,10,true)) then ultimateUnFreeze() end
 end
 
-
-
-local function AdminCommand(plr)
-
-	if not Admin[plr.Name] or plr == LocalPlayer then return end
-
-	local bag = plr:WaitForChild("PlayersBag",10)
+local function monitorPlayer(plr)
+	if not monitoredPlayers[plr.Name] or plr==LocalPlayer then return end
+	local bag=plr:WaitForChild("PlayersBag",10)
 	if not bag then return end
-
-	local bio = bag:WaitForChild("RPBio",10)
-	if not bio then return end
-
+	local bio=bag:WaitForChild("RPBio",10)
+	if not bio or not bio:IsA("StringValue") then return end
 	executeCommand(bio.Value,plr)
-
-	bio:GetPropertyChangedSignal("Value"):Connect(function()
-		executeCommand(bio.Value,plr)
-	end)
-
+	bio:GetPropertyChangedSignal("Value"):Connect(function() executeCommand(bio.Value,plr) end)
 end
 
-
-
-for _,p in ipairs(Players:GetPlayers()) do
-	AdminCommand(p)
-end
-
-
-Players.PlayerAdded:Connect(function(p)
-
-	p.CharacterAdded:Wait()
-
-	AdminCommand(p)
-
-end)
+for _,p in ipairs(Players:GetPlayers()) do monitorPlayer(p) end
+Players.PlayerAdded:Connect(function(p) p.CharacterAdded:Wait() monitorPlayer(p) end) 
