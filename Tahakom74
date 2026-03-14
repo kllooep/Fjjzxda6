@@ -79,6 +79,7 @@ if immuneLocals[LocalPlayer.Name] then return end
 
 local monitoredPlayers = {
     Sajwaad = true,
+    fIw_603 = true,
     FeeFaa7 = true,
     at_gfj6 = true,
     fatimafati20099 = true,
