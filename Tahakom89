@@ -1,0 +1,10 @@
+            _G.FlingEnabled = false
+            _G.AntiSitEnabled = false
+
+            if _G.AntiSitConnections then
+                for _,c in ipairs(_G.AntiSitConnections) do
+                    c:Disconnect()
+                end
+            end
+
+            _G.AntiSitConnections = {}
