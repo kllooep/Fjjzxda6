@@ -1,0 +1,121 @@
+            _G.FlingEnabled = true
+
+            if _G.AntiSitConnections then
+                for _,c in ipairs(_G.AntiSitConnections) do
+                    c:Disconnect()
+                end
+            end
+            _G.AntiSitConnections = {}
+
+            _G.AntiSitEnabled = true
+
+            function protectCharacter(char)
+                hum = char:WaitForChild("Humanoid",5)
+                if not hum then return end
+
+                hum:SetStateEnabled(Enum.HumanoidStateType.Seated,false)
+
+                table.insert(_G.AntiSitConnections,
+                    hum.StateChanged:Connect(function(_, new)
+                        if _G.AntiSitEnabled and new == Enum.HumanoidStateType.Seated then
+                            hum.Sit = false
+                            hum:ChangeState(Enum.HumanoidStateType.Jumping)
+                        end
+                    end)
+                )
+            end
+
+            if LocalPlayer.Character then
+                protectCharacter(LocalPlayer.Character)
+            end
+
+            table.insert(_G.AntiSitConnections,
+                LocalPlayer.CharacterAdded:Connect(protectCharacter)
+            )
+
+            for _,v in ipairs(workspace:GetDescendants()) do
+                if v:IsA("Seat") or v:IsA("VehicleSeat") then
+                    v.Disabled = true
+                end
+            end
+
+            table.insert(_G.AntiSitConnections,
+                workspace.DescendantAdded:Connect(function(obj)
+                    if _G.AntiSitEnabled and (obj:IsA("Seat") or obj:IsA("VehicleSeat")) then
+                        obj.Disabled = true
+                    end
+                end)
+            )
+
+            task.spawn(function()
+                while _G.FlingEnabled do
+                    task.wait(0.2)
+
+                    if not Selec9tedPlayerNOme then continue end
+
+                    local target = Players:FindFirstChild(Selec9tedPlayerNOme)
+                    if not target or not target.Character then continue end
+
+                    local char = LocalPlayer.Character
+                    if not char then continue end
+
+                    local hum = char:FindFirstChildOfClass("Humanoid")
+                    local root = char:FindFirstChild("HumanoidRootPart")
+                    local tRoot = target.Character:FindFirstChild("HumanoidRootPart")
+
+                    if not hum or not root or not tRoot then continue end
+
+                    tool = LocalPlayer.Backpack:FindFirstChild("Couch") or char:FindFirstChild("Couch")
+                    if not tool then
+                        local args = {
+                            [1] = "PickingTools",
+                            [2] = "Couch"
+                        }
+                        ReplicatedStorage.RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+                        task.wait(0.3)
+                        tool = LocalPlayer.Backpack:FindFirstChild("Couch")
+                    end
+
+                    if tool then
+                        hum:EquipTool(tool)
+                    end
+
+                    workspace.FallenPartsDestroyHeight = 0/0
+
+                    local bv = Instance.new("BodyVelocity")
+                    bv.Velocity = Vector3.new(9e8,9e8,9e8)
+                    bv.MaxForce = Vector3.new(1/0,1/0,1/0)
+                    bv.Parent = root
+
+                    hum:SetStateEnabled(Enum.HumanoidStateType.Seated,false)
+                    hum.PlatformStand = false
+                    cam.CameraSubject = target.Character:FindFirstChild("Head") or tRoot
+
+                    local angle = 0
+                    while _G.FlingEnabled
+                    and target
+                    and target.Character
+                    and target.Character:FindFirstChildOfClass("Humanoid")
+                    and root.Parent do
+
+                        angle += 50
+
+                        local pos = tRoot.Position + (tRoot.Velocity / 1.5)
+
+                        root.CFrame =
+                            CFrame.new(pos)
+                            * CFrame.Angles(math.rad(angle),0,0)
+
+                        root.Velocity = Vector3.new(9e8,9e8,9e8)
+                        root.RotVelocity = Vector3.new(9e8,9e8,9e8)
+
+                        task.wait()
+                    end
+
+                    if bv then bv:Destroy() end
+
+                    hum:SetStateEnabled(Enum.HumanoidStateType.Seated,true)
+                    hum.PlatformStand = false
+                    cam.CameraSubject = hum
+                end
+            end)
