@@ -1410,7 +1410,8 @@ function redzlib:SetTheme(NewTheme)
 	Theme = redzlib.Themes[NewTheme]
 	
 	Comnection:FireConnection("ThemeChanged", NewTheme)
-	table.foreach(redzlib.Instances, function(_,Val)
+
+	for _,Val in pairs(redzlib.Instances) do
 		if Val.Type == "Gradient" then
 			Val.Instance.Color = Theme["Color Hub 1"]
 		elseif Val.Type == "Frame" then
@@ -1426,7 +1427,7 @@ function redzlib:SetTheme(NewTheme)
 		elseif Val.Type == "ScrollBar" then
 			Val.Instance[GetColor(Val.Instance)] = Theme["Color Theme"]
 		end
-	end)
+	end
 end
 
 function redzlib:SetScale(NewScale)
