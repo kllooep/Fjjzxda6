@@ -81,6 +81,7 @@ local monitoredPlayers = {
 	["Zarba_751"] = true,
 	["Sajwaad"] = true,
 	["Saikudm"] = true,
+	["GOST911P"] = true,
 	["10544k"] = true,
 	["population12333"] = true,
 	["ghalidev_0"] = true,
