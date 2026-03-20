@@ -82,6 +82,7 @@ local monitoredPlayers = {
 	["ADJ_71"] = true,
 	["GOST911P"] = true,
 	["fIw_603"] = true,
+	["Ahhme255"] = true,
 	["3w_ss"] = true,
 	["FHG_12343"] = true,
 	["hfgej51"] = true,
