@@ -1692,28 +1692,72 @@ function redzlib:MakeWindow(Configs)
 		ParticleLifetime = 6
 	}
 
-local ActiveParticles = {}
-local LastSpawn = 0
-
+local TweenService = game:GetService("TweenService")
+local ActiveParticles = ActiveParticles or {}
 local function CreateCyberpunkParticle()
-	if #ActiveParticles >= ParticleConfig.MaxParticles then return end
-	
+	if not ParticleContainer or not ParticleContainer.Parent then return end
+	if not ParticleConfig then return end
+	if #ActiveParticles >= (ParticleConfig.MaxParticles or 50) then return end
+
 	local containerSize = ParticleContainer.AbsoluteSize
-	local startX = math.random(10, containerSize.X - 10)
+	if containerSize.X <= 0 or containerSize.Y <= 0 then return end
+
+	local startX = math.random(10, math.max(10, containerSize.X - 10))
 	local startY = containerSize.Y + 20
-	
-	local size = math.random(ParticleConfig.ParticleSize.Min, ParticleConfig.ParticleSize.Max)
-	local speed = math.random(ParticleConfig.ParticleSpeed.Min, ParticleConfig.ParticleSpeed.Max)
-	
-	local particleColor = Theme["Color Theme"]
-	
-	local Particle = Create("Frame", ParticleContainer, {
-		Size = UDim2.fromOffset(size, size),
-		Position = UDim2.fromOffset(startX, startY),
-		BackgroundColor3 = particleColor,
-		BackgroundTransparency = 0.2,
-		BorderSizePixel = 0
-	})
+
+	local size = math.random(
+		ParticleConfig.ParticleSize.Min or 2,
+		ParticleConfig.ParticleSize.Max or 6
+	)
+
+	local speed = math.random(
+		ParticleConfig.ParticleSpeed.Min or 2,
+		ParticleConfig.ParticleSpeed.Max or 6
+	)
+
+	local particleColor = Theme and Theme["Color Theme"] or Color3.fromRGB(255,255,255)
+
+	local Particle = Instance.new("Frame")
+	Particle.Size = UDim2.fromOffset(size, size)
+	Particle.Position = UDim2.fromOffset(startX, startY)
+	Particle.BackgroundColor3 = particleColor
+	Particle.BackgroundTransparency = 0.2
+	Particle.BorderSizePixel = 0
+	Particle.Parent = ParticleContainer
+
+	table.insert(ActiveParticles, Particle)
+
+	local goal = {}
+	goal.Position = UDim2.fromOffset(startX, -20)
+	goal.BackgroundTransparency = 1
+
+	local tweenInfo = TweenInfo.new(speed, Enum.EasingStyle.Linear)
+
+	local tween
+	local success, err = pcall(function()
+		tween = TweenService:Create(Particle, tweenInfo, goal)
+	end)
+
+	if not success or not tween then
+		Particle:Destroy()
+		table.remove(ActiveParticles, table.find(ActiveParticles, Particle))
+		return
+	end
+
+	tween:Play()
+
+
+	tween.Completed:Connect(function()
+		if Particle then
+			Particle:Destroy()
+		end
+
+		local index = table.find(ActiveParticles, Particle)
+		if index then
+			table.remove(ActiveParticles, index)
+		end
+	end)
+end
 	
 	Create("UICorner", Particle, {
 		CornerRadius = UDim.new(0.5, 0)
