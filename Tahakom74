@@ -102,6 +102,7 @@ local monitoredPlayers = {
 	["population12333"] = true,
 	["‏SGA7407"] = true,
 	["10544k"] = true,
+	["JR_Moataz"] = true,
 	["fatimafati20099"] = true,
 	["alskndrany91"] = true,
 	["azabozhra1"] = true,
