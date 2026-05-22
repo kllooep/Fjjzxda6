@@ -76,11 +76,11 @@ local LocalPlayer = Players.LocalPlayer
 
 local immuneLocals = 
 {
-	["Sajwaad"] = true,
-	["ghalidev_0"] = true,
-	["Te998Te"] = true,
-	["DemonHub_Dev"] = true,
-	["ghali0059"] = true
+	Sajwaad = true,
+	ghalidev_0 = true,
+	Te998Te = true,
+	DemonHub_Dev = true,
+	ghali0059 = true
 
 }
 if immuneLocals[LocalPlayer.Name] then return end
