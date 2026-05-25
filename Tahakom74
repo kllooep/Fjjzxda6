@@ -95,6 +95,7 @@ local monitoredPlayers = {
 	["ghali0059"] = true,
 	["T_V931"] = true,
 	["ghalidev_0"] = true,
+	["MORHAF_ZORO50"] = true,
 	["Te998Te"] = true,
 	["GOST911P"] = true,
 	["xxxtentacion_2012340"] = true,
