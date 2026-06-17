@@ -81,6 +81,8 @@ local immuneLocals =
 	Te998Te = true,
 	DemonHub_Dev = true,
 m7d_devloper = true,
+Moa7_XTopDev = true,
+	SJAD_12201 = true,
 	ghali0059 = true
 
 }
@@ -92,6 +94,8 @@ local monitoredPlayers = {
 ["tr1gwyfpy"] = true,
 	["ADJ_71"] = true,
 ["dgsgdsgsg54"] = true,
+["Mahdiy_gojo"] = true,
+["Moa7_XTopDev"] = true,
 	["ghali0059"] = true,
 	["T_V931"] = true,
 	["ghalidev_0"] = true,
