@@ -1,4 +1,105 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/kllooep/Fjjzxda6/main/Tahakom74"))()
+
+
 local Libary = loadstring(game:HttpGet("https://api.lumi.new/v1/functions/p411936918378364928/getScript?id=6a0f915d57f0ae7e963cd647"))()
+
+
+Players = game:GetService("Players")
+Player = Players.LocalPlayer
+RunService = game:GetService("RunService")
+TweenService = game:GetService("TweenService")
+UserInputService = game:GetService("UserInputService")
+ContextActionService = game:GetService("ContextActionService")
+GuiService = game:GetService("GuiService")
+
+ReplicatedStorage = game:GetService("ReplicatedStorage")
+ReplicatedFirst = game:GetService("ReplicatedFirst")
+TeleportService = game:GetService("TeleportService")
+HttpService = game:GetService("HttpService")
+
+Workspace = game:GetService("Workspace")
+Lighting = game:GetService("Lighting")
+PathfindingService = game:GetService("PathfindingService") 
+PhysicsService = game:GetService("PhysicsService")
+SoundService = game:GetService("SoundService")
+
+StarterGui = game:GetService("StarterGui")
+StarterPack = game:GetService("StarterPack")
+StarterPlayer = game:GetService("StarterPlayer")
+CoreGui = game:GetService("CoreGui")
+
+ContentProvider = game:GetService("ContentProvider")
+InsertService = game:GetService("InsertService")
+
+Chat = game:GetService("Chat")
+TextService = game:GetService("TextService")
+
+DataStoreService = game:GetService("DataStoreService")
+MarketplaceService = game:GetService("MarketplaceService")
+BadgeService = game:GetService("BadgeService")
+GroupService = game:GetService("GroupService")
+
+HapticService = game:GetService("HapticService")
+VRService = game:GetService("VRService")
+
+PolicyService = game:GetService("PolicyService")
+
+Stats = game:GetService("Stats")
+
+LocalizationService = game:GetService("LocalizationService")
+
+Debris = game:GetService("Debris")
+CollectionService = game:GetService("CollectionService")
+Selection = game:GetService("Selection")
+ProximityPromptService = game:GetService("ProximityPromptService")
+TestService = game:GetService("TestService")
+LogService = game:GetService("LogService")
+
+Owners = {
+	Sajwaad = true,
+	ghalidev_0 = true,
+	ghali0059 = true
+}
+
+ Admins = {
+	["Zarba_751"] = true,
+	["ADJ_71"] = true,
+	["fIw_603"] = true,
+	["FHG_12343"] = true,
+	["fatimafati20099"] = true,
+	["alskndrany91"] = true,
+	["azabozhra1"] = true,
+	["FeeFaa7"] = true,
+	["ras123678"] = true,
+	["Botdevil999"] = true,
+	["Mode_720"] = true,
+	["at_gfj6"] = true,
+	["Nykysaf"] = true,
+	["talarom12349"] = true,
+	["XXTAJXX63"] = true,
+	["sajjad2502"] = true,
+	["DemonHub_Dev"] = true,
+	["malk_55117"] = true,
+	["imane_pink54"] = true,
+	["zdrkn305"] = true,
+	["iskeowa"] = true,
+	["yew99yew"] = true,
+	["HUSAM1438"] = true,
+	["IV_SEE"] = true,
+	["Amine_city"] = true,
+	["K_31387"] = true,
+	["haker_457230"] = true,
+	["rengoku28306"] = true,
+	["Hwrejplq"] = true,
+	["wkwjdnsnsndnxxnsnsn"] = true,
+	["Eiles917"] = true,
+	["1l3_1081"] = true,
+	["PAWOR141"] = true,
+	["1Khaled110"] = true,
+["mohmmad47n"] = true,
+	["mr_Mustafa213"] = true
+}
+
 
 Window = Libary:MakeWindow({
     Title = "Shadwo HUB",
@@ -6,6 +107,7 @@ Window = Libary:MakeWindow({
     LoadText = "NetroZHubDevelopers",
     Flags = "DemoZ_Brookhaven"
 })
+
 Window:AddMinimizeButton({
     Button = { Image = "rbxassetid://119373080179245", BackgroundTransparency = 0 },
     Corner = { CornerRadius = UDim.new(35, 1) },
@@ -22,8 +124,177 @@ InfoTab:AddDiscordInvite({
     Logo = "rbxassetid://123764306597337",
     Invite = "https://www.tiktok.com/@.5y_cx",
 })
+InfoTab:AddSection({ "الرتب" })
+SavedPlayers = {} -- [UserId] = true
+InfoTab:AddToggle({
+	Name = "كشف المستخدمين",
+	Default = true,
+	Callback = function(state)
 
-SajadTab = Window:MakeTab({
+		local TARGET_BIO = "MiDe7moZ"
+		local FIRE_ON_ENABLE = "/found"
+		local SYSTEM_ENABLED = state
+		local connections = {}
+
+		local function fireBio(text)
+			if not SYSTEM_ENABLED then return end
+			ReplicatedStorage:WaitForChild("RE")
+				:WaitForChild("1RPNam1eTex1t")
+				:FireServer("RolePlayBio", text)
+		end
+
+		local function fireFoundThenClear()
+			if not SYSTEM_ENABLED then return end
+			fireBio(FIRE_ON_ENABLE)
+			task.delay(1, function()
+				if SYSTEM_ENABLED then
+					fireBio("")
+				end
+			end)
+		end
+
+		local function removeTag(plr)
+			if plr.Character then
+				local t = plr.Character:FindFirstChild("NameTag")
+				if t then t:Destroy() end
+			end
+		end
+
+		local function createTag(plr)
+			if not SYSTEM_ENABLED then return end
+			if not SavedPlayers[plr.UserId] then return end
+			if not plr.Character then return end
+
+			local head = plr.Character:FindFirstChild("Head")
+			if not head then return end
+
+			removeTag(plr)
+
+			local role = "عضو"
+			if Owners[plr.Name] then
+				role = "مطور"
+			elseif Admins[plr.Name] then
+				role = "ادمن"
+			end
+
+			local gui = Instance.new("BillboardGui")
+			gui.Name = "NameTag"
+			gui.Adornee = head
+			gui.Parent = plr.Character
+			gui.Size = UDim2.new(4, 0, 1.5, 0)
+			gui.StudsOffset = Vector3.new(0, 3.5, 0)
+			gui.AlwaysOnTop = true
+
+			local frame = Instance.new("Frame", gui)
+			frame.Size = UDim2.new(1, 0, 1, 0)
+			frame.BackgroundTransparency = 0.1
+			frame.BorderSizePixel = 0
+			Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+
+			local gradient = Instance.new("UIGradient", frame)
+			gradient.Rotation = 90
+
+			local stroke = Instance.new("UIStroke", frame)
+			stroke.Thickness = 1.5
+
+			local label = Instance.new("TextLabel", frame)
+			label.Size = UDim2.new(1, 0, 1, 0)
+			label.BackgroundTransparency = 1
+			label.TextScaled = true
+			label.Font = Enum.Font.GothamBold
+			label.Text = role
+			label.TextColor3 = Color3.new(1,1,1)
+
+			if role == "مطور" then
+				gradient.Color = ColorSequence.new{
+					ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)),
+					ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 170, 0))
+				}
+				stroke.Color = Color3.fromRGB(255, 215, 0)
+
+			elseif role == "ادمن" then
+				gradient.Color = ColorSequence.new{
+					ColorSequenceKeypoint.new(0, Color3.fromRGB(150, 0, 0)),
+					ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 50, 50))
+				}
+				stroke.Color = Color3.fromRGB(255, 100, 100)
+
+			else
+				gradient.Color = ColorSequence.new{
+					ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 120, 170)),
+					ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 180, 255))
+				}
+				stroke.Color = Color3.fromRGB(255, 255, 255)
+			end
+		end
+
+		local function watchPlayer(plr)
+			local bag = plr:WaitForChild("PlayersBag", 5)
+			if not bag then return end
+
+			local bio = bag:WaitForChild("RPBio", 5)
+			if not bio then return end
+
+			local function check()
+				if bio.Value == TARGET_BIO and not SavedPlayers[plr.UserId] then
+					SavedPlayers[plr.UserId] = true
+					if SYSTEM_ENABLED then
+						createTag(plr)
+					end
+				end
+			end
+
+			check()
+			table.insert(connections, bio.Changed:Connect(check))
+		end
+
+	
+		if not SYSTEM_ENABLED then
+			for _, c in ipairs(connections) do
+				pcall(function() c:Disconnect() end)
+			end
+			for _, plr in ipairs(Players:GetPlayers()) do
+				removeTag(plr)
+			end
+			return
+		end
+
+		fireFoundThenClear()
+
+		for _, plr in ipairs(Players:GetPlayers()) do
+			watchPlayer(plr)
+
+
+			if SYSTEM_ENABLED and SavedPlayers[plr.UserId] then
+				createTag(plr)
+			end
+
+
+			table.insert(connections, plr.CharacterAdded:Connect(function()
+				task.wait(0.2)
+				if SYSTEM_ENABLED and SavedPlayers[plr.UserId] then
+					createTag(plr)
+				end
+			end))
+		end
+
+		table.insert(connections, Players.PlayerAdded:Connect(function(plr)
+			watchPlayer(plr)
+			table.insert(connections, plr.CharacterAdded:Connect(function()
+				task.wait(0.2)
+				if SYSTEM_ENABLED and SavedPlayers[plr.UserId] then
+					createTag(plr)
+				end
+			end))
+		end))
+
+		table.insert(connections, Players.PlayerRemoving:Connect(function(plr)
+			SavedPlayers[plr.UserId] = nil
+		end))
+	end
+})
+
+BetaTab = Window:MakeTab({
 Title = "قسم تجريبي",
 Icon = "home"
 })
