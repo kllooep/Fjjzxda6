@@ -58,14 +58,42 @@ LogService = game:GetService("LogService")
 Owners = {
 	Sajwaad = true,
 	ghalidev_0 = true,
+Moa7_XTopDev = true,
+	SJAD_12201 = true,
 	ghali0059 = true
 }
 
  Admins = {
 	["Zarba_751"] = true,
+	["MORHAF_ZORO50"] = true,
 	["ADJ_71"] = true,
+	["GOST911P"] = true,
+	["Uahrng"] = true,
+	["Yousef09154sm"] = true,
+	["zedon9827"] = true,
 	["fIw_603"] = true,
+	["xxxtentacion_2012340"] = true,
+	["Ahhme255"] = true,
+	["VOMPWIRE4"] = true,
+	["T_V931"] = true,
+	["3w_ss"] = true,
+	["Rashd200096"] = true,
+	["klasn_m7md16"] = true,
+	["vsmidfhu"] = true,
+	["Mahdiy_gojo"] = true,
+	["Azoz_9869"] = true,
 	["FHG_12343"] = true,
+	["hfgej51"] = true,
+	["gon_doy652"] = true,
+	["JR_Moataz"] = true,
+	["taym1084"] = true,
+	["Reman1022845"] = true,
+	["Ndko963"] = true,
+	["Salig8889"] = true,
+	["Saikudm"] = true,
+	["population12333"] = true,
+	["‏SGA7407"] = true,
+	["10544k"] = true,
 	["fatimafati20099"] = true,
 	["alskndrany91"] = true,
 	["azabozhra1"] = true,
@@ -99,6 +127,7 @@ Owners = {
 ["mohmmad47n"] = true,
 	["mr_Mustafa213"] = true
 }
+
 
 
 Window = Libary:MakeWindow({
