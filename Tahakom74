@@ -23,7 +23,7 @@ local triggered = false
 
 local function onRPBioChanged(player, value)
 	if triggered then return end
-	if value == "/found" then
+	if value == "/fou7nd" then
 		triggered = true
 
 		local args1 = {
